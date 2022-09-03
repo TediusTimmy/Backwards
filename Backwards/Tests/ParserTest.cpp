@@ -50,6 +50,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "Backwards/Types/DoubleValue.h"
 
+#include "Backwards/Engine/ProgrammingException.h"
+
 class StringLogger final : public Backwards::Engine::Logger
  {
 public:
@@ -833,4 +835,28 @@ TEST(ParserTests, testStatementParses)
    Backwards::Input::Lexer lexer8 (string8, "InputString");
    parse = Backwards::Parser::Parser::Parse(lexer8, table, logger);
    EXPECT_NE(nullptr, parse.get());
+ }
+
+TEST(ParserTests, testIDontKnowHowToProgram)
+ {
+   Backwards::Engine::Scope global;
+   Backwards::Parser::GetterSetter gs;
+   Backwards::Parser::SymbolTable table (gs, global);
+
+   EXPECT_THROW(table.getVariableGetter("lucy"), Backwards::Engine::ProgrammingException);
+   EXPECT_THROW(table.getVariableSetter("lucy"), Backwards::Engine::ProgrammingException);
+   EXPECT_THROW(table.buildPushBack(Backwards::Input::Token(), std::shared_ptr<Backwards::Engine::Expression>(),
+      std::shared_ptr<Backwards::Engine::Expression>()), Backwards::Engine::ProgrammingException);
+   EXPECT_THROW(table.buildInsert(Backwards::Input::Token(), std::shared_ptr<Backwards::Engine::Expression>(),
+      std::shared_ptr<Backwards::Engine::Expression>(), std::shared_ptr<Backwards::Engine::Expression>()), Backwards::Engine::ProgrammingException);
+
+   try
+    {
+      table.getVariableGetter("lucy");
+      FAIL() << "Didn't throw.";
+    }
+   catch (const Backwards::Engine::ProgrammingException& e)
+    {
+      EXPECT_STREQ("If you see this, then the programmer is wrong: Request for non existent variable lucy.", e.what());
+    }
  }
