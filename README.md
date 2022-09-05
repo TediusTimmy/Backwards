@@ -149,3 +149,9 @@ This is actually an expression, not a statement. It resolves to the function poi
 * string ToString (double)  # return a string representation of a double: scientific notation, 16 significant figures
 * double ValueOf (string)  # parse the string into a double value
 * string Warn (string)  # log a warning string, returns its argument
+
+
+Backway
+=======
+
+Backway is a state engine, analogous to the Ants state engine.
