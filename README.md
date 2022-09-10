@@ -155,3 +155,31 @@ Backway
 =======
 
 Backway is a state engine, analogous to the Ants state engine.
+
+As such, conceptually it is a stack of queues. However, the operations that you get allow you to treat it in any way you want, mostly. A queue is just a list. The state machine operates on lists of things to do. Now, if you are baking cookies, you have a list of things to do. If a monster interrupts you baking cookies, then you need to "kill the monster" before you can go back to baking cookies. This is stack behavior: something comes up that takes precedence over the list of things that you were doing earlier. These are the two tools for making sense of how to behave: doing lists of things, and pushing a new list of things to do in the event of a special case.
+
+States need to define the function Update. Update takes one argument, and this argument rolls along. For the first call ever, this argument is an empty dictionary. For subsequent calls, this argument is whatever Update returned last. If a state changes the stack of queues such that the front state of the top queue has changed, then the update function of the front of the top will continue to be called until the state engine stops changing.
+
+How is this supposed to work? In the Update function, the agent looks around the world, considers what it wants to do, considers how its last attempt at doing something turned out, and then makes a new attempt to change the world. It then returns from Update, because Update is not a co-routine, and it needs to do all of that Update stuff every time.
+
+## Standard Library
+* double CreateState(string; string) # Create a new state with first argument name and second argument functions, one of which must be Update
+* double Enqueue (string) # Add named state to the back of the current queue
+* double Enqueue (array of string)
+* double Finally (string) # Add named state to its own queue at the bottom of the stack
+* double Finally (array of string)
+* double Follow (string) # Add named state after the current state in the current queue
+* double Follow (array of string)
+* value GetInput () # Get the magical "input" thing. Empty Dictionary if there is no input
+* string GetName () # Get the name of the current state
+* double Inject (string) # Add names state to its own queue in a new queue as the second on the stack
+* double Inject (array of string)
+* double Leave () # Exit the current state, and continue to the next state in the current queue
+* double Precede (string) # Add named state to the current queue in front of the current state
+* double Precede (array of string)
+* double Push (string) # Add named state to its own queue on the new top of the stack
+* double Push (array of string)
+* double Rand () # Get a random number
+* double Return () # Exit the current queue, and continue to the next queue in the stack
+* double Skip (string) # Leave states until at the named state in the current queue
+* double Unwind (string) # Return from queues until at the named state in a following queue
