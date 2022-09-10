@@ -84,6 +84,10 @@ Breaks out of the current while or for loop, or the named while or for loop. Thi
 `"function" [ <identifier> ] "(" [ <identifier> { ";" <identifier> } ] ")" "is" <statements> "end"`  
 This is actually an expression, not a statement. It resolves to the function pointer of the defined function. As such, a function name is optional (but assists in debugging). Function declaration is static, all variables are captured by reference (no closures), and a function cannot access the variables of an enclosing function. All arguments to function calls are pass-by-value, semantically.
 
+## Comments
+`"(*" Comment "*)"`  
+Old-style Pascal comments really round out the language as being valid even when newlines are replaced with spaces.
+
 ## Standard Library
 * double Abs (double)  # absolute value
 * double Acos (double)  # inverse cosine, result in degrees
