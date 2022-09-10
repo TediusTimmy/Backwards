@@ -3,7 +3,7 @@ Backwards
 
 Backwards Scripting Language number 3
 
-WAT? This is, basically, ESL2 in C++. There are some changes, though. I removed types for doing 3D physics problems and changed how functions work (for the better, I feel). And it's called Backwards because I wanted a scripting language for a Backrooms-themed game. Collections still aren't classes, but it shouldn't matter.
+WAT? This is, basically, ESL2 in C++. There are some changes, though. I removed types for doing 3D physics problems and changed how functions work (for the better, I feel). And it's called Backwards because I wanted a scripting language for a Backrooms-themed game. Collections still aren't classes, but it shouldn't matter. Also note that the argument separator is ';', from DB14, for the same reasons: while all keywords are English, numbers can mix-and-match the ',' and '.' as the decimal mark.
 
 # The Language
 This is the language as implemented. Some of the GoogleTests have good examples, others, not so much.
@@ -33,8 +33,8 @@ This is the language as implemented. Some of the GoogleTests have good examples,
 * &   logical and, short-circuit
 * |   logical or, short-circuit
 * []  collection access
-* .   syntactic sugar for collection access; x.y is equivalent to x["y"]
-* {}  collection creation: `{}` is an empty array; `{ x, y, z }` creates an array; `{ x : y , z : w , a : b }` creates a dictionary
+* .   syntactic sugar for collection access; x.y is equivalent to x["y"]; in addition . and , are interchangeable, so x.y is the same as x,y
+* {}  collection creation: `{}` is an empty array; `{ x; y; z }` creates an array; `{ x : y ; z : w ; a : b }` creates a dictionary
 
 ## Operator Precedence
 * ()  -- function call
@@ -81,7 +81,7 @@ Breaks out of the current while or for loop, or the named while or for loop. Thi
 #### Continue
 `"continue" [ <identifier> ]`  
 #### Function Definition
-`"function" [ <identifier> ] "(" [ <identifier> { "," <identifier> } ] ")" "is" <statements> "end"`  
+`"function" [ <identifier> ] "(" [ <identifier> { ";" <identifier> } ] ")" "is" <statements> "end"`  
 This is actually an expression, not a statement. It resolves to the function pointer of the defined function. As such, a function name is optional (but assists in debugging). Function declaration is static, all variables are captured by reference (no closures), and a function cannot access the variables of an enclosing function. All arguments to function calls are pass-by-value, semantically.
 
 ## Standard Library
@@ -89,7 +89,7 @@ This is actually an expression, not a statement. It resolves to the function poi
 * double Acos (double)  # inverse cosine, result in degrees
 * double Asin (double)  # inverse sine, result in degrees
 * double Atan (double)  # inverse tangent, result in degrees
-* double Atan2 (double, double)  # two-argument inverse tangent, result in degrees
+* double Atan2 (double; double)  # two-argument inverse tangent, result in degrees
 * double Cbrt (double)  # cube root
 * double Ceil (double)  # ceiling
 * double ContainsKey (dictionary, value)  # determine if value is a key in dictionary (the language lacks a means to ask for forgiveness)
@@ -105,12 +105,12 @@ This is actually an expression, not a statement. It resolves to the function poi
 * Fatal (string)  # log a fatal message, this function does not return, calling this function stops execution
 * double Floor (double)  # floor
 * double FromChar (string)  # return the ASCII code of the only character of the string (the string must have only one character)
-* value GetIndex (array, double)  # retrieve index double from array
+* value GetIndex (array; double)  # retrieve index double from array
 * array GetKeys (dictionary)  # return an array of keys into a dictionary
-* value GetValue (dictionary, value)  # retrieve the value with key value from the dictionary, die if value is not present (no forgiveness)
-* double Hypot (double, double)  # hypotenuse function : Sqrt(xx + yy) with (I hope) hardening for underflow
+* value GetValue (dictionary; value)  # retrieve the value with key value from the dictionary, die if value is not present (no forgiveness)
+* double Hypot (double; double)  # hypotenuse function : Sqrt(xx + yy) with (I hope) hardening for underflow
 * string Info (string)  # log an informational string, returns its argument
-* dictionary Insert (dictionary, value, value)  # insert value 2 into dictionary with value 1 as its key and return the modified dictionary (remember, this DOES NOT modify the passed-in dictionary)
+* dictionary Insert (dictionary; value; value)  # insert value 2 into dictionary with value 1 as its key and return the modified dictionary (remember, this DOES NOT modify the passed-in dictionary)
 * double IsArray (value)  # run-time type identification
 * double IsDictionary (value)  # run-time type identification
 * double IsDouble (value)  # run-time type identification
@@ -120,28 +120,28 @@ This is actually an expression, not a statement. It resolves to the function poi
 * double IsString (value)  # run-time type identification
 * double Length (string)  # length
 * double Ln (double)  # logarithme naturel
-* double Log (double, double)  # second arg is base (divisor)
-* double Max (double, double)  # if either is NaN, returns NaN; returns the first argument if comparing positive and negative zero
-* double Min (double, double)  # if either is NaN, returns NaN; returns the first argument if comparing positive and negative zero
+* double Log (double; double)  # second arg is base (divisor)
+* double Max (double; double)  # if either is NaN, returns NaN; returns the first argument if comparing positive and negative zero
+* double Min (double; double)  # if either is NaN, returns NaN; returns the first argument if comparing positive and negative zero
 * array NewArray ()  # returns an empty array
 * array NewArrayDefault (double, value)  # returns an array of size double with all indices initialized to value
 * dictionary NewDictionary ()  # returns an empty dictionary
 * double PI ()  # delicious
 * array PopBack (array)  # return a copy of the passed-in array with the last element removed
 * array PopFront (array)  # return a copy of the passed-in array with the first element removed
-* array PushBack (array, value)  # return a copy of the passed-in array with a size one greater and the last element the passed-in value
-* array PushFront (array, value)  # return a copy of the passed-in array with a size one greater and the first element the passed-in value
+* array PushBack (array; value)  # return a copy of the passed-in array with a size one greater and the last element the passed-in value
+* array PushFront (array; value)  # return a copy of the passed-in array with a size one greater and the first element the passed-in value
 * double RadToDeg (double)  # radians to degrees
-* dictionary RemoveKey (dictionary, value)  # remove the key value or die
+* dictionary RemoveKey (dictionary; value)  # remove the key value or die
 * double Round (double)  # ties to even
-* array SetIndex (array, double, value)  # return a copy of array where index double is now value
+* array SetIndex (array; double; value)  # return a copy of array where index double is now value
 * double Sin (double)  # sine, argument in degrees
 * double Sinh (double)  # hyperbolic sine
 * double Size (array)  # size of an array
 * double Size (dictionary)  # number of key,value pairs
 * double Sqr (double)  # square
 * double Sqrt (double)  # square root
-* double SubString (string, double, double)  # from character double 1 to character double 2 (java style)
+* double SubString (string; double; double)  # from character double 1 to character double 2 (java style)
 * double Tan (double)  # tangent, argument in degrees
 * double Tanh (double)  # hyperbolic tangent
 * string Time ()  # get the current time as hh:mm:ss (24 hour)
