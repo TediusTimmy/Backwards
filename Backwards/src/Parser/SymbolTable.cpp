@@ -246,6 +246,7 @@ namespace Parser
          if (frames.back()->args.end() != frames.back()->args.find(name)) return LOCAL_VARIABLE;
          if (frames.back()->locals.end() != frames.back()->locals.find(name)) return LOCAL_VARIABLE;
        }
+      if (activeFunctions.end() != activeFunctions.find(name)) return FUNCTION;
       if ((false == scopes.empty()) && (scopes.back()->var.end() != scopes.back()->var.find(name))) return SCOPE_VARIABLE;
       if (globalScope->var.end() != globalScope->var.find(name)) return GLOBAL_VARIABLE;
       return UNDEFINED;

@@ -421,6 +421,13 @@ namespace Parser
             ret = std::make_shared<Engine::Variable>(buildToken, table.getVariableGetter(buildToken.text));
           }
             break;
+         case SymbolTable::FUNCTION:
+          {
+            Input::Token buildToken = src.getNextToken();
+
+            ret = std::make_shared<Engine::Constant>(buildToken, table.activeFunctions[buildToken.text]);
+          }
+            break;
          case SymbolTable::UNDEFINED:
           {
             std::stringstream str;
@@ -441,11 +448,13 @@ namespace Parser
           {
             if (Input::IDENTIFIER == src.peekNextToken().lexeme)
              {
-               table.getContext()->name = src.peekNextToken().text;
-               src.getNextToken();
+               Input::Token identToken = src.getNextToken();
+               badWrong |= enforceUnique(identToken, table, "function name", logger);
+               table.getContext()->name = identToken.text;
              }
 
             expect(src, Input::OPEN_PARENS, "(");
+            table.activeFunctions.emplace(table.getContext()->name, std::make_shared<Types::FunctionValue>(table.getContext()));
 
             if (Input::CLOSE_PARENS != src.peekNextToken().lexeme)
              {
@@ -463,9 +472,9 @@ namespace Parser
                   badWrong |= enforceUnique(argNext, table, "function argument", logger);
                   table.addArgument(argNext.text);
                 }
-
-               table.getContext()->nargs = table.getContext()->args.size();
              }
+
+            table.getContext()->nargs = table.getContext()->args.size();
 
             try
              {
@@ -487,6 +496,8 @@ namespace Parser
              {
                table.getContext()->function = block;
                table.getContext()->nlocals = table.getContext()->locals.size();
+                // Nota bene : we are being very loosey-goosey with the functions.
+               table.activeFunctions.erase(table.getContext()->name);
                ret = std::make_shared<Engine::Constant>(buildToken, std::make_shared<Types::FunctionValue>(table.getContext()));
              }
             else
@@ -496,6 +507,7 @@ namespace Parser
           }
          catch(...)
           {
+            table.activeFunctions.erase(table.getContext()->name);
             table.popContext();
             throw;
           }
@@ -727,53 +739,61 @@ namespace Parser
             /* !!! FALL THROUGH !!! */
          case SymbolTable::SCOPE_VARIABLE: // Assignment Statement
          case SymbolTable::LOCAL_VARIABLE:
+          {
+            std::shared_ptr<Engine::RecAssignState> base;
+            std::shared_ptr<Engine::RecAssignState> current;
+
+            if ((true == defined) && ((Input::OPEN_BRACKET == src.peekNextToken().lexeme) || (Input::PERIOD == src.peekNextToken().lexeme)))
              {
-               std::shared_ptr<Engine::RecAssignState> base;
-               std::shared_ptr<Engine::RecAssignState> current;
-
-               if ((true == defined) && ((Input::OPEN_BRACKET == src.peekNextToken().lexeme) || (Input::PERIOD == src.peekNextToken().lexeme)))
-                {
-                  std::stringstream str;
-                  str << "Identifier >" << identToken.text << "< cannot be a Dictionary or Array in this context." << std::endl
-                      << "\tFrom " << identToken.lineLocation << " on line " << identToken.lineNumber << " in file " << identToken.sourceFile;
-                  throw ParserException(str.str());
-                }
-
-               while ((Input::OPEN_BRACKET == src.peekNextToken().lexeme) || (Input::PERIOD == src.peekNextToken().lexeme))
-                {
-                  Input::Token openToken = src.getNextToken();
-
-                  std::shared_ptr<Engine::Expression> index;
-                  if (Input::PERIOD == openToken.lexeme)
-                   {
-                     Input::Token memberToken = src.peekNextToken();
-                     expect(src, Input::IDENTIFIER, "Identifier");
-                     index = std::make_shared<Engine::Constant>(memberToken, std::make_shared<Types::StringValue>(memberToken.text));
-                   }
-                  else
-                   {
-                     index = expression(src, table, logger);
-                     expect(src, Input::CLOSE_BRACKET, "]");
-                   }
-
-                  if (nullptr == base.get())
-                   {
-                     base = std::make_shared<Engine::RecAssignState>(openToken, index);
-                     current = base;
-                   }
-                  else
-                   {
-                     current->next = std::make_shared<Engine::RecAssignState>(openToken, index);
-                     current = current->next;
-                   }
-                }
-
-               expect(src, Input::TO, "to");
-
-               std::shared_ptr<Engine::Expression> rhs = expression(src, table, logger);
-
-               ret = std::make_shared<Engine::Assignment>(buildToken, table.getVariableGetter(identToken.text), table.getVariableSetter(identToken.text), base, rhs);
+               std::stringstream str;
+               str << "Identifier >" << identToken.text << "< cannot be a Dictionary or Array in this context." << std::endl
+                   << "\tFrom " << identToken.lineLocation << " on line " << identToken.lineNumber << " in file " << identToken.sourceFile;
+               throw ParserException(str.str());
              }
+
+            while ((Input::OPEN_BRACKET == src.peekNextToken().lexeme) || (Input::PERIOD == src.peekNextToken().lexeme))
+             {
+               Input::Token openToken = src.getNextToken();
+
+               std::shared_ptr<Engine::Expression> index;
+               if (Input::PERIOD == openToken.lexeme)
+                {
+                  Input::Token memberToken = src.peekNextToken();
+                  expect(src, Input::IDENTIFIER, "Identifier");
+                  index = std::make_shared<Engine::Constant>(memberToken, std::make_shared<Types::StringValue>(memberToken.text));
+                }
+               else
+                {
+                  index = expression(src, table, logger);
+                  expect(src, Input::CLOSE_BRACKET, "]");
+                }
+
+               if (nullptr == base.get())
+                {
+                  base = std::make_shared<Engine::RecAssignState>(openToken, index);
+                  current = base;
+                }
+               else
+                {
+                  current->next = std::make_shared<Engine::RecAssignState>(openToken, index);
+                  current = current->next;
+                }
+             }
+
+            expect(src, Input::TO, "to");
+
+            std::shared_ptr<Engine::Expression> rhs = expression(src, table, logger);
+
+            ret = std::make_shared<Engine::Assignment>(buildToken, table.getVariableGetter(identToken.text), table.getVariableSetter(identToken.text), base, rhs);
+          }
+            break;
+         case SymbolTable::FUNCTION:
+          {
+            std::stringstream str;
+            str << "Identifier >" << src.peekNextToken().text << "< is not allowed in this context." << std::endl
+                << "\tFrom " << src.peekNextToken().lineLocation << " on line " << src.peekNextToken().lineNumber << " in file " << src.peekNextToken().sourceFile;
+            throw ParserException(str.str());
+          }
             break;
           }
        }

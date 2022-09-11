@@ -104,9 +104,11 @@ namespace Parser
          UNDEFINED,
          GLOBAL_VARIABLE,
          SCOPE_VARIABLE,
-         LOCAL_VARIABLE
+         LOCAL_VARIABLE,
+         FUNCTION
        };
 
+      std::map<std::string, std::shared_ptr<Types::FunctionValue> > activeFunctions;
       IdentifierType lookup (const std::string&) const;
 
       size_t newLoop();

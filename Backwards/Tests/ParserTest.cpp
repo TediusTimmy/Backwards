@@ -772,6 +772,11 @@ TEST(ParserTests, testStatementExceptions)
    Backwards::Input::Lexer lexer15 (string15, "InputString");
    parse = Backwards::Parser::Parser::Parse(lexer15, table, logger);
    ASSERT_EQ(nullptr, parse.get());
+
+   Backwards::Input::StringInput string16 ("set x to function bob () is set bob to 3 return bob end");
+   Backwards::Input::Lexer lexer16 (string16, "InputString");
+   parse = Backwards::Parser::Parser::Parse(lexer16, table, logger);
+   ASSERT_EQ(nullptr, parse.get());
  }
 
 TEST(ParserTests, testStatementParses)

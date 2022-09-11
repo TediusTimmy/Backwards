@@ -82,7 +82,12 @@ Breaks out of the current while or for loop, or the named while or for loop. Thi
 `"continue" [ <identifier> ]`  
 #### Function Definition
 `"function" [ <identifier> ] "(" [ <identifier> { ";" <identifier> } ] ")" "is" <statements> "end"`  
-This is actually an expression, not a statement. It resolves to the function pointer of the defined function. As such, a function name is optional (but assists in debugging). Function declaration is static, all variables are captured by reference (no closures), and a function cannot access the variables of an enclosing function. All arguments to function calls are pass-by-value, semantically.
+This is actually an expression, not a statement. It resolves to the function pointer of the defined function. As such, a function name is optional (but assists in debugging). Function declaration is static, all variables are captured by reference (no closures), and a function cannot access the variables of an enclosing function. All arguments to function calls are pass-by-value, semantically.  
+New addition : the function name must now be unique with respect to: all functions that are being defined, global variables, and scoped variables. Functions can use their name to recursively call themselves.  
+Previous way:  
+`set fib to function (x) is if x > 1 then return fib(x - 1) * x else return 1 end end`  
+New way:  
+`set x to function fib (y) is if y > 1 then return fib(y - 1) * y else return 1 end end`
 
 ## Comments
 `"(*" Comment "*)"`  

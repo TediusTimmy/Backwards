@@ -746,3 +746,42 @@ TEST(AllTests, testThrowExceptions_ForBadCollection)
    ASSERT_EQ(0U, logger.logs.size());
    ASSERT_TRUE(debugger.entered);
  }
+
+TEST(AllTests, testICanRecursiveFib)
+ {
+   Backwards::Input::StringInput string
+      (
+      "call Info(ToString(function fib (y) is if y > 1 then return fib(y - 1) * y else return 1 end end (5)))"
+      );
+   Backwards::Input::Lexer lexer (string, "InputString");
+
+   Backwards::Engine::Scope global;
+   Backwards::Parser::ContextBuilder::createGlobalScope(global); // Create the global scope before the table.
+   Backwards::Parser::GetterSetter gs;
+   Backwards::Parser::SymbolTable table (gs, global);
+   Backwards::Engine::CallingContext context;
+   StringLogger logger;
+   DummyDebugger debugger;
+
+   context.logger = &logger;
+   context.debugger = &debugger;
+   context.globalScope = &global;
+
+   std::shared_ptr<Backwards::Engine::Statement> parse = Backwards::Parser::Parser::Parse(lexer, table, logger);
+
+   debugger.entered = false;
+   EXPECT_EQ(0U, logger.logs.size());
+   for (const auto& log : logger.logs) std::cout << log << std::endl;
+
+   if (nullptr != parse.get())
+    {
+      parse->execute(context);
+    }
+   else
+    {
+      FAIL() << "Parse returned NULL.";
+    }
+
+   ASSERT_EQ(1U, logger.logs.size());
+   EXPECT_EQ("INFO: 1.2000000000000000e+02", logger.logs[0]);
+ }
