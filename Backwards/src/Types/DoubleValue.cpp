@@ -46,11 +46,11 @@ namespace Backwards
 namespace Types
  {
 
-   DoubleValue::DoubleValue() : value(0.0)
+   DoubleValue::DoubleValue() : value(SlowFloat::SlowFloat())
     {
     }
 
-   DoubleValue::DoubleValue(double value) : value(value)
+   DoubleValue::DoubleValue(const SlowFloat::SlowFloat& value) : value(value)
     {
     }
 
@@ -67,7 +67,7 @@ namespace Types
 
    bool DoubleValue::logical () const
     {
-      return (0.0 == value) ? false : true;
+      return (SlowFloat::SlowFloat() == value) ? false : true;
     }
 
    std::shared_ptr<ValueType> DoubleValue::add (const DoubleValue& lhs) const
@@ -92,7 +92,7 @@ namespace Types
 
    std::shared_ptr<ValueType> DoubleValue::power (const DoubleValue& lhs) const
     {
-      return std::make_shared<DoubleValue>(std::pow(lhs.value, value));
+      return std::make_shared<DoubleValue>(SlowFloat::SlowFloat(std::pow(static_cast<double>(lhs.value), static_cast<double>(value))));
     }
 
    bool DoubleValue::greater (const DoubleValue& lhs) const
@@ -154,7 +154,7 @@ namespace Types
 
    size_t DoubleValue::hash() const
     {
-      return std::hash<double>()(value);
+      return std::hash<double>()(static_cast<double>(value));
     }
 
  } // namespace Types

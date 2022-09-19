@@ -58,11 +58,16 @@ public:
    std::string get () { return ""; }
  };
 
+static std::shared_ptr<Backwards::Types::DoubleValue> makeDoubleValue (double d)
+ {
+   return std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(d));
+ }
+
 TEST(EngineTests, testBase)
  {
-   std::shared_ptr<Backwards::Engine::Constant> one = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), std::make_shared<Backwards::Types::DoubleValue>(6.0));
-   std::shared_ptr<Backwards::Engine::Constant> two = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), std::make_shared<Backwards::Types::DoubleValue>(9.0));
-   std::shared_ptr<Backwards::Engine::Constant> six = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), std::make_shared<Backwards::Types::DoubleValue>(0.0));
+   std::shared_ptr<Backwards::Engine::Constant> one = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), makeDoubleValue(6.0));
+   std::shared_ptr<Backwards::Engine::Constant> two = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), makeDoubleValue(9.0));
+   std::shared_ptr<Backwards::Engine::Constant> six = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), makeDoubleValue(0.0));
    Backwards::Engine::Plus plus (Backwards::Input::Token(), one, two);
    Backwards::Engine::CallingContext context;
    StringLogger logger;
@@ -71,169 +76,169 @@ TEST(EngineTests, testBase)
    std::shared_ptr<Backwards::Types::ValueType> res = plus.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(15.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(15.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::Minus minus (Backwards::Input::Token(), one, two);
    res = minus.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(-3.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(-3.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::Multiply multiply (Backwards::Input::Token(), one, two);
    res = multiply.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(54.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(54.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::Divide divide (Backwards::Input::Token(), two, one); // Flipped args
    res = divide.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(1.5, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(1.5), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::Power power (Backwards::Input::Token(), one, two);
    res = power.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(10077696.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(10077696.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::ShortAnd shortAndTT (Backwards::Input::Token(), one, two);
    res = shortAndTT.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(1.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(1.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::ShortAnd shortAndTF (Backwards::Input::Token(), one, six);
    res = shortAndTF.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(0.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(0.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::ShortAnd shortAndF (Backwards::Input::Token(), six, one);
    res = shortAndF.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(0.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(0.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::ShortOr shortOrT (Backwards::Input::Token(), one, two);
    res = shortOrT.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(1.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(1.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::ShortOr shortOrFT (Backwards::Input::Token(), six, two);
    res = shortOrFT.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(1.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(1.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::ShortOr shortOrFF (Backwards::Input::Token(), six, six);
    res = shortOrFF.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(0.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(0.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::Equals equalsT (Backwards::Input::Token(), one, one);
    res = equalsT.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(1.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(1.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::Equals equalsF (Backwards::Input::Token(), one, two);
    res = equalsF.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(0.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(0.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::NotEqual notEqualT (Backwards::Input::Token(), one, two);
    res = notEqualT.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(1.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(1.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::NotEqual notEqualF (Backwards::Input::Token(), one, one);
    res = notEqualF.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(0.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(0.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::Greater greaterT (Backwards::Input::Token(), two, one);
    res = greaterT.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(1.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(1.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::Greater greaterF (Backwards::Input::Token(), one, two);
    res = greaterF.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(0.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(0.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::Less lessT (Backwards::Input::Token(), one, two);
    res = lessT.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(1.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(1.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::Less lessF (Backwards::Input::Token(), two, one);
    res = lessF.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(0.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(0.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::GEQ geqT (Backwards::Input::Token(), two, one);
    res = geqT.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(1.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(1.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::GEQ geqF (Backwards::Input::Token(), one, two);
    res = geqF.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(0.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(0.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::LEQ leqT (Backwards::Input::Token(), one, two);
    res = leqT.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(1.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(1.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::LEQ leqF (Backwards::Input::Token(), two, one);
    res = leqF.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(0.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(0.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::Not notF (Backwards::Input::Token(), one);
    res = notF.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(0.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(0.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::Not notT (Backwards::Input::Token(), six);
    res = notT.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(1.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(1.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::Negate neg (Backwards::Input::Token(), one);
    res = neg.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(-6.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(-6.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::TernaryOperation toT (Backwards::Input::Token(), one, one, two);
    res = toT.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(6.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(6.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    Backwards::Engine::TernaryOperation toF (Backwards::Input::Token(), six, one, two);
    res = toF.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(9.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(9.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
 
    std::shared_ptr<Backwards::Engine::FunctionContext> fun = std::make_shared<Backwards::Engine::FunctionContext>();
@@ -260,25 +265,25 @@ TEST(EngineTests, testBase)
 
 
    std::shared_ptr<Backwards::Types::DictionaryValue> dict = std::make_shared<Backwards::Types::DictionaryValue>();
-   dict->value.insert(std::make_pair(message, std::make_shared<Backwards::Types::DoubleValue>(6.0)));
+   dict->value.insert(std::make_pair(message, makeDoubleValue(6.0)));
    std::shared_ptr<Backwards::Engine::Constant> dicts = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), dict);
 
    Backwards::Engine::DerefVar derefDict (Backwards::Input::Token(), dicts, messages);
    res = derefDict.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(6.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(6.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    std::shared_ptr<Backwards::Types::ArrayValue> arr = std::make_shared<Backwards::Types::ArrayValue>();
-   arr->value.push_back(std::make_shared<Backwards::Types::DoubleValue>(6.0));
-   arr->value.push_back(std::make_shared<Backwards::Types::DoubleValue>(9.0));
+   arr->value.push_back(makeDoubleValue(6.0));
+   arr->value.push_back(makeDoubleValue(9.0));
    std::shared_ptr<Backwards::Engine::Constant> arrs = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), arr);
 
    Backwards::Engine::DerefVar derefArr (Backwards::Input::Token(), arrs, six);
    res = derefArr.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(6.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(6.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
  }
 
 class DummyDebugger final : public Backwards::Engine::DebuggerHook
@@ -290,8 +295,8 @@ public:
 
 TEST(EngineTests, testExceptionBonanza)
  {
-   std::shared_ptr<Backwards::Engine::Constant> one = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), std::make_shared<Backwards::Types::DoubleValue>(6.0));
-   std::shared_ptr<Backwards::Engine::Constant> two = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), std::make_shared<Backwards::Types::DoubleValue>(0.0));
+   std::shared_ptr<Backwards::Engine::Constant> one = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), makeDoubleValue(6.0));
+   std::shared_ptr<Backwards::Engine::Constant> two = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), makeDoubleValue(0.0));
 
    std::shared_ptr<Backwards::Engine::FunctionContext> fun = std::make_shared<Backwards::Engine::FunctionContext>();
    fun->nargs = 1;
@@ -467,7 +472,7 @@ TEST(EngineTests, testCaCall)
  {
    Backwards::Engine::CallingContext context;
    std::vector<std::shared_ptr<Backwards::Engine::Expression> > args;
-   std::shared_ptr<Backwards::Engine::Constant> one = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), std::make_shared<Backwards::Types::DoubleValue>(9.0));
+   std::shared_ptr<Backwards::Engine::Constant> one = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), makeDoubleValue(9.0));
 
    std::shared_ptr<Backwards::Engine::FunctionContext> funRetNine = std::make_shared<Backwards::Engine::FunctionContext>();
    funRetNine->nargs = 0;
@@ -491,7 +496,7 @@ TEST(EngineTests, testCaCall)
    std::shared_ptr<Backwards::Types::ValueType> res = call.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(9.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(9.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
  }
 
 TEST(EngineTests, testGetterSetter)
@@ -500,7 +505,7 @@ TEST(EngineTests, testGetterSetter)
    Backwards::Engine::Scope scope;
    context.globalScope = &scope;
 
-   scope.vars.push_back(std::make_shared<Backwards::Types::DoubleValue>(6.0));
+   scope.vars.push_back(makeDoubleValue(6.0));
    scope.vars.push_back(std::shared_ptr<Backwards::Types::ValueType>());
 
    std::shared_ptr<Backwards::Engine::GlobalGetter> getter1 = std::make_shared<Backwards::Engine::GlobalGetter>(0U);
@@ -511,7 +516,7 @@ TEST(EngineTests, testGetterSetter)
    std::shared_ptr<Backwards::Types::ValueType> res = getGud.evaluate(context);
 
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
-   EXPECT_EQ(6.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(6.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
    EXPECT_THROW(getter2->get(context), Backwards::Engine::FatalException);
    setter2->set(context, std::make_shared<Backwards::Types::StringValue>("A"));

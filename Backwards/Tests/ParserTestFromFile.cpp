@@ -40,6 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "Backwards/Engine/Statement.h"
 #include "Backwards/Engine/CallingContext.h"
+#include "Backwards/Engine/DebuggerHook.h"
 #include "Backwards/Engine/FatalException.h"
 #include "Backwards/Engine/Logger.h"
 
@@ -64,7 +65,7 @@ std::shared_ptr<Backwards::Types::ValueType> printValue(const std::shared_ptr<Ba
     {
       if (typeid(Backwards::Types::DoubleValue) == typeid(*val))
        {
-         std::cout << std::dynamic_pointer_cast<const Backwards::Types::DoubleValue>(val)->value;
+         std::cout << SlowFloat::toString(std::dynamic_pointer_cast<const Backwards::Types::DoubleValue>(val)->value);
        }
       else if (typeid(Backwards::Types::StringValue) == typeid(*val))
        {

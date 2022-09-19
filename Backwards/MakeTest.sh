@@ -1,3 +1,3 @@
 #!/bin/sh
 
-g++ -I../../include -g --coverage -O0 -c -Wall -Wextra -Wpedantic *.cpp
+g++ -I../../include -I../../../SlowFloat -g --coverage -O0 -c -Wall -Wextra -Wpedantic *.cpp

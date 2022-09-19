@@ -518,7 +518,7 @@ namespace Parser
        {
          Input::Token buildToken = src.getNextToken();
 
-         ret = std::make_shared<Engine::Constant>(buildToken, std::make_shared<Types::DoubleValue>(std::stod(buildToken.text)));
+         ret = std::make_shared<Engine::Constant>(buildToken, std::make_shared<Types::DoubleValue>(SlowFloat::fromString(buildToken.text)));
        }
          break;
       case Input::STRING:

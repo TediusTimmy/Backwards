@@ -19,4 +19,4 @@ cd ../Parser
 mv ./*.o ../../obj
 
 cd ../../bin
-g++ -o ParserTestFile -Wall -Wextra -Wpedantic -O0 -g -I../include ../Tests/ParserTestFromFile.cpp ../obj/*.o
+g++ -o ParserTestFile -Wall -Wextra -Wpedantic -O0 -g -I../include -I../../SlowFloat ../Tests/ParserTestFromFile.cpp ../obj/*.o ../obj/*.a

@@ -58,7 +58,7 @@ void printValue(const std::shared_ptr<Backwards::Types::ValueType>& val)
     {
       if (typeid(Backwards::Types::DoubleValue) == typeid(*val))
        {
-         std::cout << std::dynamic_pointer_cast<const Backwards::Types::DoubleValue>(val)->value;
+         std::cout << SlowFloat::toString(std::dynamic_pointer_cast<const Backwards::Types::DoubleValue>(val)->value);
        }
       else if (typeid(Backwards::Types::StringValue) == typeid(*val))
        {

@@ -130,7 +130,7 @@ static double parseAndEvaluateDouble (Backwards::Input::Lexer& lexer, Backwards:
       throw "Result wasn't a Double.";
     }
 
-   return std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value;
+   return static_cast<double>(std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
  }
 
 TEST(ParserTests, testLetsDoMath)
@@ -523,7 +523,7 @@ TEST(ParserTests, testThrowSomeExceptionsExpressions)
    EXPECT_EQ(0U, logger.logs.size());
    ASSERT_NE(nullptr, res.get());
    ASSERT_EQ(typeid(Backwards::Types::DoubleValue), typeid(*res.get()));
-   EXPECT_EQ(6.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(6.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
 
 
    Backwards::Input::StringInput string2 ( " 2 * end " );

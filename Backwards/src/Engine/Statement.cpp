@@ -419,7 +419,7 @@ namespace Engine
           }
          else
           {
-            STEP = std::make_shared<Types::DoubleValue>(-1.0);
+            STEP = std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(-1.0));
           }
        }
       else

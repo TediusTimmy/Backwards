@@ -9,7 +9,7 @@ WAT? This is, basically, ESL2 in C++. There are some changes, though. I removed 
 This is the language as implemented. Some of the GoogleTests have good examples, others, not so much.
 
 ## Data Types:
-* Double
+* Float - this is a decimal floating-point number with nine digits of precision.
 * String
 * Array (ordinally indexed Dictionary?)
 * Dictionary

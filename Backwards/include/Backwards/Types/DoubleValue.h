@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef BACKWARDS_TYPES_DOUBLEVALUE_H
 #define BACKWARDS_TYPES_DOUBLEVALUE_H
 
+#include "SlowFloat.h"
 #include "Backwards/Types/ValueType.h"
 
 namespace Backwards
@@ -44,10 +45,10 @@ namespace Types
     {
 
    public:
-      double value;
+      SlowFloat::SlowFloat value;
 
       DoubleValue();
-      DoubleValue(double value);
+      DoubleValue(const SlowFloat::SlowFloat& value);
 
       const std::string& getTypeName() const;
 

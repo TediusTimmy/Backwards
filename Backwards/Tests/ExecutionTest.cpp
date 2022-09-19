@@ -783,5 +783,5 @@ TEST(AllTests, testICanRecursiveFib)
     }
 
    ASSERT_EQ(1U, logger.logs.size());
-   EXPECT_EQ("INFO: 1.2000000000000000e+02", logger.logs[0]);
+   EXPECT_EQ("INFO: 1.20000000e+2", logger.logs[0]);
  }

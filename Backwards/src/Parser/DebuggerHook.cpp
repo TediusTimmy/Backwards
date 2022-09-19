@@ -65,7 +65,7 @@ namespace Engine
        {
          if (typeid(Types::DoubleValue) == typeid(*val))
           {
-            stream << std::dynamic_pointer_cast<const Types::DoubleValue>(val)->value;
+            stream << SlowFloat::toString(std::dynamic_pointer_cast<const Types::DoubleValue>(val)->value);
           }
          else if (typeid(Types::StringValue) == typeid(*val))
           {

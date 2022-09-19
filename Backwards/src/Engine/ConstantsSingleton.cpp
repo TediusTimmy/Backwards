@@ -42,12 +42,12 @@ namespace Engine
  {
 
    ConstantsSingleton::ConstantsSingleton() :
-      DOUBLE_ZERO(std::make_shared<Types::DoubleValue>(0.0)),
-      DOUBLE_ONE(std::make_shared<Types::DoubleValue>(1.0)),
+      DOUBLE_ZERO(std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(0.0))),
+      DOUBLE_ONE(std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(1.0))),
       EMPTY_ARRAY(std::make_shared<Types::ArrayValue>()),
       EMPTY_DICTIONARY(std::make_shared<Types::DictionaryValue>()),
       ONE_TRUE_NOP(std::make_shared<NOP>(Input::Token())),
-      DOUBLE_PI(std::make_shared<Types::DoubleValue>(M_PI))
+      DOUBLE_PI(std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(M_PI)))
     {
     }
 

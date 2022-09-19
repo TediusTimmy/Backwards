@@ -47,9 +47,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 TEST(TypesTests, testDoubles)
  {
    Backwards::Types::DoubleValue defaulted;
-   Backwards::Types::DoubleValue low (1.0);
-   Backwards::Types::DoubleValue med (5.0);
-   Backwards::Types::DoubleValue high (10.0);
+   Backwards::Types::DoubleValue low (SlowFloat::SlowFloat(1.0));
+   Backwards::Types::DoubleValue med (SlowFloat::SlowFloat(5.0));
+   Backwards::Types::DoubleValue high (SlowFloat::SlowFloat(10.0));
    std::shared_ptr<Backwards::Types::ValueType> temp;
 
    EXPECT_EQ("Double", defaulted.getTypeName());
@@ -61,51 +61,51 @@ TEST(TypesTests, testDoubles)
 
    temp = low.neg();
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*temp.get()));
-   EXPECT_EQ(-1.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(-1.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
 
    temp = high.neg();
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*temp.get()));
-   EXPECT_EQ(-10.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(-10.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
 
    temp = high.add(med);
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*temp.get()));
-   EXPECT_EQ(15.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(15.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
 
    temp = high.sub(med); // Is flipped.
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*temp.get()));
-   EXPECT_EQ(-5.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(-5.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
 
    temp = high.mul(med);
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*temp.get()));
-   EXPECT_EQ(50.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(50.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
 
    temp = high.div(med); // Is flipped.
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*temp.get()));
-   EXPECT_EQ(0.5, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(0.5), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
 
    temp = med.power(high);
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*temp.get()));
-   EXPECT_EQ(100000.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(100000.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
 
    temp = high.add(dynamic_cast<Backwards::Types::ValueType&>(med));
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*temp.get()));
-   EXPECT_EQ(15.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(15.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
 
    temp = high.sub(dynamic_cast<Backwards::Types::ValueType&>(med));
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*temp.get()));
-   EXPECT_EQ(5.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(5.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
 
    temp = high.mul(dynamic_cast<Backwards::Types::ValueType&>(med));
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*temp.get()));
-   EXPECT_EQ(50.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(50.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
 
    temp = high.div(dynamic_cast<Backwards::Types::ValueType&>(med));
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*temp.get()));
-   EXPECT_EQ(2.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(2.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
 
    temp = high.power(dynamic_cast<Backwards::Types::ValueType&>(med));
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*temp.get()));
-   EXPECT_EQ(100000.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(100000.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(temp)->value);
 
       // Remember: operations are flipped.
    EXPECT_TRUE(med.greater(high));
@@ -155,7 +155,7 @@ TEST(TypesTests, testDoubles)
    EXPECT_FALSE(med.sort(v3));
    EXPECT_FALSE(med.sort(v4));
 
-   EXPECT_NE(static_cast<size_t>(low.value), low.hash());
+   EXPECT_NE(static_cast<size_t>(static_cast<double>(low.value)), low.hash());
  }
 
 TEST(TypesTests, testStrings)
@@ -306,10 +306,10 @@ TEST(TypesTests, testArrays)
    Backwards::Types::ArrayValue five;
    std::shared_ptr<Backwards::Types::ValueType> temp;
 
-   one.value.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(2.0));
-   two.value.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(4.0));
-   three.value.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(2.0));
-   three.value.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(4.0));
+   one.value.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(2.0)));
+   two.value.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(4.0)));
+   three.value.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(2.0)));
+   three.value.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(4.0)));
    four.value.emplace_back(std::make_shared<Backwards::Types::StringValue>("A"));
    five.value.emplace_back(std::make_shared<Backwards::Types::StringValue>("B"));
 
@@ -321,7 +321,7 @@ TEST(TypesTests, testArrays)
    ASSERT_TRUE(typeid(Backwards::Types::ArrayValue) == typeid(*temp.get()));
    ASSERT_EQ(1U, std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value.size());
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0].get()));
-   EXPECT_EQ(-2.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(-2.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
 
     /*
       I hate myself for doing this: { 4 } + { 2 } = { { 6 } }
@@ -333,7 +333,7 @@ TEST(TypesTests, testArrays)
    temp = std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0];
    ASSERT_EQ(1U, std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value.size());
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0].get())));
-   EXPECT_EQ(6.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(6.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
 
    temp = one.sub(two); // Is flipped.
    ASSERT_TRUE(typeid(Backwards::Types::ArrayValue) == typeid(*temp.get()));
@@ -342,7 +342,7 @@ TEST(TypesTests, testArrays)
    temp = std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0];
    ASSERT_EQ(1U, std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value.size());
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0].get()));
-   EXPECT_EQ(2.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(2.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
 
    temp = one.mul(two);
    ASSERT_TRUE(typeid(Backwards::Types::ArrayValue) == typeid(*temp.get()));
@@ -351,7 +351,7 @@ TEST(TypesTests, testArrays)
    temp = std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0];
    ASSERT_EQ(1U, std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value.size());
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0].get()));
-   EXPECT_EQ(8.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(8.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
 
    temp = one.div(two); // Is flipped.
    ASSERT_TRUE(typeid(Backwards::Types::ArrayValue) == typeid(*temp.get()));
@@ -360,7 +360,7 @@ TEST(TypesTests, testArrays)
    temp = std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0];
    ASSERT_EQ(1U, std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value.size());
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0].get()));
-   EXPECT_EQ(2.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(2.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
 
    temp = one.add(dynamic_cast<Backwards::Types::ValueType&>(two));
    ASSERT_TRUE(typeid(Backwards::Types::ArrayValue) == typeid(*temp.get()));
@@ -369,7 +369,7 @@ TEST(TypesTests, testArrays)
    temp = std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0];
    ASSERT_EQ(1U, std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value.size());
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0].get()));
-   EXPECT_EQ(6.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(6.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
 
    temp = one.sub(dynamic_cast<Backwards::Types::ValueType&>(two));
    ASSERT_TRUE(typeid(Backwards::Types::ArrayValue) == typeid(*temp.get()));
@@ -378,7 +378,7 @@ TEST(TypesTests, testArrays)
    temp = std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0];
    ASSERT_EQ(1U, std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value.size());
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0].get()));
-   EXPECT_EQ(-2.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(-2.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
 
    temp = one.mul(dynamic_cast<Backwards::Types::ValueType&>(two));
    ASSERT_TRUE(typeid(Backwards::Types::ArrayValue) == typeid(*temp.get()));
@@ -387,7 +387,7 @@ TEST(TypesTests, testArrays)
    temp = std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0];
    ASSERT_EQ(1U, std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value.size());
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0].get()));
-   EXPECT_EQ(8.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(8.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
 
    temp = one.div(dynamic_cast<Backwards::Types::ValueType&>(two));
    ASSERT_TRUE(typeid(Backwards::Types::ArrayValue) == typeid(*temp.get()));
@@ -396,7 +396,7 @@ TEST(TypesTests, testArrays)
    temp = std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0];
    ASSERT_EQ(1U, std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value.size());
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0].get()));
-   EXPECT_EQ(0.5, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(0.5), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
 
    temp = four.add(five); // Is flipped.
    ASSERT_TRUE(typeid(Backwards::Types::ArrayValue) == typeid(*temp.get()));
@@ -457,7 +457,7 @@ TEST(TypesTests, testArrays)
    EXPECT_NE(0U, one.hash());
 
    Backwards::Types::DictionaryValue six;
-   six.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("A"), std::make_shared<Backwards::Types::DoubleValue>(4.0)));
+   six.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("A"), std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(4.0))));
 
    temp = one.add(six);
    ASSERT_TRUE(typeid(Backwards::Types::ArrayValue) == typeid(*temp.get()));
@@ -468,7 +468,7 @@ TEST(TypesTests, testArrays)
    ASSERT_TRUE(typeid(Backwards::Types::StringValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first.get())));
    EXPECT_EQ("A", std::dynamic_pointer_cast<Backwards::Types::StringValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first)->value);
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second.get())));
-   EXPECT_EQ(6.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(6.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
 
    temp = one.sub(six);
    ASSERT_TRUE(typeid(Backwards::Types::ArrayValue) == typeid(*temp.get()));
@@ -479,7 +479,7 @@ TEST(TypesTests, testArrays)
    ASSERT_TRUE(typeid(Backwards::Types::StringValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first.get())));
    EXPECT_EQ("A", std::dynamic_pointer_cast<Backwards::Types::StringValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first)->value);
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second.get())));
-   EXPECT_EQ(2.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(2.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
 
    temp = one.mul(six);
    ASSERT_TRUE(typeid(Backwards::Types::ArrayValue) == typeid(*temp.get()));
@@ -490,7 +490,7 @@ TEST(TypesTests, testArrays)
    ASSERT_TRUE(typeid(Backwards::Types::StringValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first.get())));
    EXPECT_EQ("A", std::dynamic_pointer_cast<Backwards::Types::StringValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first)->value);
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second.get())));
-   EXPECT_EQ(8.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(8.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
 
    temp = one.div(six);
    ASSERT_TRUE(typeid(Backwards::Types::ArrayValue) == typeid(*temp.get()));
@@ -501,7 +501,7 @@ TEST(TypesTests, testArrays)
    ASSERT_TRUE(typeid(Backwards::Types::StringValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first.get())));
    EXPECT_EQ("A", std::dynamic_pointer_cast<Backwards::Types::StringValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first)->value);
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second.get())));
-   EXPECT_EQ(2.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(2.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
  }
 
 TEST(TypesTests, testDictionaries)
@@ -515,13 +515,13 @@ TEST(TypesTests, testDictionaries)
    Backwards::Types::DictionaryValue seven;
    std::shared_ptr<Backwards::Types::ValueType> temp;
 
-   one.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("A"), std::make_shared<Backwards::Types::DoubleValue>(2.0)));
-   two.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("B"), std::make_shared<Backwards::Types::DoubleValue>(4.0)));
-   three.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("A"), std::make_shared<Backwards::Types::DoubleValue>(2.0)));
-   three.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("B"), std::make_shared<Backwards::Types::DoubleValue>(4.0)));
+   one.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("A"), std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(2.0))));
+   two.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("B"), std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(4.0))));
+   three.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("A"), std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(2.0))));
+   three.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("B"), std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(4.0))));
    four.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("A"), std::make_shared<Backwards::Types::StringValue>("A")));
    five.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("B"), std::make_shared<Backwards::Types::StringValue>("B")));
-   seven.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("A"), std::make_shared<Backwards::Types::DoubleValue>(4.0)));
+   seven.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("A"), std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(4.0))));
 
    EXPECT_EQ("Dictionary", defaulted.getTypeName());
 
@@ -533,7 +533,7 @@ TEST(TypesTests, testDictionaries)
    ASSERT_TRUE(typeid(Backwards::Types::StringValue) == typeid(*std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first.get()));
    EXPECT_EQ("A", std::dynamic_pointer_cast<Backwards::Types::StringValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first)->value);
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second.get()));
-   EXPECT_EQ(-2.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(-2.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
 
     /*
       I hate myself for doing this: { "B" : 4 } + { "A" : 2 } = { "A" : { "B" : 6 } }
@@ -549,7 +549,7 @@ TEST(TypesTests, testDictionaries)
    ASSERT_TRUE(typeid(Backwards::Types::StringValue) == typeid(*std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first.get()));
    EXPECT_EQ("B", std::dynamic_pointer_cast<Backwards::Types::StringValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first)->value);
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second.get())));
-   EXPECT_EQ(6.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(6.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
 
    temp = one.sub(two); // Is flipped.
    ASSERT_TRUE(typeid(Backwards::Types::DictionaryValue) == typeid(*temp.get()));
@@ -562,7 +562,7 @@ TEST(TypesTests, testDictionaries)
    ASSERT_TRUE(typeid(Backwards::Types::StringValue) == typeid(*std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first.get()));
    EXPECT_EQ("B", std::dynamic_pointer_cast<Backwards::Types::StringValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first)->value);
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second.get())));
-   EXPECT_EQ(2.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(2.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
 
    temp = one.mul(two);
    ASSERT_TRUE(typeid(Backwards::Types::DictionaryValue) == typeid(*temp.get()));
@@ -575,7 +575,7 @@ TEST(TypesTests, testDictionaries)
    ASSERT_TRUE(typeid(Backwards::Types::StringValue) == typeid(*std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first.get()));
    EXPECT_EQ("B", std::dynamic_pointer_cast<Backwards::Types::StringValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first)->value);
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second.get())));
-   EXPECT_EQ(8.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(8.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
 
    temp = one.div(two); // Is flipped.
    ASSERT_TRUE(typeid(Backwards::Types::DictionaryValue) == typeid(*temp.get()));
@@ -588,7 +588,7 @@ TEST(TypesTests, testDictionaries)
    ASSERT_TRUE(typeid(Backwards::Types::StringValue) == typeid(*std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first.get()));
    EXPECT_EQ("B", std::dynamic_pointer_cast<Backwards::Types::StringValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first)->value);
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second.get())));
-   EXPECT_EQ(2.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(2.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
 
    temp = one.add(dynamic_cast<Backwards::Types::ValueType&>(two));
    ASSERT_TRUE(typeid(Backwards::Types::DictionaryValue) == typeid(*temp.get()));
@@ -601,7 +601,7 @@ TEST(TypesTests, testDictionaries)
    ASSERT_TRUE(typeid(Backwards::Types::StringValue) == typeid(*std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first.get()));
    EXPECT_EQ("B", std::dynamic_pointer_cast<Backwards::Types::StringValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first)->value);
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second.get())));
-   EXPECT_EQ(6.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(6.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
 
    temp = one.sub(dynamic_cast<Backwards::Types::ValueType&>(two));
    ASSERT_TRUE(typeid(Backwards::Types::DictionaryValue) == typeid(*temp.get()));
@@ -614,7 +614,7 @@ TEST(TypesTests, testDictionaries)
    ASSERT_TRUE(typeid(Backwards::Types::StringValue) == typeid(*std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first.get()));
    EXPECT_EQ("B", std::dynamic_pointer_cast<Backwards::Types::StringValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first)->value);
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second.get())));
-   EXPECT_EQ(-2.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(-2.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
 
    temp = one.mul(dynamic_cast<Backwards::Types::ValueType&>(two));
    ASSERT_TRUE(typeid(Backwards::Types::DictionaryValue) == typeid(*temp.get()));
@@ -627,7 +627,7 @@ TEST(TypesTests, testDictionaries)
    ASSERT_TRUE(typeid(Backwards::Types::StringValue) == typeid(*std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first.get()));
    EXPECT_EQ("B", std::dynamic_pointer_cast<Backwards::Types::StringValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first)->value);
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second.get())));
-   EXPECT_EQ(8.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(8.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
 
    temp = one.div(dynamic_cast<Backwards::Types::ValueType&>(two));
    ASSERT_TRUE(typeid(Backwards::Types::DictionaryValue) == typeid(*temp.get()));
@@ -640,7 +640,7 @@ TEST(TypesTests, testDictionaries)
    ASSERT_TRUE(typeid(Backwards::Types::StringValue) == typeid(*std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first.get()));
    EXPECT_EQ("B", std::dynamic_pointer_cast<Backwards::Types::StringValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->first)->value);
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second.get())));
-   EXPECT_EQ(0.5, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(0.5), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second)->value);
 
    temp = four.add(five); // Is flipped.
    ASSERT_TRUE(typeid(Backwards::Types::DictionaryValue) == typeid(*temp.get()));
@@ -711,7 +711,7 @@ TEST(TypesTests, testDictionaries)
    EXPECT_NE(0U, one.hash());
 
    Backwards::Types::ArrayValue six;
-   six.value.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(4.0));
+   six.value.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(4.0)));
 
    temp = one.add(six);
    ASSERT_TRUE(typeid(Backwards::Types::DictionaryValue) == typeid(*temp.get()));
@@ -722,7 +722,7 @@ TEST(TypesTests, testDictionaries)
    temp = std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second;
    ASSERT_EQ(1U, std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value.size());
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0].get())));
-   EXPECT_EQ(6.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(6.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
 
    temp = one.sub(six);
    ASSERT_TRUE(typeid(Backwards::Types::DictionaryValue) == typeid(*temp.get()));
@@ -733,7 +733,7 @@ TEST(TypesTests, testDictionaries)
    temp = std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second;
    ASSERT_EQ(1U, std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value.size());
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0].get())));
-   EXPECT_EQ(2.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(2.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
 
    temp = one.mul(six);
    ASSERT_TRUE(typeid(Backwards::Types::DictionaryValue) == typeid(*temp.get()));
@@ -744,7 +744,7 @@ TEST(TypesTests, testDictionaries)
    temp = std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second;
    ASSERT_EQ(1U, std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value.size());
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0].get())));
-   EXPECT_EQ(8.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(8.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
 
    temp = one.div(six);
    ASSERT_TRUE(typeid(Backwards::Types::DictionaryValue) == typeid(*temp.get()));
@@ -755,7 +755,7 @@ TEST(TypesTests, testDictionaries)
    temp = std::dynamic_pointer_cast<Backwards::Types::DictionaryValue>(temp)->value.begin()->second;
    ASSERT_EQ(1U, std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value.size());
    ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0].get())));
-   EXPECT_EQ(2.0, std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
+   EXPECT_EQ(SlowFloat::SlowFloat(2.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(std::dynamic_pointer_cast<Backwards::Types::ArrayValue>(temp)->value[0])->value);
  }
 
 TEST(TypesTests, testBadOperations)
@@ -997,11 +997,11 @@ TEST(TypesTests, checkCertainCase) // Make sure iteration isn't broken for sorti
    Backwards::Types::ArrayValue one;
    Backwards::Types::ArrayValue two;
 
-   one.value.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(2.0));
-   one.value.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(4.0));
+   one.value.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(2.0)));
+   one.value.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(4.0)));
 
-   two.value.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(2.0));
-   two.value.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(6.0));
+   two.value.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(2.0)));
+   two.value.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(6.0)));
 
    EXPECT_FALSE(one.sort(two));
    EXPECT_TRUE(two.sort(one));
@@ -1009,11 +1009,11 @@ TEST(TypesTests, checkCertainCase) // Make sure iteration isn't broken for sorti
    Backwards::Types::DictionaryValue tree;
    Backwards::Types::DictionaryValue four;
 
-   tree.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("A"), std::make_shared<Backwards::Types::DoubleValue>(2.0)));
-   tree.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("B"), std::make_shared<Backwards::Types::DoubleValue>(4.0)));
+   tree.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("A"), std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(2.0))));
+   tree.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("B"), std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(4.0))));
 
-   four.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("A"), std::make_shared<Backwards::Types::DoubleValue>(2.0)));
-   four.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("B"), std::make_shared<Backwards::Types::DoubleValue>(6.0)));
+   four.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("A"), std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(2.0))));
+   four.value.insert(std::make_pair(std::make_shared<Backwards::Types::StringValue>("B"), std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(6.0))));
 
    EXPECT_FALSE(tree.sort(four));
    EXPECT_TRUE(four.sort(tree));

@@ -115,15 +115,15 @@ TEST(ParserTests, testEnterDebugger)
 TEST(ParserTests, testMoreDebugger)
  {
    Backwards::Engine::Scope global;
-   global.vars.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(5.0));
-   global.vars.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(6.0));
+   global.vars.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(5.0)));
+   global.vars.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(6.0)));
    global.var.emplace("g", 0U);
    global.var.emplace("G", 1U);
    global.names.emplace_back("g");
    global.names.emplace_back("G");
    Backwards::Engine::Scope local;
-   local.vars.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(5.0));
-   local.vars.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(4.0));
+   local.vars.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(5.0)));
+   local.vars.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(4.0)));
    local.var.emplace("l", 0U);
    local.var.emplace("L", 1U);
    local.names.emplace_back("l");
@@ -178,13 +178,13 @@ TEST(ParserTests, testMoreDebugger)
    Backwards::Engine::StackFrame frame1 (fun1, token1, &frame2);
    frame2.next = &frame1; // Would have been done in pushContext
 
-   frame2.args[0] = std::make_shared<Backwards::Types::DoubleValue>(5.0);
+   frame2.args[0] = std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(5.0));
    frame2.args[1] = std::make_shared<Backwards::Types::StringValue>("Hello");
    frame2.args[2] = std::make_shared<Backwards::Types::FunctionValue>(fun1);
 
    frame2.locals[0] = Backwards::Engine::Insert(
-      Backwards::Engine::Insert(Backwards::Engine::NewDictionary(), std::make_shared<Backwards::Types::StringValue>("Hello"), std::make_shared<Backwards::Types::DoubleValue>(5.0)),
-      std::make_shared<Backwards::Types::StringValue>("World"), std::make_shared<Backwards::Types::DoubleValue>(6.0));
+      Backwards::Engine::Insert(Backwards::Engine::NewDictionary(), std::make_shared<Backwards::Types::StringValue>("Hello"), std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(5.0))),
+      std::make_shared<Backwards::Types::StringValue>("World"), std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(6.0)));
    frame2.locals[1] = Backwards::Engine::PushBack(
       Backwards::Engine::PushBack(Backwards::Engine::NewArray(), std::make_shared<Backwards::Types::StringValue>("Hello")),
       std::make_shared<Backwards::Types::StringValue>("World"));
@@ -215,10 +215,10 @@ TEST(ParserTests, testMoreDebugger)
    EXPECT_EQ("#3: >EnterDebugger< from line 1 in test\n#2: >BuyMeAPony< from line 1 in test\n#1: >IWantTheWorld< from line 1 in test", logger.logs[1]);
    EXPECT_EQ("In function #2: >BuyMeAPony< from line 1 in test", logger.logs[2]);
    EXPECT_EQ("These variables are in the current stack frame: x, y, z, a, b, c\nThese variables are in the current scope: l, L\nThese variables are in the global scope: g, G", logger.logs[3]);
-   EXPECT_EQ("5.0000000000000000e+00", logger.logs[4]);
+   EXPECT_EQ("5.00000000e+0", logger.logs[4]);
    EXPECT_EQ("\"Hello\"", logger.logs[5]);
    EXPECT_EQ("Function : EnterDebugger", logger.logs[6]);
-   EXPECT_EQ("{ \"Hello\":5.0000000000000000e+00, \"World\":6.0000000000000000e+00 }", logger.logs[7]);
+   EXPECT_EQ("{ \"Hello\":5.00000000e+0, \"World\":6.00000000e+0 }", logger.logs[7]);
    EXPECT_EQ("{ \"Hello\", \"World\" }", logger.logs[8]);
    EXPECT_EQ("Error: Read of value before set.", logger.logs[9]);
    EXPECT_EQ("In function #3: >EnterDebugger< from line 1 in test", logger.logs[10]);

@@ -131,7 +131,7 @@ namespace Engine
        {
          if (typeid(Types::DoubleValue) == typeid(*second))
           {
-            double index = static_cast<const Types::DoubleValue&>(*second).value;
+            double index = static_cast<double>(static_cast<const Types::DoubleValue&>(*second).value);
             if ((index >= 0.0) && (index < static_cast<double>(static_cast<const Types::ArrayValue&>(*first).value.size())))
              {
                return static_cast<const Types::ArrayValue&>(*first).value[static_cast<size_t>(index)];
@@ -158,7 +158,7 @@ namespace Engine
        {
          if (typeid(Types::DoubleValue) == typeid(*second))
           {
-            double index = static_cast<const Types::DoubleValue&>(*second).value;
+            double index = static_cast<double>(static_cast<const Types::DoubleValue&>(*second).value);
             if ((index >= 0.0) && (index < static_cast<double>(static_cast<const Types::ArrayValue&>(*first).value.size())))
              {
                // Yes, construct a new container on modification.
@@ -222,9 +222,7 @@ namespace Engine
     {
       if (typeid(Types::DoubleValue) == typeid(*arg))
        {
-         std::stringstream str;
-         str << std::setprecision(16) << std::scientific << static_cast<const Types::DoubleValue&>(*arg).value;
-         return std::make_shared<Types::StringValue>(str.str());
+         return std::make_shared<Types::StringValue>(SlowFloat::toString(static_cast<const Types::DoubleValue&>(*arg).value));
        }
       else
        {
@@ -319,7 +317,7 @@ namespace Engine
     {
       if (typeid(Types::StringValue) == typeid(*arg))
        {
-         return std::make_shared<Types::DoubleValue>(static_cast<double>(static_cast<const Types::StringValue&>(*arg).value.size()));
+         return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(static_cast<double>(static_cast<const Types::StringValue&>(*arg).value.size())));
        }
       else
        {
@@ -331,11 +329,11 @@ namespace Engine
     {
       if (typeid(Types::ArrayValue) == typeid(*arg))
        {
-         return std::make_shared<Types::DoubleValue>(static_cast<double>(static_cast<const Types::ArrayValue&>(*arg).value.size()));
+         return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(static_cast<double>(static_cast<const Types::ArrayValue&>(*arg).value.size())));
        }
       else if (typeid(Types::DictionaryValue) == typeid(*arg))
        {
-         return std::make_shared<Types::DoubleValue>(static_cast<double>(static_cast<const Types::DictionaryValue&>(*arg).value.size()));
+         return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(static_cast<double>(static_cast<const Types::DictionaryValue&>(*arg).value.size())));
        }
       else
        {
@@ -347,7 +345,7 @@ namespace Engine
     {
       if (typeid(Types::DoubleValue) == typeid(*first))
        {
-         double size = static_cast<const Types::DoubleValue&>(*first).value;
+         double size = static_cast<double>(static_cast<const Types::DoubleValue&>(*first).value);
          if ((size >= 0.0) && (size < static_cast<double>(std::numeric_limits<size_t>::max())))
           {
             std::shared_ptr<Types::ArrayValue> result = std::make_shared<Types::ArrayValue>();
@@ -374,8 +372,8 @@ namespace Engine
             if (typeid(Types::DoubleValue) == typeid(*third))
              {
                double stringLength = static_cast<double>(static_cast<const Types::StringValue&>(*first).value.length());
-               double startIndex = static_cast<const Types::DoubleValue&>(*second).value;
-               double endIndex = static_cast<const Types::DoubleValue&>(*third).value;
+               double startIndex = static_cast<double>(static_cast<const Types::DoubleValue&>(*second).value);
+               double endIndex = static_cast<double>(static_cast<const Types::DoubleValue&>(*third).value);
                if ((startIndex >= 0.0) && (startIndex <= stringLength) &&
                   (endIndex >= 0.0) && (endIndex <= stringLength) &&
                   (endIndex >= startIndex))
@@ -509,8 +507,8 @@ namespace Engine
        {
          if (typeid(Types::DoubleValue) == typeid(*second))
           {
-            return std::make_shared<Types::DoubleValue>(std::atan2(
-               static_cast<const Types::DoubleValue&>(*first).value, static_cast<const Types::DoubleValue&>(*second).value) * RTD);
+            return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(std::atan2(
+               static_cast<double>(static_cast<const Types::DoubleValue&>(*first).value), static_cast<double>(static_cast<const Types::DoubleValue&>(*second).value)) * RTD));
           }
          else
           {
@@ -529,8 +527,8 @@ namespace Engine
        {
          if (typeid(Types::DoubleValue) == typeid(*second))
           {
-            return std::make_shared<Types::DoubleValue>(std::hypot(
-               static_cast<const Types::DoubleValue&>(*first).value, static_cast<const Types::DoubleValue&>(*second).value) * RTD);
+            return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(std::hypot(
+               static_cast<double>(static_cast<const Types::DoubleValue&>(*first).value), static_cast<double>(static_cast<const Types::DoubleValue&>(*second).value))));
           }
          else
           {
@@ -549,8 +547,8 @@ namespace Engine
        {
          if (typeid(Types::DoubleValue) == typeid(*second))
           {
-            return std::make_shared<Types::DoubleValue>(
-               std::log(static_cast<const Types::DoubleValue&>(*second).value) / std::log(static_cast<const Types::DoubleValue&>(*first).value));
+            return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(std::log(static_cast<double>(static_cast<const Types::DoubleValue&>(*second).value)) /
+               std::log(static_cast<double>(static_cast<const Types::DoubleValue&>(*first).value))));
           }
          else
           {
@@ -570,8 +568,8 @@ namespace Engine
        { \
          if (typeid(Types::DoubleValue) == typeid(*second)) \
           { \
-            double fVal = static_cast<const Types::DoubleValue&>(*first).value; \
-            double sVal = static_cast<const Types::DoubleValue&>(*second).value; \
+            double fVal = static_cast<double>(static_cast<const Types::DoubleValue&>(*first).value); \
+            double sVal = static_cast<double>(static_cast<const Types::DoubleValue&>(*second).value); \
             if (true == std::isnan(fVal)) \
              { \
                return first; \
@@ -601,7 +599,7 @@ namespace Engine
     { \
       if (typeid(Types::DoubleValue) == typeid(*arg)) \
        { \
-         return std::make_shared<Types::DoubleValue>(std::y(static_cast<const Types::DoubleValue&>(*arg).value * DTR)); \
+         return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(std::y(static_cast<double>(static_cast<const Types::DoubleValue&>(*arg).value) * DTR))); \
        } \
       else \
        { \
@@ -618,7 +616,7 @@ namespace Engine
     { \
       if (typeid(Types::DoubleValue) == typeid(*arg)) \
        { \
-         return std::make_shared<Types::DoubleValue>(std::y(static_cast<const Types::DoubleValue&>(*arg).value) * RTD); \
+         return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(std::y(static_cast<double>(static_cast<const Types::DoubleValue&>(*arg).value)) * RTD)); \
        } \
       else \
        { \
@@ -635,7 +633,7 @@ namespace Engine
     { \
       if (typeid(Types::DoubleValue) == typeid(*arg)) \
        { \
-         return std::make_shared<Types::DoubleValue>(std::y(static_cast<const Types::DoubleValue&>(*arg).value)); \
+         return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(std::y(static_cast<double>(static_cast<const Types::DoubleValue&>(*arg).value)))); \
        } \
       else \
        { \
@@ -662,7 +660,7 @@ namespace Engine
     {
       if (typeid(Types::DoubleValue) == typeid(*arg))
        {
-         double x = static_cast<const Types::DoubleValue&>(*arg).value;
+         SlowFloat::SlowFloat x = static_cast<const Types::DoubleValue&>(*arg).value;
          return std::make_shared<Types::DoubleValue>(x * x);
        }
       else
@@ -676,7 +674,7 @@ namespace Engine
     { \
       if (typeid(Types::DoubleValue) == typeid(*arg)) \
        { \
-         return std::make_shared<Types::DoubleValue>(static_cast<const Types::DoubleValue&>(*arg).value * y); \
+         return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(static_cast<double>(static_cast<const Types::DoubleValue&>(*arg).value) * y)); \
        } \
       else \
        { \
@@ -696,7 +694,7 @@ namespace Engine
          str >> val;
          if (!str.fail() && (str.get() == std::char_traits<char>::eof()))
           {
-            return std::make_shared<Types::DoubleValue>(val);
+            return std::make_shared<Types::DoubleValue>(SlowFloat::fromString(static_cast<const Types::StringValue&>(*arg).value));
           }
          else
           {
@@ -716,7 +714,7 @@ namespace Engine
          const std::string& str (static_cast<const Types::StringValue&>(*arg).value);
          if (1U == str.size())
           {
-            return std::make_shared<Types::DoubleValue>(static_cast<double>(str[0]));
+            return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(static_cast<double>(str[0])));
           }
          else
           {
@@ -733,7 +731,7 @@ namespace Engine
     {
       if (typeid(Types::DoubleValue) == typeid(*arg))
        {
-         double val (static_cast<const Types::DoubleValue&>(*arg).value);
+         double val = static_cast<double>(static_cast<const Types::DoubleValue&>(*arg).value);
          if ((val > static_cast<double>(std::numeric_limits<char>::min())) &&
             (val < static_cast<double>(std::numeric_limits<char>::max())))
           {
