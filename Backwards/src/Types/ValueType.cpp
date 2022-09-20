@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include "Backwards/Types/ValueType.h"
 
-#include "Backwards/Types/DoubleValue.h"
+#include "Backwards/Types/FloatValue.h"
 #include "Backwards/Types/StringValue.h"
 #include "Backwards/Types/ArrayValue.h"
 #include "Backwards/Types/DictionaryValue.h"
@@ -54,7 +54,7 @@ namespace Types
     }
 
 #define DEFINE1(x,y,z) \
-   std::shared_ptr<ValueType> ValueType::x (const DoubleValue& lhs) const \
+   std::shared_ptr<ValueType> ValueType::x (const FloatValue& lhs) const \
       { throw TypedOperationException("Error " y " " + lhs.getTypeName() + " " z " " + getTypeName()); } \
    std::shared_ptr<ValueType> ValueType::x (const StringValue& lhs) const \
       { throw TypedOperationException("Error " y " " + lhs.getTypeName() + " " z " " + getTypeName()); } \
@@ -66,7 +66,7 @@ namespace Types
       { throw TypedOperationException("Error " y " " + lhs.getTypeName() + " " z " " + getTypeName()); }
 
 #define DEFINE2(x,y,z,w) \
-   std::shared_ptr<ValueType> ValueType::x (const DoubleValue& lhs) const \
+   std::shared_ptr<ValueType> ValueType::x (const FloatValue& lhs) const \
       { throw TypedOperationException("Error " y " " + lhs.getTypeName() + " " z " " + getTypeName() + " " w); } \
    std::shared_ptr<ValueType> ValueType::x (const StringValue& lhs) const \
       { throw TypedOperationException("Error " y " " + lhs.getTypeName() + " " z " " + getTypeName() + " " w); } \
@@ -78,7 +78,7 @@ namespace Types
       { throw TypedOperationException("Error " y " " + lhs.getTypeName() + " " z " " + getTypeName() + " " w); }
 
 #define DEFINEBOOL(x,y) \
-   bool ValueType::x (const DoubleValue& lhs) const \
+   bool ValueType::x (const FloatValue& lhs) const \
       { throw TypedOperationException("Error comparing " + lhs.getTypeName() + " to " + getTypeName() + " (" y ")"); } \
    bool ValueType::x (const StringValue& lhs) const \
       { throw TypedOperationException("Error comparing " + lhs.getTypeName() + " to " + getTypeName() + " (" y ")"); } \

@@ -47,7 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Backwards/Engine/Logger.h"
 #include "Backwards/Engine/StackFrame.h"
 
-#include "Backwards/Types/DoubleValue.h"
+#include "Backwards/Types/FloatValue.h"
 #include "Backwards/Types/StringValue.h"
 #include "Backwards/Types/ArrayValue.h"
 #include "Backwards/Types/DictionaryValue.h"
@@ -63,9 +63,9 @@ namespace Engine
     {
       if (nullptr != val.get())
        {
-         if (typeid(Types::DoubleValue) == typeid(*val))
+         if (typeid(Types::FloatValue) == typeid(*val))
           {
-            stream << SlowFloat::toString(std::dynamic_pointer_cast<const Types::DoubleValue>(val)->value);
+            stream << SlowFloat::toString(std::dynamic_pointer_cast<const Types::FloatValue>(val)->value);
           }
          else if (typeid(Types::StringValue) == typeid(*val))
           {

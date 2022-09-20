@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include "Backwards/Types/ValueType.h"
 
-#include "Backwards/Types/DoubleValue.h"
+#include "Backwards/Types/FloatValue.h"
 #include "Backwards/Types/StringValue.h"
 #include "Backwards/Types/ArrayValue.h"
 #include "Backwards/Types/DictionaryValue.h"
@@ -77,17 +77,17 @@ namespace Types
       return result; \
     }
 
-   COMMUTEDICTIONARY(add, DoubleValue)
+   COMMUTEDICTIONARY(add, FloatValue)
    COMMUTEDICTIONARY(add, StringValue)
    COMMUTEDICTIONARY(add, ArrayValue)
    COMMUTEDICTIONARY(add, DictionaryValue)
-   COMMUTEDICTIONARY(sub, DoubleValue)
+   COMMUTEDICTIONARY(sub, FloatValue)
    COMMUTEDICTIONARY(sub, ArrayValue)
    COMMUTEDICTIONARY(sub, DictionaryValue)
-   COMMUTEDICTIONARY(mul, DoubleValue)
+   COMMUTEDICTIONARY(mul, FloatValue)
    COMMUTEDICTIONARY(mul, ArrayValue)
    COMMUTEDICTIONARY(mul, DictionaryValue)
-   COMMUTEDICTIONARY(div, DoubleValue)
+   COMMUTEDICTIONARY(div, FloatValue)
    COMMUTEDICTIONARY(div, ArrayValue)
    COMMUTEDICTIONARY(div, DictionaryValue)
 
@@ -142,7 +142,7 @@ namespace Types
    IMPLEMENTBOOL(DictionaryValue, notEqual)
    IMPLEMENTBOOL(DictionaryValue, sort)
 
-   bool DictionaryValue::sort (const DoubleValue&) const
+   bool DictionaryValue::sort (const FloatValue&) const
     {
       return true;
     }

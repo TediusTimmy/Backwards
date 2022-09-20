@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include "Backwards/Types/ValueType.h"
 
-#include "Backwards/Types/DoubleValue.h"
+#include "Backwards/Types/FloatValue.h"
 #include "Backwards/Types/StringValue.h"
 #include "Backwards/Types/ArrayValue.h"
 #include "Backwards/Types/DictionaryValue.h"
@@ -46,113 +46,113 @@ namespace Backwards
 namespace Types
  {
 
-   DoubleValue::DoubleValue() : value(SlowFloat::SlowFloat())
+   FloatValue::FloatValue() : value(SlowFloat::SlowFloat())
     {
     }
 
-   DoubleValue::DoubleValue(const SlowFloat::SlowFloat& value) : value(value)
+   FloatValue::FloatValue(const SlowFloat::SlowFloat& value) : value(value)
     {
     }
 
-   const std::string& DoubleValue::getTypeName() const
+   const std::string& FloatValue::getTypeName() const
     {
-      static const std::string name ("Double");
+      static const std::string name ("Float");
       return name;
     }
 
-   std::shared_ptr<ValueType> DoubleValue::neg () const
+   std::shared_ptr<ValueType> FloatValue::neg () const
     {
-      return std::make_shared<DoubleValue>(-value);
+      return std::make_shared<FloatValue>(-value);
     }
 
-   bool DoubleValue::logical () const
+   bool FloatValue::logical () const
     {
       return (SlowFloat::SlowFloat() == value) ? false : true;
     }
 
-   std::shared_ptr<ValueType> DoubleValue::add (const DoubleValue& lhs) const
+   std::shared_ptr<ValueType> FloatValue::add (const FloatValue& lhs) const
     {
-      return std::make_shared<DoubleValue>(lhs.value + value);
+      return std::make_shared<FloatValue>(lhs.value + value);
     }
 
-   std::shared_ptr<ValueType> DoubleValue::sub (const DoubleValue& lhs) const
+   std::shared_ptr<ValueType> FloatValue::sub (const FloatValue& lhs) const
     {
-      return std::make_shared<DoubleValue>(lhs.value - value);
+      return std::make_shared<FloatValue>(lhs.value - value);
     }
 
-   std::shared_ptr<ValueType> DoubleValue::mul (const DoubleValue& lhs) const
+   std::shared_ptr<ValueType> FloatValue::mul (const FloatValue& lhs) const
     {
-      return std::make_shared<DoubleValue>(lhs.value * value);
+      return std::make_shared<FloatValue>(lhs.value * value);
     }
 
-   std::shared_ptr<ValueType> DoubleValue::div (const DoubleValue& lhs) const
+   std::shared_ptr<ValueType> FloatValue::div (const FloatValue& lhs) const
     {
-      return std::make_shared<DoubleValue>(lhs.value / value);
+      return std::make_shared<FloatValue>(lhs.value / value);
     }
 
-   std::shared_ptr<ValueType> DoubleValue::power (const DoubleValue& lhs) const
+   std::shared_ptr<ValueType> FloatValue::power (const FloatValue& lhs) const
     {
-      return std::make_shared<DoubleValue>(SlowFloat::SlowFloat(std::pow(static_cast<double>(lhs.value), static_cast<double>(value))));
+      return std::make_shared<FloatValue>(SlowFloat::SlowFloat(std::pow(static_cast<double>(lhs.value), static_cast<double>(value))));
     }
 
-   bool DoubleValue::greater (const DoubleValue& lhs) const
+   bool FloatValue::greater (const FloatValue& lhs) const
     {
       return lhs.value > value;
     }
 
-   bool DoubleValue::less (const DoubleValue& lhs) const
+   bool FloatValue::less (const FloatValue& lhs) const
     {
       return lhs.value < value;
     }
 
-   bool DoubleValue::geq (const DoubleValue& lhs) const
+   bool FloatValue::geq (const FloatValue& lhs) const
     {
       return lhs.value >= value;
     }
 
-   bool DoubleValue::leq (const DoubleValue& lhs) const
+   bool FloatValue::leq (const FloatValue& lhs) const
     {
       return lhs.value <= value;
     }
 
-   bool DoubleValue::equal (const DoubleValue& lhs) const
+   bool FloatValue::equal (const FloatValue& lhs) const
     {
       return lhs.value == value;
     }
 
-   bool DoubleValue::notEqual (const DoubleValue& lhs) const
+   bool FloatValue::notEqual (const FloatValue& lhs) const
     {
       return lhs.value != value;
     }
 
-   IMPLEMENTVISITOR(DoubleValue)
+   IMPLEMENTVISITOR(FloatValue)
 
-   bool DoubleValue::sort (const DoubleValue& lhs) const
+   bool FloatValue::sort (const FloatValue& lhs) const
     {
       return lhs.value < value;
     }
 
-   bool DoubleValue::sort (const StringValue&) const
+   bool FloatValue::sort (const StringValue&) const
     {
       return false;
     }
 
-   bool DoubleValue::sort (const ArrayValue&) const
+   bool FloatValue::sort (const ArrayValue&) const
     {
       return false;
     }
 
-   bool DoubleValue::sort (const DictionaryValue&) const
+   bool FloatValue::sort (const DictionaryValue&) const
     {
       return false;
     }
 
-   bool DoubleValue::sort (const FunctionValue&) const
+   bool FloatValue::sort (const FunctionValue&) const
     {
       return false;
     }
 
-   size_t DoubleValue::hash() const
+   size_t FloatValue::hash() const
     {
       return std::hash<double>()(static_cast<double>(value));
     }

@@ -38,7 +38,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Backwards/Engine/CallingContext.h"
 #include "Backwards/Engine/DebuggerHook.h"
 
-#include "Backwards/Types/DoubleValue.h"
+#include "Backwards/Types/FloatValue.h"
 #include "Backwards/Types/StringValue.h"
 #include "Backwards/Types/ArrayValue.h"
 #include "Backwards/Types/DictionaryValue.h"
@@ -129,9 +129,9 @@ namespace Engine
     {
       if (typeid(Types::ArrayValue) == typeid(*first))
        {
-         if (typeid(Types::DoubleValue) == typeid(*second))
+         if (typeid(Types::FloatValue) == typeid(*second))
           {
-            double index = static_cast<double>(static_cast<const Types::DoubleValue&>(*second).value);
+            double index = static_cast<double>(static_cast<const Types::FloatValue&>(*second).value);
             if ((index >= 0.0) && (index < static_cast<double>(static_cast<const Types::ArrayValue&>(*first).value.size())))
              {
                return static_cast<const Types::ArrayValue&>(*first).value[static_cast<size_t>(index)];
@@ -143,7 +143,7 @@ namespace Engine
           }
          else
           {
-            throw Types::TypedOperationException("Error indexing with non-Double.");
+            throw Types::TypedOperationException("Error indexing with non-Float.");
           }
        }
       else
@@ -156,9 +156,9 @@ namespace Engine
     {
       if (typeid(Types::ArrayValue) == typeid(*first))
        {
-         if (typeid(Types::DoubleValue) == typeid(*second))
+         if (typeid(Types::FloatValue) == typeid(*second))
           {
-            double index = static_cast<double>(static_cast<const Types::DoubleValue&>(*second).value);
+            double index = static_cast<double>(static_cast<const Types::FloatValue&>(*second).value);
             if ((index >= 0.0) && (index < static_cast<double>(static_cast<const Types::ArrayValue&>(*first).value.size())))
              {
                // Yes, construct a new container on modification.
@@ -174,7 +174,7 @@ namespace Engine
           }
          else
           {
-            throw Types::TypedOperationException("Error indexing with non-Double.");
+            throw Types::TypedOperationException("Error indexing with non-Float.");
           }
        }
       else
@@ -220,13 +220,13 @@ namespace Engine
 
    STDLIB_UNARY_DECL(ToString)
     {
-      if (typeid(Types::DoubleValue) == typeid(*arg))
+      if (typeid(Types::FloatValue) == typeid(*arg))
        {
-         return std::make_shared<Types::StringValue>(SlowFloat::toString(static_cast<const Types::DoubleValue&>(*arg).value));
+         return std::make_shared<Types::StringValue>(SlowFloat::toString(static_cast<const Types::FloatValue&>(*arg).value));
        }
       else
        {
-         throw Types::TypedOperationException("Error converting non-Double to String.");
+         throw Types::TypedOperationException("Error converting non-Float to String.");
        }
     }
 
@@ -299,15 +299,15 @@ namespace Engine
     { \
       if (typeid(y) == typeid(*arg)) \
        { \
-         return ConstantsSingleton::getInstance().DOUBLE_ONE; \
+         return ConstantsSingleton::getInstance().FLOAT_ONE; \
        } \
       else \
        { \
-         return ConstantsSingleton::getInstance().DOUBLE_ZERO; \
+         return ConstantsSingleton::getInstance().FLOAT_ZERO; \
        } \
     }
 
-   RTTIFUNCTIONDEFN(IsDouble, Types::DoubleValue)
+   RTTIFUNCTIONDEFN(IsFloat, Types::FloatValue)
    RTTIFUNCTIONDEFN(IsString, Types::StringValue)
    RTTIFUNCTIONDEFN(IsArray, Types::ArrayValue)
    RTTIFUNCTIONDEFN(IsDictionary, Types::DictionaryValue)
@@ -317,7 +317,7 @@ namespace Engine
     {
       if (typeid(Types::StringValue) == typeid(*arg))
        {
-         return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(static_cast<double>(static_cast<const Types::StringValue&>(*arg).value.size())));
+         return std::make_shared<Types::FloatValue>(SlowFloat::SlowFloat(static_cast<double>(static_cast<const Types::StringValue&>(*arg).value.size())));
        }
       else
        {
@@ -329,11 +329,11 @@ namespace Engine
     {
       if (typeid(Types::ArrayValue) == typeid(*arg))
        {
-         return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(static_cast<double>(static_cast<const Types::ArrayValue&>(*arg).value.size())));
+         return std::make_shared<Types::FloatValue>(SlowFloat::SlowFloat(static_cast<double>(static_cast<const Types::ArrayValue&>(*arg).value.size())));
        }
       else if (typeid(Types::DictionaryValue) == typeid(*arg))
        {
-         return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(static_cast<double>(static_cast<const Types::DictionaryValue&>(*arg).value.size())));
+         return std::make_shared<Types::FloatValue>(SlowFloat::SlowFloat(static_cast<double>(static_cast<const Types::DictionaryValue&>(*arg).value.size())));
        }
       else
        {
@@ -343,9 +343,9 @@ namespace Engine
 
    STDLIB_BINARY_DECL(NewArrayDefault)
     {
-      if (typeid(Types::DoubleValue) == typeid(*first))
+      if (typeid(Types::FloatValue) == typeid(*first))
        {
-         double size = static_cast<double>(static_cast<const Types::DoubleValue&>(*first).value);
+         double size = static_cast<double>(static_cast<const Types::FloatValue&>(*first).value);
          if ((size >= 0.0) && (size < static_cast<double>(std::numeric_limits<size_t>::max())))
           {
             std::shared_ptr<Types::ArrayValue> result = std::make_shared<Types::ArrayValue>();
@@ -359,7 +359,7 @@ namespace Engine
        }
       else
        {
-         throw Types::TypedOperationException("Error creating Array with non-Double size.");
+         throw Types::TypedOperationException("Error creating Array with non-Float size.");
        }
     }
 
@@ -367,13 +367,13 @@ namespace Engine
     {
       if (typeid(Types::StringValue) == typeid(*first))
        {
-         if (typeid(Types::DoubleValue) == typeid(*second))
+         if (typeid(Types::FloatValue) == typeid(*second))
           {
-            if (typeid(Types::DoubleValue) == typeid(*third))
+            if (typeid(Types::FloatValue) == typeid(*third))
              {
                double stringLength = static_cast<double>(static_cast<const Types::StringValue&>(*first).value.length());
-               double startIndex = static_cast<double>(static_cast<const Types::DoubleValue&>(*second).value);
-               double endIndex = static_cast<double>(static_cast<const Types::DoubleValue&>(*third).value);
+               double startIndex = static_cast<double>(static_cast<const Types::FloatValue&>(*second).value);
+               double endIndex = static_cast<double>(static_cast<const Types::FloatValue&>(*third).value);
                if ((startIndex >= 0.0) && (startIndex <= stringLength) &&
                   (endIndex >= 0.0) && (endIndex <= stringLength) &&
                   (endIndex >= startIndex))
@@ -389,12 +389,12 @@ namespace Engine
              }
             else
              {
-               throw Types::TypedOperationException("Error getting substring with non-Double ending position.");
+               throw Types::TypedOperationException("Error getting substring with non-Float ending position.");
              }
           }
          else
           {
-            throw Types::TypedOperationException("Error getting substring with non-Double starting position.");
+            throw Types::TypedOperationException("Error getting substring with non-Float starting position.");
           }
        }
       else
@@ -411,11 +411,11 @@ namespace Engine
             static_cast<const Types::DictionaryValue&>(*first).value.find(second);
          if (static_cast<const Types::DictionaryValue&>(*first).value.end() != iter)
           {
-            return ConstantsSingleton::getInstance().DOUBLE_ONE;
+            return ConstantsSingleton::getInstance().FLOAT_ONE;
           }
          else
           {
-            return ConstantsSingleton::getInstance().DOUBLE_ZERO;
+            return ConstantsSingleton::getInstance().FLOAT_ZERO;
           }
        }
       else
@@ -469,7 +469,7 @@ namespace Engine
 
    STDLIB_CONSTANT_DECL(PI)
     {
-      return ConstantsSingleton::getInstance().DOUBLE_PI;
+      return ConstantsSingleton::getInstance().FLOAT_PI;
     }
 
    STDLIB_CONSTANT_DECL(Date)
@@ -503,73 +503,73 @@ namespace Engine
 
    STDLIB_BINARY_DECL(Atan2)
     {
-      if (typeid(Types::DoubleValue) == typeid(*first))
+      if (typeid(Types::FloatValue) == typeid(*first))
        {
-         if (typeid(Types::DoubleValue) == typeid(*second))
+         if (typeid(Types::FloatValue) == typeid(*second))
           {
-            return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(std::atan2(
-               static_cast<double>(static_cast<const Types::DoubleValue&>(*first).value), static_cast<double>(static_cast<const Types::DoubleValue&>(*second).value)) * RTD));
+            return std::make_shared<Types::FloatValue>(SlowFloat::SlowFloat(std::atan2(
+               static_cast<double>(static_cast<const Types::FloatValue&>(*first).value), static_cast<double>(static_cast<const Types::FloatValue&>(*second).value)) * RTD));
           }
          else
           {
-            throw Types::TypedOperationException("Error computing atan2 with non-Double second argument.");
+            throw Types::TypedOperationException("Error computing atan2 with non-Float second argument.");
           }
        }
       else
        {
-         throw Types::TypedOperationException("Error computing atan2 with non-Double first argument.");
+         throw Types::TypedOperationException("Error computing atan2 with non-Float first argument.");
        }
     }
 
    STDLIB_BINARY_DECL(Hypot)
     {
-      if (typeid(Types::DoubleValue) == typeid(*first))
+      if (typeid(Types::FloatValue) == typeid(*first))
        {
-         if (typeid(Types::DoubleValue) == typeid(*second))
+         if (typeid(Types::FloatValue) == typeid(*second))
           {
-            return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(std::hypot(
-               static_cast<double>(static_cast<const Types::DoubleValue&>(*first).value), static_cast<double>(static_cast<const Types::DoubleValue&>(*second).value))));
+            return std::make_shared<Types::FloatValue>(SlowFloat::SlowFloat(std::hypot(
+               static_cast<double>(static_cast<const Types::FloatValue&>(*first).value), static_cast<double>(static_cast<const Types::FloatValue&>(*second).value))));
           }
          else
           {
-            throw Types::TypedOperationException("Error computing hypot with non-Double second argument.");
+            throw Types::TypedOperationException("Error computing hypot with non-Float second argument.");
           }
        }
       else
        {
-         throw Types::TypedOperationException("Error computing hypot with non-Double first argument.");
+         throw Types::TypedOperationException("Error computing hypot with non-Float first argument.");
        }
     }
 
    STDLIB_BINARY_DECL(Log)
     {
-      if (typeid(Types::DoubleValue) == typeid(*first))
+      if (typeid(Types::FloatValue) == typeid(*first))
        {
-         if (typeid(Types::DoubleValue) == typeid(*second))
+         if (typeid(Types::FloatValue) == typeid(*second))
           {
-            return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(std::log(static_cast<double>(static_cast<const Types::DoubleValue&>(*second).value)) /
-               std::log(static_cast<double>(static_cast<const Types::DoubleValue&>(*first).value))));
+            return std::make_shared<Types::FloatValue>(SlowFloat::SlowFloat(std::log(static_cast<double>(static_cast<const Types::FloatValue&>(*second).value)) /
+               std::log(static_cast<double>(static_cast<const Types::FloatValue&>(*first).value))));
           }
          else
           {
-            throw Types::TypedOperationException("Error computing log with non-Double second argument.");
+            throw Types::TypedOperationException("Error computing log with non-Float second argument.");
           }
        }
       else
        {
-         throw Types::TypedOperationException("Error computing log with non-Double first argument.");
+         throw Types::TypedOperationException("Error computing log with non-Float first argument.");
        }
     }
 
 #define MINMAXDEFN(x,y,z) \
    STDLIB_BINARY_DECL(x) \
     { \
-      if (typeid(Types::DoubleValue) == typeid(*first)) \
+      if (typeid(Types::FloatValue) == typeid(*first)) \
        { \
-         if (typeid(Types::DoubleValue) == typeid(*second)) \
+         if (typeid(Types::FloatValue) == typeid(*second)) \
           { \
-            double fVal = static_cast<double>(static_cast<const Types::DoubleValue&>(*first).value); \
-            double sVal = static_cast<double>(static_cast<const Types::DoubleValue&>(*second).value); \
+            double fVal = static_cast<double>(static_cast<const Types::FloatValue&>(*first).value); \
+            double sVal = static_cast<double>(static_cast<const Types::FloatValue&>(*second).value); \
             if (true == std::isnan(fVal)) \
              { \
                return first; \
@@ -582,12 +582,12 @@ namespace Engine
           } \
          else \
           { \
-            throw Types::TypedOperationException("Error computing " z " with non-Double second argument."); \
+            throw Types::TypedOperationException("Error computing " z " with non-Float second argument."); \
           } \
        } \
       else \
        { \
-         throw Types::TypedOperationException("Error computing " z " with non-Double first argument."); \
+         throw Types::TypedOperationException("Error computing " z " with non-Float first argument."); \
        } \
     }
 
@@ -597,13 +597,13 @@ namespace Engine
 #define TRIGFUNCTIONDEFN(x,y,z) \
    STDLIB_UNARY_DECL(x) \
     { \
-      if (typeid(Types::DoubleValue) == typeid(*arg)) \
+      if (typeid(Types::FloatValue) == typeid(*arg)) \
        { \
-         return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(std::y(static_cast<double>(static_cast<const Types::DoubleValue&>(*arg).value) * DTR))); \
+         return std::make_shared<Types::FloatValue>(SlowFloat::SlowFloat(std::y(static_cast<double>(static_cast<const Types::FloatValue&>(*arg).value) * DTR))); \
        } \
       else \
        { \
-         throw Types::TypedOperationException("Error trying to compute " z " of non-Double."); \
+         throw Types::TypedOperationException("Error trying to compute " z " of non-Float."); \
        } \
     }
 
@@ -614,13 +614,13 @@ namespace Engine
 #define INVTRIGFUNCTIONDEFN(x,y,z) \
    STDLIB_UNARY_DECL(x) \
     { \
-      if (typeid(Types::DoubleValue) == typeid(*arg)) \
+      if (typeid(Types::FloatValue) == typeid(*arg)) \
        { \
-         return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(std::y(static_cast<double>(static_cast<const Types::DoubleValue&>(*arg).value)) * RTD)); \
+         return std::make_shared<Types::FloatValue>(SlowFloat::SlowFloat(std::y(static_cast<double>(static_cast<const Types::FloatValue&>(*arg).value)) * RTD)); \
        } \
       else \
        { \
-         throw Types::TypedOperationException("Error trying to compute " z " of non-Double."); \
+         throw Types::TypedOperationException("Error trying to compute " z " of non-Float."); \
        } \
     }
 
@@ -631,13 +631,13 @@ namespace Engine
 #define BASICONEARGMATHDEFN(x,y,z) \
    STDLIB_UNARY_DECL(x) \
     { \
-      if (typeid(Types::DoubleValue) == typeid(*arg)) \
+      if (typeid(Types::FloatValue) == typeid(*arg)) \
        { \
-         return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(std::y(static_cast<double>(static_cast<const Types::DoubleValue&>(*arg).value)))); \
+         return std::make_shared<Types::FloatValue>(SlowFloat::SlowFloat(std::y(static_cast<double>(static_cast<const Types::FloatValue&>(*arg).value)))); \
        } \
       else \
        { \
-         throw Types::TypedOperationException("Error trying to compute " z " of non-Double."); \
+         throw Types::TypedOperationException("Error trying to compute " z " of non-Float."); \
        } \
     }
 
@@ -650,7 +650,7 @@ namespace Engine
    BASICONEARGMATHDEFN(Floor, floor, "rounded to negative infinity")
    BASICONEARGMATHDEFN(Ceil, ceil, "rounded to positive infinity")
    BASICONEARGMATHDEFN(IsInfinity, isinf, "is infinity")
-    // Well, technically, I guess it SHOULD return true if the argument is not a Double....
+    // Well, technically, I guess it SHOULD return true if the argument is not a Float....
    BASICONEARGMATHDEFN(IsNaN, isnan, "is special not-a-number value")
    BASICONEARGMATHDEFN(Sinh, sinh, "hyperbolic sine")
    BASICONEARGMATHDEFN(Cosh, cosh, "hyperbolic cosine")
@@ -658,27 +658,27 @@ namespace Engine
 
    STDLIB_UNARY_DECL(Sqr)
     {
-      if (typeid(Types::DoubleValue) == typeid(*arg))
+      if (typeid(Types::FloatValue) == typeid(*arg))
        {
-         SlowFloat::SlowFloat x = static_cast<const Types::DoubleValue&>(*arg).value;
-         return std::make_shared<Types::DoubleValue>(x * x);
+         SlowFloat::SlowFloat x = static_cast<const Types::FloatValue&>(*arg).value;
+         return std::make_shared<Types::FloatValue>(x * x);
        }
       else
        {
-         throw Types::TypedOperationException("Error trying to square non-Double.");
+         throw Types::TypedOperationException("Error trying to square non-Float.");
        }
     }
 
 #define DTRRTDDEFN(x,y) \
    STDLIB_UNARY_DECL(x) \
     { \
-      if (typeid(Types::DoubleValue) == typeid(*arg)) \
+      if (typeid(Types::FloatValue) == typeid(*arg)) \
        { \
-         return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(static_cast<double>(static_cast<const Types::DoubleValue&>(*arg).value) * y)); \
+         return std::make_shared<Types::FloatValue>(SlowFloat::SlowFloat(static_cast<double>(static_cast<const Types::FloatValue&>(*arg).value) * y)); \
        } \
       else \
        { \
-         throw Types::TypedOperationException("Error trying to convert non-Double between Radians and Degrees."); \
+         throw Types::TypedOperationException("Error trying to convert non-Float between Radians and Degrees."); \
        } \
     }
 
@@ -694,11 +694,11 @@ namespace Engine
          str >> val;
          if (!str.fail() && (str.get() == std::char_traits<char>::eof()))
           {
-            return std::make_shared<Types::DoubleValue>(SlowFloat::fromString(static_cast<const Types::StringValue&>(*arg).value));
+            return std::make_shared<Types::FloatValue>(SlowFloat::fromString(static_cast<const Types::StringValue&>(*arg).value));
           }
          else
           {
-            throw Types::TypedOperationException("String did not contain valid Double value.");
+            throw Types::TypedOperationException("String did not contain valid Float value.");
           }
        }
       else
@@ -714,7 +714,7 @@ namespace Engine
          const std::string& str (static_cast<const Types::StringValue&>(*arg).value);
          if (1U == str.size())
           {
-            return std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(static_cast<double>(str[0])));
+            return std::make_shared<Types::FloatValue>(SlowFloat::SlowFloat(static_cast<double>(str[0])));
           }
          else
           {
@@ -723,15 +723,15 @@ namespace Engine
        }
       else
        {
-         throw Types::TypedOperationException("Error trying to convert non-String to Double character code point.");
+         throw Types::TypedOperationException("Error trying to convert non-String to Float character code point.");
        }
     }
 
    STDLIB_UNARY_DECL(ToCharacter)
     {
-      if (typeid(Types::DoubleValue) == typeid(*arg))
+      if (typeid(Types::FloatValue) == typeid(*arg))
        {
-         double val = static_cast<double>(static_cast<const Types::DoubleValue&>(*arg).value);
+         double val = static_cast<double>(static_cast<const Types::FloatValue&>(*arg).value);
          if ((val > static_cast<double>(std::numeric_limits<char>::min())) &&
             (val < static_cast<double>(std::numeric_limits<char>::max())))
           {
@@ -741,12 +741,12 @@ namespace Engine
           }
          else
           {
-            throw Types::TypedOperationException("Double is not a valid character code point.");
+            throw Types::TypedOperationException("Float is not a valid character code point.");
           }
        }
       else
        {
-         throw Types::TypedOperationException("Error trying to convert non-Double to single character String.");
+         throw Types::TypedOperationException("Error trying to convert non-Float to single character String.");
        }
     }
 
@@ -769,7 +769,7 @@ namespace Engine
        {
          context.debugger->EnterDebugger("", context);
        }
-      return ConstantsSingleton::getInstance().DOUBLE_ZERO;
+      return ConstantsSingleton::getInstance().FLOAT_ZERO;
     }
 
  } // namespace Engine

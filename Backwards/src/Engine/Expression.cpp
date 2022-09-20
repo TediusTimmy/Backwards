@@ -32,7 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Backwards/Engine/Expression.h"
 #include "Backwards/Engine/StdLib.h"
 #include "Backwards/Engine/Statement.h"
-#include "Backwards/Types/DoubleValue.h"
+#include "Backwards/Types/FloatValue.h"
 #include "Backwards/Types/ArrayValue.h"
 #include "Backwards/Types/DictionaryValue.h"
 #include "Backwards/Engine/FatalException.h"
@@ -149,8 +149,8 @@ namespace Engine
       if (y == value) \
        { \
          return (true == y) ? \
-            ConstantsSingleton::getInstance().DOUBLE_ONE : \
-            ConstantsSingleton::getInstance().DOUBLE_ZERO; \
+            ConstantsSingleton::getInstance().FLOAT_ONE : \
+            ConstantsSingleton::getInstance().FLOAT_ZERO; \
        } \
       std::shared_ptr<Types::ValueType> RHS = rhs->evaluate(context); \
       try \
@@ -167,8 +167,8 @@ namespace Engine
          throw Types::TypedOperationException(msg); \
        } \
       return (true == value) ? \
-         ConstantsSingleton::getInstance().DOUBLE_ONE : \
-         ConstantsSingleton::getInstance().DOUBLE_ZERO; \
+         ConstantsSingleton::getInstance().FLOAT_ONE : \
+         ConstantsSingleton::getInstance().FLOAT_ZERO; \
     }
 
    FullBinaryOperationShort(ShortAnd, false)
@@ -201,8 +201,8 @@ namespace Engine
          throw Types::TypedOperationException(msg); \
        } \
       return (true == result) ? \
-         ConstantsSingleton::getInstance().DOUBLE_ONE : \
-         ConstantsSingleton::getInstance().DOUBLE_ZERO; \
+         ConstantsSingleton::getInstance().FLOAT_ONE : \
+         ConstantsSingleton::getInstance().FLOAT_ZERO; \
     }
 
    FullBinaryOperationRel(Equals, equal)
@@ -277,8 +277,8 @@ namespace Engine
          throw Types::TypedOperationException(msg);
        }
       return (true == result) ? // Yes, these are backwards for a reason. This is where the NOT happens.
-         ConstantsSingleton::getInstance().DOUBLE_ZERO :
-         ConstantsSingleton::getInstance().DOUBLE_ONE;
+         ConstantsSingleton::getInstance().FLOAT_ZERO :
+         ConstantsSingleton::getInstance().FLOAT_ONE;
     }
 
 

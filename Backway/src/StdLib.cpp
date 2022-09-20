@@ -41,7 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "Backwards/Engine/ProgrammingException.h"
 
-#include "Backwards/Types/DoubleValue.h"
+#include "Backwards/Types/FloatValue.h"
 #include "Backwards/Types/StringValue.h"
 #include "Backwards/Types/ArrayValue.h"
 
@@ -141,7 +141,7 @@ namespace Backway
                text.machine->states.pop_back();
              }
           }
-         return Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE;
+         return Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE;
        }
       catch (const std::bad_cast&)
        {
@@ -154,7 +154,7 @@ namespace Backway
       try
        {
          CallingContext& text = dynamic_cast<CallingContext&>(context);
-         return std::make_shared<Backwards::Types::DoubleValue>(text.machine->rng.getNext() / 281474976710656.0);
+         return std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(text.machine->rng.getNext() / 281474976710656.0));
        }
       catch (const std::bad_cast&)
        {
@@ -171,7 +171,7 @@ namespace Backway
           {
             text.machine->states.pop_back();
           }
-         return Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE;
+         return Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE;
        }
       catch (const std::bad_cast&)
        {
@@ -232,7 +232,7 @@ namespace Backway
           {
             throw Backwards::Types::TypedOperationException("Error enqueueing neither name of state or collection of names of states.");
           }
-         return Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE;
+         return Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE;
        }
       catch (const std::bad_cast&)
        {
@@ -287,7 +287,7 @@ namespace Backway
           {
             throw Backwards::Types::TypedOperationException("Error making final neither name of state or collection of names of states.");
           }
-         return Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE;
+         return Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE;
        }
       catch (const std::bad_cast&)
        {
@@ -364,7 +364,7 @@ namespace Backway
           {
             throw Backwards::Types::TypedOperationException("Error following neither name of state or collection of names of states.");
           }
-         return Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE;
+         return Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE;
        }
       catch (const std::bad_cast&)
        {
@@ -438,7 +438,7 @@ namespace Backway
           {
             throw Backwards::Types::TypedOperationException("Error injecting neither name of state or collection of names of states.");
           }
-         return Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE;
+         return Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE;
        }
       catch (const std::bad_cast&)
        {
@@ -499,7 +499,7 @@ namespace Backway
           {
             throw Backwards::Types::TypedOperationException("Error preceding neither name of state or collection of names of states.");
           }
-         return Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE;
+         return Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE;
        }
       catch (const std::bad_cast&)
        {
@@ -554,7 +554,7 @@ namespace Backway
           {
             throw Backwards::Types::TypedOperationException("Error pushing neither name of state or collection of names of states.");
           }
-         return Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE;
+         return Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE;
        }
       catch (const std::bad_cast&)
        {
@@ -592,7 +592,7 @@ namespace Backway
           {
             throw Backwards::Types::TypedOperationException("Error skipping to not the name of state.");
           }
-         return Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE;
+         return Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE;
        }
       catch (const std::bad_cast&)
        {
@@ -630,7 +630,7 @@ namespace Backway
           {
             throw Backwards::Types::TypedOperationException("Error unwinding to not the name of state.");
           }
-         return Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE;
+         return Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE;
        }
       catch (const std::bad_cast&)
        {
@@ -698,8 +698,8 @@ namespace Backway
                   throw Backwards::Types::TypedOperationException("Error creating state: could not parse functions.");
                 }
 
-               return (true == overwritten) ? Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ZERO :
-                  Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE;
+               return (true == overwritten) ? Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ZERO :
+                  Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE;
              }
             else
              {
@@ -710,7 +710,7 @@ namespace Backway
           {
             throw Backwards::Types::TypedOperationException("Error creating state: name not String.");
           }
-         return Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE;
+         return Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE;
        }
       catch (const std::bad_cast&)
        {

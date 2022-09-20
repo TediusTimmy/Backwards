@@ -86,7 +86,7 @@ namespace Engine
    STDLIB_UNARY_DECL(ValueOf);
    STDLIB_UNARY_DECL(ToCharacter);
    STDLIB_UNARY_DECL(FromCharacter);
-   STDLIB_UNARY_DECL(IsDouble);
+   STDLIB_UNARY_DECL(IsFloat);
    STDLIB_UNARY_DECL(IsString);
    STDLIB_UNARY_DECL(IsArray);
    STDLIB_UNARY_DECL(IsDictionary);

@@ -16,17 +16,17 @@ This is the language as implemented. Some of the GoogleTests have good examples,
 * Function Pointer
 
 ## Operations
-* \+  double addition; string catenation; for collections, the operation is performed over the contents of the collection
-* \-  double subtraction; for collections, the operation is performed over the contents of the collection
-* \-  double unary negation; for collections, the operation is performed over the contents of the collection
-* \*  double multiplication; for collections, the operation is performed over the contents of the collection
-* /   double division; for collections, the operation is performed over the contents of the collection
-* ^   double exponentiation; this operator is right-associative
+* \+  float addition; string catenation; for collections, the operation is performed over the contents of the collection
+* \-  float subtraction; for collections, the operation is performed over the contents of the collection
+* \-  float unary negation; for collections, the operation is performed over the contents of the collection
+* \*  float multiplication; for collections, the operation is performed over the contents of the collection
+* /   float division; for collections, the operation is performed over the contents of the collection
+* ^   float exponentiation; this operator is right-associative
 * !   logical not
-* \>  greater than, only defined for strings and doubles
-* \>= greater than or equal to, only defined for strings and doubles
-* <   less than, only defined for strings and doubles
-* <=  less than or equal to, only defined for strings and doubles
+* \>  greater than, only defined for strings and floats
+* \>= greater than or equal to, only defined for strings and floats
+* <   less than, only defined for strings and floats
+* <=  less than or equal to, only defined for strings and floats
 * =   equality, defined for all types
 * <>  inequality, defined for all types
 * ?:  ternary operator
@@ -94,69 +94,69 @@ New way:
 Old-style Pascal comments really round out the language as being valid even when newlines are replaced with spaces.
 
 ## Standard Library
-* double Abs (double)  # absolute value
-* double Acos (double)  # inverse cosine, result in degrees
-* double Asin (double)  # inverse sine, result in degrees
-* double Atan (double)  # inverse tangent, result in degrees
-* double Atan2 (double; double)  # two-argument inverse tangent, result in degrees
-* double Cbrt (double)  # cube root
-* double Ceil (double)  # ceiling
-* double ContainsKey (dictionary, value)  # determine if value is a key in dictionary (the language lacks a means to ask for forgiveness)
-* double Cos (double)  # cosine, argument in degrees
-* double Cosh (double)  # hyperbolic cosine
+* float Abs (float)  # absolute value
+* float Acos (float)  # inverse cosine, result in degrees
+* float Asin (float)  # inverse sine, result in degrees
+* float Atan (float)  # inverse tangent, result in degrees
+* float Atan2 (float; float)  # two-argument inverse tangent, result in degrees
+* float Cbrt (float)  # cube root
+* float Ceil (float)  # ceiling
+* float ContainsKey (dictionary, value)  # determine if value is a key in dictionary (the language lacks a means to ask for forgiveness)
+* float Cos (float)  # cosine, argument in degrees
+* float Cosh (float)  # hyperbolic cosine
 * string Date ()  # get the current date as mm/dd/yyyy (because I'm a Yank)
 * string DebugPrint (string)  # log a debugging string, returns its argument
-* double DegToRad (double)  # degrees to radians
-* double EnterDebugger ()  # enters the integrated debugger (if present), returns zero
+* float DegToRad (float)  # degrees to radians
+* float EnterDebugger ()  # enters the integrated debugger (if present), returns zero
 * string Error (string)  # log an error string, returns its argument
 * value Eval (string)  # parse and evaluate the given string, return its evaluated value
-* double Exp (double)  # raise Euler's constant to some power
+* float Exp (float)  # raise Euler's constant to some power
 * Fatal (string)  # log a fatal message, this function does not return, calling this function stops execution
-* double Floor (double)  # floor
-* double FromChar (string)  # return the ASCII code of the only character of the string (the string must have only one character)
-* value GetIndex (array; double)  # retrieve index double from array
+* float Floor (float)  # floor
+* float FromChar (string)  # return the ASCII code of the only character of the string (the string must have only one character)
+* value GetIndex (array; float)  # retrieve index float from array
 * array GetKeys (dictionary)  # return an array of keys into a dictionary
 * value GetValue (dictionary; value)  # retrieve the value with key value from the dictionary, die if value is not present (no forgiveness)
-* double Hypot (double; double)  # hypotenuse function : Sqrt(xx + yy) with (I hope) hardening for underflow
+* float Hypot (float; float)  # hypotenuse function : Sqrt(xx + yy) with (I hope) hardening for underflow
 * string Info (string)  # log an informational string, returns its argument
 * dictionary Insert (dictionary; value; value)  # insert value 2 into dictionary with value 1 as its key and return the modified dictionary (remember, this DOES NOT modify the passed-in dictionary)
-* double IsArray (value)  # run-time type identification
-* double IsDictionary (value)  # run-time type identification
-* double IsDouble (value)  # run-time type identification
-* double IsFunction (value)  # run-time type identification
-* double IsInfinity (double)  # too big?
-* double IsNaN (double)  # is this not a number?
-* double IsString (value)  # run-time type identification
-* double Length (string)  # length
-* double Ln (double)  # logarithme naturel
-* double Log (double; double)  # second arg is base (divisor)
-* double Max (double; double)  # if either is NaN, returns NaN; returns the first argument if comparing positive and negative zero
-* double Min (double; double)  # if either is NaN, returns NaN; returns the first argument if comparing positive and negative zero
+* float IsArray (value)  # run-time type identification
+* float IsDictionary (value)  # run-time type identification
+* float IsFloat (value)  # run-time type identification
+* float IsFunction (value)  # run-time type identification
+* float IsInfinity (float)  # too big?
+* float IsNaN (float)  # is this not a number?
+* float IsString (value)  # run-time type identification
+* float Length (string)  # length
+* float Ln (float)  # logarithme naturel
+* float Log (float; float)  # second arg is base (divisor)
+* float Max (float; float)  # if either is NaN, returns NaN; returns the first argument if comparing positive and negative zero
+* float Min (float; float)  # if either is NaN, returns NaN; returns the first argument if comparing positive and negative zero
 * array NewArray ()  # returns an empty array
-* array NewArrayDefault (double, value)  # returns an array of size double with all indices initialized to value
+* array NewArrayDefault (float, value)  # returns an array of size float with all indices initialized to value
 * dictionary NewDictionary ()  # returns an empty dictionary
-* double PI ()  # delicious
+* float PI ()  # delicious
 * array PopBack (array)  # return a copy of the passed-in array with the last element removed
 * array PopFront (array)  # return a copy of the passed-in array with the first element removed
 * array PushBack (array; value)  # return a copy of the passed-in array with a size one greater and the last element the passed-in value
 * array PushFront (array; value)  # return a copy of the passed-in array with a size one greater and the first element the passed-in value
-* double RadToDeg (double)  # radians to degrees
+* float RadToDeg (float)  # radians to degrees
 * dictionary RemoveKey (dictionary; value)  # remove the key value or die
-* double Round (double)  # ties to even
-* array SetIndex (array; double; value)  # return a copy of array where index double is now value
-* double Sin (double)  # sine, argument in degrees
-* double Sinh (double)  # hyperbolic sine
-* double Size (array)  # size of an array
-* double Size (dictionary)  # number of key,value pairs
-* double Sqr (double)  # square
-* double Sqrt (double)  # square root
-* double SubString (string; double; double)  # from character double 1 to character double 2 (java style)
-* double Tan (double)  # tangent, argument in degrees
-* double Tanh (double)  # hyperbolic tangent
+* float Round (float)  # ties to even
+* array SetIndex (array; float; value)  # return a copy of array where index float is now value
+* float Sin (float)  # sine, argument in degrees
+* float Sinh (float)  # hyperbolic sine
+* float Size (array)  # size of an array
+* float Size (dictionary)  # number of key,value pairs
+* float Sqr (float)  # square
+* float Sqrt (float)  # square root
+* float SubString (string; float; float)  # from character float 1 to character float 2 (java style)
+* float Tan (float)  # tangent, argument in degrees
+* float Tanh (float)  # hyperbolic tangent
 * string Time ()  # get the current time as hh:mm:ss (24 hour)
-* string ToCharacter (double)  # return a one character string of the given ASCII code (or die if it isn't ASCII)
-* string ToString (double)  # return a string representation of a double: scientific notation, 16 significant figures
-* double ValueOf (string)  # parse the string into a double value
+* string ToCharacter (float)  # return a one character string of the given ASCII code (or die if it isn't ASCII)
+* string ToString (float)  # return a string representation of a float: scientific notation, 9 significant figures
+* float ValueOf (string)  # parse the string into a float value
 * string Warn (string)  # log a warning string, returns its argument
 
 
@@ -172,23 +172,29 @@ States need to define the function Update. Update takes one argument, and this a
 How is this supposed to work? In the Update function, the agent looks around the world, considers what it wants to do, considers how its last attempt at doing something turned out, and then makes a new attempt to change the world. It then returns from Update, because Update is not a co-routine, and it needs to do all of that Update stuff every time.
 
 ## Standard Library
-* double CreateState(string; string) # Create a new state with first argument name and second argument functions, one of which must be Update
-* double Enqueue (string) # Add named state to the back of the current queue
-* double Enqueue (array of string)
-* double Finally (string) # Add named state to its own queue at the bottom of the stack
-* double Finally (array of string)
-* double Follow (string) # Add named state after the current state in the current queue
-* double Follow (array of string)
+* float CreateState(string; string) # Create a new state with first argument name and second argument functions, one of which must be Update
+* float Enqueue (string) # Add named state to the back of the current queue
+* float Enqueue (array of string)
+* float Finally (string) # Add named state to its own queue at the bottom of the stack
+* float Finally (array of string)
+* float Follow (string) # Add named state after the current state in the current queue
+* float Follow (array of string)
 * value GetInput () # Get the magical "input" thing. Empty Dictionary if there is no input
 * string GetName () # Get the name of the current state
-* double Inject (string) # Add names state to its own queue in a new queue as the second on the stack
-* double Inject (array of string)
-* double Leave () # Exit the current state, and continue to the next state in the current queue
-* double Precede (string) # Add named state to the current queue in front of the current state
-* double Precede (array of string)
-* double Push (string) # Add named state to its own queue on the new top of the stack
-* double Push (array of string)
-* double Rand () # Get a random number
-* double Return () # Exit the current queue, and continue to the next queue in the stack
-* double Skip (string) # Leave states until at the named state in the current queue
-* double Unwind (string) # Return from queues until at the named state in a following queue
+* float Inject (string) # Add names state to its own queue in a new queue as the second on the stack
+* float Inject (array of string)
+* float Leave () # Exit the current state, and continue to the next state in the current queue
+* float Precede (string) # Add named state to the current queue in front of the current state
+* float Precede (array of string)
+* float Push (string) # Add named state to its own queue on the new top of the stack
+* float Push (array of string)
+* float Rand () # Get a random number
+* float Return () # Exit the current queue, and continue to the next queue in the stack
+* float Skip (string) # Leave states until at the named state in the current queue
+* float Unwind (string) # Return from queues until at the named state in a following queue
+
+
+SlowFloat
+=========
+
+I don't know about you all, but when I was a child, I don't remember my teachers noting to me that .1 * 10 wouldn't be 1.0 on a calculator. That didn't happen until I started programming computers. It didn't happen when I was programming calculators. The reason for that is that calculators handle numbers in a manner differently from computers: it is slower, but less mysterious to the human user. In order to be more human-friendly, I have replaced the base number type with a decimal-centric type.

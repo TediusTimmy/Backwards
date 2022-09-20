@@ -59,17 +59,17 @@ namespace Types
 
       std::shared_ptr<ValueType> neg() const;
 
-      std::shared_ptr<ValueType> add (const DoubleValue& lhs) const;
+      std::shared_ptr<ValueType> add (const FloatValue& lhs) const;
       std::shared_ptr<ValueType> add (const StringValue& lhs) const;
       std::shared_ptr<ValueType> add (const ArrayValue& lhs) const;
       std::shared_ptr<ValueType> add (const DictionaryValue& lhs) const;
-      std::shared_ptr<ValueType> sub (const DoubleValue& lhs) const;
+      std::shared_ptr<ValueType> sub (const FloatValue& lhs) const;
       std::shared_ptr<ValueType> sub (const ArrayValue& lhs) const;
       std::shared_ptr<ValueType> sub (const DictionaryValue& lhs) const;
-      std::shared_ptr<ValueType> mul (const DoubleValue& lhs) const;
+      std::shared_ptr<ValueType> mul (const FloatValue& lhs) const;
       std::shared_ptr<ValueType> mul (const ArrayValue& lhs) const;
       std::shared_ptr<ValueType> mul (const DictionaryValue& lhs) const;
-      std::shared_ptr<ValueType> div (const DoubleValue& lhs) const;
+      std::shared_ptr<ValueType> div (const FloatValue& lhs) const;
       std::shared_ptr<ValueType> div (const ArrayValue& lhs) const;
       std::shared_ptr<ValueType> div (const DictionaryValue& lhs) const;
 

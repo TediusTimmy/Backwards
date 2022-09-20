@@ -42,7 +42,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Backwards/Engine/FunctionContext.h"
 #include "Backwards/Engine/StackFrame.h"
 
-#include "Backwards/Types/DoubleValue.h"
+#include "Backwards/Types/FloatValue.h"
 #include "Backwards/Types/StringValue.h"
 #include "Backwards/Types/ArrayValue.h"
 #include "Backwards/Types/DictionaryValue.h"
@@ -139,7 +139,7 @@ TEST(EngineTests, testBasic)
    context.pushContext(&frame);
 
    Backwards::Engine::StandardUnaryFunctionWithContext failInfo (Backwards::Engine::Info);
-   frame.args[0] = std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(6.0));
+   frame.args[0] = std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(6.0));
 
    debugger.entered = false;
    EXPECT_THROW(failInfo.execute(context), Backwards::Types::TypedOperationException);
@@ -156,8 +156,8 @@ TEST(EngineTests, testBasic)
 
    Backwards::Engine::StandardBinaryFunction Atan2 (Backwards::Engine::Atan2);
 
-   frame.args[0] = std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(6.0));
-   frame.args[1] = std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(9.0));
+   frame.args[0] = std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(6.0));
+   frame.args[1] = std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(9.0));
    EXPECT_NO_THROW(Atan2.execute(context));
    frame.args[0] = std::make_shared<Backwards::Types::StringValue>("hello");
    debugger.entered = false;
@@ -167,8 +167,8 @@ TEST(EngineTests, testBasic)
    Backwards::Engine::StandardTernaryFunction Insert (Backwards::Engine::Insert);
 
    frame.args[0] = Backwards::Engine::NewDictionary();
-   frame.args[1] = std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(6.0));
-   frame.args[2] = std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(9.0));
+   frame.args[1] = std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(6.0));
+   frame.args[2] = std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(9.0));
    EXPECT_NO_THROW(Insert.execute(context));
    frame.args[0] = Backwards::Engine::NewArray();
    debugger.entered = false;

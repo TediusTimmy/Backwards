@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include "Backwards/Types/ValueType.h"
 
-#include "Backwards/Types/DoubleValue.h"
+#include "Backwards/Types/FloatValue.h"
 #include "Backwards/Types/StringValue.h"
 #include "Backwards/Types/ArrayValue.h"
 #include "Backwards/Types/DictionaryValue.h"
@@ -96,7 +96,7 @@ namespace Types
 
    IMPLEMENTVISITOR(StringValue)
 
-   bool StringValue::sort (const DoubleValue&) const
+   bool StringValue::sort (const FloatValue&) const
     {
       return true;
     }

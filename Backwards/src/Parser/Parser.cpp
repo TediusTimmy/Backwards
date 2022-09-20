@@ -37,7 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Backwards/Engine/Logger.h"
 #include "Backwards/Parser/SymbolTable.h"
 
-#include "Backwards/Types/DoubleValue.h"
+#include "Backwards/Types/FloatValue.h"
 #include "Backwards/Types/StringValue.h"
 #include "Backwards/Types/FunctionValue.h"
 
@@ -518,7 +518,7 @@ namespace Parser
        {
          Input::Token buildToken = src.getNextToken();
 
-         ret = std::make_shared<Engine::Constant>(buildToken, std::make_shared<Types::DoubleValue>(SlowFloat::fromString(buildToken.text)));
+         ret = std::make_shared<Engine::Constant>(buildToken, std::make_shared<Types::FloatValue>(SlowFloat::fromString(buildToken.text)));
        }
          break;
       case Input::STRING:

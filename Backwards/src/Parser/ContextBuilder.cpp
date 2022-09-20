@@ -82,7 +82,7 @@ namespace Parser
       addFunction("ValueOf", std::make_shared<Engine::StandardUnaryFunction>(Engine::ValueOf), 1U, global);
       addFunction("ToCharacter", std::make_shared<Engine::StandardUnaryFunction>(Engine::ToCharacter), 1U, global);
       addFunction("FromCharacter", std::make_shared<Engine::StandardUnaryFunction>(Engine::FromCharacter), 1U, global);
-      addFunction("IsDouble", std::make_shared<Engine::StandardUnaryFunction>(Engine::IsDouble), 1U, global);
+      addFunction("IsFloat", std::make_shared<Engine::StandardUnaryFunction>(Engine::IsFloat), 1U, global);
       addFunction("IsString", std::make_shared<Engine::StandardUnaryFunction>(Engine::IsString), 1U, global);
       addFunction("IsArray", std::make_shared<Engine::StandardUnaryFunction>(Engine::IsArray), 1U, global);
       addFunction("IsDictionary", std::make_shared<Engine::StandardUnaryFunction>(Engine::IsDictionary), 1U, global);

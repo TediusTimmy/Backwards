@@ -38,7 +38,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Backway/Environment.h"
 #include "Backway/ContextBuilder.h"
 
-#include "Backwards/Types/DoubleValue.h"
+#include "Backwards/Types/FloatValue.h"
 #include "Backwards/Types/StringValue.h"
 #include "Backwards/Types/ArrayValue.h"
 #include "Backwards/Engine/ProgrammingException.h"
@@ -67,7 +67,7 @@ TEST(BackwayTests, testFunctionsWithContext)
    scape.name = "Bathys";
 
    res = Backway::Rand(context);
-   ASSERT_TRUE(typeid(Backwards::Types::DoubleValue) == typeid(*res.get()));
+   ASSERT_TRUE(typeid(Backwards::Types::FloatValue) == typeid(*res.get()));
 
    EXPECT_THROW(Backway::Rand(badContext), Backwards::Engine::ProgrammingException);
 
@@ -84,7 +84,7 @@ TEST(BackwayTests, testFunctionsWithContext)
    res = Backway::GetInput(context);
    EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().EMPTY_DICTIONARY.get(), res.get());
 
-   machine.input = std::make_shared<Backwards::Types::DoubleValue>(6.0);
+   machine.input = std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(6.0));
    res = Backway::GetInput(context);
    EXPECT_EQ(machine.input.get(), res.get());
 
@@ -120,7 +120,7 @@ bool checkState(const std::vector<std::vector<std::string> >& expected, const st
 
 TEST(BackwayTests, testMostExceptions)
  {
-   std::shared_ptr<Backwards::Types::DoubleValue> number = std::make_shared<Backwards::Types::DoubleValue>(6.0);
+   std::shared_ptr<Backwards::Types::FloatValue> number = std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(6.0));
    std::shared_ptr<Backwards::Types::StringValue> nosuch = std::make_shared<Backwards::Types::StringValue>("H");
    std::shared_ptr<Backwards::Types::ArrayValue> arrayNumber = std::make_shared<Backwards::Types::ArrayValue>();
    arrayNumber->value.push_back(number);
@@ -287,72 +287,72 @@ TEST(BackwayTests, testEmptyMachine)
 
    machine.states.clear();
    res = Backway::Leave(context);
-   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE.get(), res.get());
+   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE.get(), res.get());
    EXPECT_TRUE(checkState(expected0, machine.states));
 
    machine.states.clear();
    res = Backway::Return(context);
-   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE.get(), res.get());
+   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE.get(), res.get());
    EXPECT_TRUE(checkState(expected0, machine.states));
 
    machine.states.clear();
    res = Backway::Enqueue(context, state);
-   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE.get(), res.get());
+   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE.get(), res.get());
    EXPECT_TRUE(checkState(expected1, machine.states));
 
    machine.states.clear();
    res = Backway::Enqueue(context, array);
-   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE.get(), res.get());
+   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE.get(), res.get());
    EXPECT_TRUE(checkState(expected2, machine.states));
 
    machine.states.clear();
    res = Backway::Finally(context, state);
-   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE.get(), res.get());
+   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE.get(), res.get());
    EXPECT_TRUE(checkState(expected1, machine.states));
 
    machine.states.clear();
    res = Backway::Finally(context, array);
-   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE.get(), res.get());
+   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE.get(), res.get());
    EXPECT_TRUE(checkState(expected2, machine.states));
 
    machine.states.clear();
    res = Backway::Follow(context, state);
-   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE.get(), res.get());
+   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE.get(), res.get());
    EXPECT_TRUE(checkState(expected1, machine.states));
 
    machine.states.clear();
    res = Backway::Follow(context, array);
-   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE.get(), res.get());
+   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE.get(), res.get());
    EXPECT_TRUE(checkState(expected2, machine.states));
 
    machine.states.clear();
    res = Backway::Inject(context, state);
-   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE.get(), res.get());
+   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE.get(), res.get());
    EXPECT_TRUE(checkState(expected1, machine.states));
 
    machine.states.clear();
    res = Backway::Inject(context, array);
-   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE.get(), res.get());
+   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE.get(), res.get());
    EXPECT_TRUE(checkState(expected2, machine.states));
 
    machine.states.clear();
    res = Backway::Precede(context, state);
-   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE.get(), res.get());
+   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE.get(), res.get());
    EXPECT_TRUE(checkState(expected1, machine.states));
 
    machine.states.clear();
    res = Backway::Precede(context, array);
-   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE.get(), res.get());
+   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE.get(), res.get());
    EXPECT_TRUE(checkState(expected2, machine.states));
 
    machine.states.clear();
    res = Backway::Push(context, state);
-   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE.get(), res.get());
+   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE.get(), res.get());
    EXPECT_TRUE(checkState(expected1, machine.states));
 
    machine.states.clear();
    res = Backway::Push(context, array);
-   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE.get(), res.get());
+   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE.get(), res.get());
    EXPECT_TRUE(checkState(expected2, machine.states));
  }
 
@@ -382,28 +382,28 @@ TEST(BackwayTests, testGoldenPath)
    std::vector<std::pair<std::string, std::string> > states = 
    {
          // WHY DID I USE THE SEMICOLON?
-      { "Start", "set Update to function Update (arg) is call Push('C') call Push({'A'; 'B'}) return arg end" },
-      { "A", "set Pass to 0.0 set Update to function Update (arg) is if Pass = 1.0 then call Precede('D') call Precede({'E'; 'F'}) call Follow('G') call Follow({'H'; 'I'}) call Enqueue('J') call Enqueue({'K'; 'L'}) else set Pass to 1.0 end return arg end" },
-      { "B", "set Pass to 0.0 set Update to function Update (arg) is if Pass = 1.0 then call Inject('F') call Inject({'H'; 'I'}) call Finally('K') call Finally({'L'; 'M'}) call Leave() else set Pass to 1.0 end return arg end" },
-      { "C", "set Update to function Update (arg) is return arg end" },
-      { "D", "set Update to function Update (arg) is return arg end" },
-      { "E", "set Pass to 0.0 set Update to function Update (arg) is if Pass = 1.0 then call Skip('B') else set Pass to 1.0 end return arg end" },
-      { "F", "set Update to function Update (arg) is call Unwind('L') return arg end" },
-      { "G", "set Update to function Update (arg) is return arg end" },
-      { "H", "set Update to function Update (arg) is call Leave() return arg end" },
-      { "I", "set Update to function Update (arg) is call Leave() return arg end" },
-      { "J", "set Pass to 0.0 set Update to function Update (arg) is if Pass = 1.0 then call Return() else set Pass to 1.0 end return arg end" },
-      { "K", "set Update to function Update (arg) is return arg end" },
-      { "L", "set Pass to 0.0 set Update to function Update (arg) is if Pass = 1 then call CreateState('N'; 'set Update to function (arg) is end') call Return() else set Pass to 1.0 end return arg end" },
-      { "M", "set Update to function Update (arg) is call CreateState('N'; 5) return arg end" }
+      { "Start", "set Update to function update (arg) is call Push('C') call Push({'A'; 'B'}) return arg end" },
+      { "A", "set Pass to 0.0 set Update to function update (arg) is if Pass = 1.0 then call Precede('D') call Precede({'E'; 'F'}) call Follow('G') call Follow({'H'; 'I'}) call Enqueue('J') call Enqueue({'K'; 'L'}) else set Pass to 1.0 end return arg end" },
+      { "B", "set Pass to 0.0 set Update to function update (arg) is if Pass = 1.0 then call Inject('F') call Inject({'H'; 'I'}) call Finally('K') call Finally({'L'; 'M'}) call Leave() else set Pass to 1.0 end return arg end" },
+      { "C", "set Update to function update (arg) is return arg end" },
+      { "D", "set Update to function update (arg) is return arg end" },
+      { "E", "set Pass to 0.0 set Update to function update (arg) is if Pass = 1.0 then call Skip('B') else set Pass to 1.0 end return arg end" },
+      { "F", "set Update to function update (arg) is call Unwind('L') return arg end" },
+      { "G", "set Update to function update (arg) is return arg end" },
+      { "H", "set Update to function update (arg) is call Leave() return arg end" },
+      { "I", "set Update to function update (arg) is call Leave() return arg end" },
+      { "J", "set Pass to 0.0 set Update to function update (arg) is if Pass = 1.0 then call Return() else set Pass to 1.0 end return arg end" },
+      { "K", "set Update to function update (arg) is return arg end" },
+      { "L", "set Pass to 0.0 set Update to function update (arg) is if Pass = 1 then call CreateState('N'; 'set Update to function (arg) is end') call Return() else set Pass to 1.0 end return arg end" },
+      { "M", "set Update to function update (arg) is call CreateState('N'; 5) return arg end" }
    };
 
    for (const auto& state : states)
     {
-      EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ONE.get(),
+      EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE.get(),
          Backway::CreateState(context, std::make_shared<Backwards::Types::StringValue>(state.first), std::make_shared<Backwards::Types::StringValue>(state.second)).get());
     }
-   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().DOUBLE_ZERO.get(),
+   EXPECT_EQ(Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ZERO.get(),
       Backway::CreateState(context, std::make_shared<Backwards::Types::StringValue>(states[0].first), std::make_shared<Backwards::Types::StringValue>(states[0].second)).get());
 
    EXPECT_FALSE(machine.update(context));

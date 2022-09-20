@@ -41,7 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Backwards/Engine/StackFrame.h"
 #include "Backwards/Engine/StdLib.h"
 
-#include "Backwards/Types/DoubleValue.h"
+#include "Backwards/Types/FloatValue.h"
 #include "Backwards/Types/StringValue.h"
 #include "Backwards/Types/ArrayValue.h"
 #include "Backwards/Types/DictionaryValue.h"
@@ -115,15 +115,15 @@ TEST(ParserTests, testEnterDebugger)
 TEST(ParserTests, testMoreDebugger)
  {
    Backwards::Engine::Scope global;
-   global.vars.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(5.0)));
-   global.vars.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(6.0)));
+   global.vars.emplace_back(std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(5.0)));
+   global.vars.emplace_back(std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(6.0)));
    global.var.emplace("g", 0U);
    global.var.emplace("G", 1U);
    global.names.emplace_back("g");
    global.names.emplace_back("G");
    Backwards::Engine::Scope local;
-   local.vars.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(5.0)));
-   local.vars.emplace_back(std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(4.0)));
+   local.vars.emplace_back(std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(5.0)));
+   local.vars.emplace_back(std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(4.0)));
    local.var.emplace("l", 0U);
    local.var.emplace("L", 1U);
    local.names.emplace_back("l");
@@ -178,13 +178,13 @@ TEST(ParserTests, testMoreDebugger)
    Backwards::Engine::StackFrame frame1 (fun1, token1, &frame2);
    frame2.next = &frame1; // Would have been done in pushContext
 
-   frame2.args[0] = std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(5.0));
+   frame2.args[0] = std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(5.0));
    frame2.args[1] = std::make_shared<Backwards::Types::StringValue>("Hello");
    frame2.args[2] = std::make_shared<Backwards::Types::FunctionValue>(fun1);
 
    frame2.locals[0] = Backwards::Engine::Insert(
-      Backwards::Engine::Insert(Backwards::Engine::NewDictionary(), std::make_shared<Backwards::Types::StringValue>("Hello"), std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(5.0))),
-      std::make_shared<Backwards::Types::StringValue>("World"), std::make_shared<Backwards::Types::DoubleValue>(SlowFloat::SlowFloat(6.0)));
+      Backwards::Engine::Insert(Backwards::Engine::NewDictionary(), std::make_shared<Backwards::Types::StringValue>("Hello"), std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(5.0))),
+      std::make_shared<Backwards::Types::StringValue>("World"), std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(6.0)));
    frame2.locals[1] = Backwards::Engine::PushBack(
       Backwards::Engine::PushBack(Backwards::Engine::NewArray(), std::make_shared<Backwards::Types::StringValue>("Hello")),
       std::make_shared<Backwards::Types::StringValue>("World"));
@@ -224,5 +224,5 @@ TEST(ParserTests, testMoreDebugger)
    EXPECT_EQ("In function #3: >EnterDebugger< from line 1 in test", logger.logs[10]);
    // Skip
    EXPECT_EQ("Didn't understand that.", logger.logs[12]);
-   EXPECT_EQ("Error: Error adding Double to String\n\tFrom file Print Argument on line 1 at 4", logger.logs[13]);
+   EXPECT_EQ("Error: Error adding Float to String\n\tFrom file Print Argument on line 1 at 4", logger.logs[13]);
  }

@@ -415,11 +415,11 @@ namespace Engine
        {
          if (true == to)
           {
-            STEP = ConstantsSingleton::getInstance().DOUBLE_ONE;
+            STEP = ConstantsSingleton::getInstance().FLOAT_ONE;
           }
          else
           {
-            STEP = std::make_shared<Types::DoubleValue>(SlowFloat::SlowFloat(-1.0));
+            STEP = std::make_shared<Types::FloatValue>(SlowFloat::SlowFloat(-1.0));
           }
        }
       else

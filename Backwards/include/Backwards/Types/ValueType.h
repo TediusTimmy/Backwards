@@ -42,7 +42,7 @@ namespace Backwards
 namespace Types
  {
 
-   class DoubleValue;
+   class FloatValue;
    class StringValue;
    class ArrayValue;
    class DictionaryValue;
@@ -55,7 +55,7 @@ namespace Types
 
 #define DECLARE(x) \
       virtual std::shared_ptr<ValueType> x (const ValueType& rhs) const = 0; \
-      virtual std::shared_ptr<ValueType> x (const DoubleValue& lhs) const; \
+      virtual std::shared_ptr<ValueType> x (const FloatValue& lhs) const; \
       virtual std::shared_ptr<ValueType> x (const StringValue& lhs) const; \
       virtual std::shared_ptr<ValueType> x (const ArrayValue& lhs) const; \
       virtual std::shared_ptr<ValueType> x (const DictionaryValue& lhs) const; \
@@ -63,7 +63,7 @@ namespace Types
 
 #define DECLAREBOOL(x) \
       virtual bool x (const ValueType& rhs) const = 0; \
-      virtual bool x (const DoubleValue& lhs) const; \
+      virtual bool x (const FloatValue& lhs) const; \
       virtual bool x (const StringValue& lhs) const; \
       virtual bool x (const ArrayValue& lhs) const; \
       virtual bool x (const DictionaryValue& lhs) const; \
@@ -82,7 +82,7 @@ namespace Types
    virtual bool equal (const ValueType& rhs) const override; \
    virtual bool notEqual (const ValueType& rhs) const override; \
    virtual bool sort (const ValueType& rhs) const override; \
-   virtual bool sort (const DoubleValue& lhs) const override; \
+   virtual bool sort (const FloatValue& lhs) const override; \
    virtual bool sort (const StringValue& lhs) const override; \
    virtual bool sort (const ArrayValue& lhs) const override; \
    virtual bool sort (const DictionaryValue& lhs) const override; \
@@ -138,7 +138,7 @@ namespace Types
       bool compare (const ValueType& rhs) const;
 
       virtual bool sort (const ValueType& rhs) const = 0;
-      virtual bool sort (const DoubleValue& lhs) const = 0;
+      virtual bool sort (const FloatValue& lhs) const = 0;
       virtual bool sort (const StringValue& lhs) const = 0;
       virtual bool sort (const ArrayValue& lhs) const = 0;
       virtual bool sort (const DictionaryValue& lhs) const = 0;

@@ -29,8 +29,8 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef BACKWARDS_TYPES_DOUBLEVALUE_H
-#define BACKWARDS_TYPES_DOUBLEVALUE_H
+#ifndef BACKWARDS_TYPES_FLOATVALUE_H
+#define BACKWARDS_TYPES_FLOATVALUE_H
 
 #include "SlowFloat.h"
 #include "Backwards/Types/ValueType.h"
@@ -41,32 +41,32 @@ namespace Backwards
 namespace Types
  {
 
-   class DoubleValue final : public ValueType
+   class FloatValue final : public ValueType
     {
 
    public:
       SlowFloat::SlowFloat value;
 
-      DoubleValue();
-      DoubleValue(const SlowFloat::SlowFloat& value);
+      FloatValue();
+      FloatValue(const SlowFloat::SlowFloat& value);
 
       const std::string& getTypeName() const;
 
       std::shared_ptr<ValueType> neg() const;
       bool logical() const;
 
-      std::shared_ptr<ValueType> add (const DoubleValue& lhs) const;
-      std::shared_ptr<ValueType> sub (const DoubleValue& lhs) const;
-      std::shared_ptr<ValueType> mul (const DoubleValue& lhs) const;
-      std::shared_ptr<ValueType> div (const DoubleValue& lhs) const;
-      std::shared_ptr<ValueType> power (const DoubleValue& lhs) const;
+      std::shared_ptr<ValueType> add (const FloatValue& lhs) const;
+      std::shared_ptr<ValueType> sub (const FloatValue& lhs) const;
+      std::shared_ptr<ValueType> mul (const FloatValue& lhs) const;
+      std::shared_ptr<ValueType> div (const FloatValue& lhs) const;
+      std::shared_ptr<ValueType> power (const FloatValue& lhs) const;
 
-      bool greater (const DoubleValue& lhs) const;
-      bool less (const DoubleValue& lhs) const;
-      bool geq (const DoubleValue& lhs) const;
-      bool leq (const DoubleValue& lhs) const;
-      bool equal (const DoubleValue& lhs) const;
-      bool notEqual (const DoubleValue& lhs) const;
+      bool greater (const FloatValue& lhs) const;
+      bool less (const FloatValue& lhs) const;
+      bool geq (const FloatValue& lhs) const;
+      bool leq (const FloatValue& lhs) const;
+      bool equal (const FloatValue& lhs) const;
+      bool notEqual (const FloatValue& lhs) const;
 
       DECLAREVISITOR
 
@@ -76,4 +76,4 @@ namespace Types
 
  } // namespace Backwards
 
-#endif /* BACKWARDS_TYPES_DOUBLEVALUE_H */
+#endif /* BACKWARDS_TYPES_FLOATVALUE_H */

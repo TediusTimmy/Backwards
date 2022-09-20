@@ -32,7 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef BACKWARDS_ENGINE_SINGLETONCONSTANT_H
 #define BACKWARDS_ENGINE_SINGLETONCONSTANT_H
 
-#include "Backwards/Types/DoubleValue.h"
+#include "Backwards/Types/FloatValue.h"
 #include "Backwards/Types/ArrayValue.h"
 #include "Backwards/Types/DictionaryValue.h"
 
@@ -49,15 +49,15 @@ namespace Engine
    public:
       static ConstantsSingleton& getInstance();
 
-      std::shared_ptr<Types::DoubleValue> DOUBLE_ZERO;
-      std::shared_ptr<Types::DoubleValue> DOUBLE_ONE;
+      std::shared_ptr<Types::FloatValue> FLOAT_ZERO;
+      std::shared_ptr<Types::FloatValue> FLOAT_ONE;
 
       std::shared_ptr<Types::ArrayValue> EMPTY_ARRAY;
       std::shared_ptr<Types::DictionaryValue> EMPTY_DICTIONARY;
 
       std::shared_ptr<Statement> ONE_TRUE_NOP;
 
-      std::shared_ptr<Types::DoubleValue> DOUBLE_PI;
+      std::shared_ptr<Types::FloatValue> FLOAT_PI;
 
    private:
       ConstantsSingleton();

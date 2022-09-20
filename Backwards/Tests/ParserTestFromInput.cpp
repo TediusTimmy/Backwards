@@ -46,7 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Backwards/Engine/FatalException.h"
 #include "Backwards/Engine/Logger.h"
 
-#include "Backwards/Types/DoubleValue.h"
+#include "Backwards/Types/FloatValue.h"
 #include "Backwards/Types/StringValue.h"
 #include "Backwards/Types/ArrayValue.h"
 #include "Backwards/Types/DictionaryValue.h"
@@ -56,9 +56,9 @@ void printValue(const std::shared_ptr<Backwards::Types::ValueType>& val)
  {
    if (nullptr != val.get())
     {
-      if (typeid(Backwards::Types::DoubleValue) == typeid(*val))
+      if (typeid(Backwards::Types::FloatValue) == typeid(*val))
        {
-         std::cout << SlowFloat::toString(std::dynamic_pointer_cast<const Backwards::Types::DoubleValue>(val)->value);
+         std::cout << SlowFloat::toString(std::dynamic_pointer_cast<const Backwards::Types::FloatValue>(val)->value);
        }
       else if (typeid(Backwards::Types::StringValue) == typeid(*val))
        {

@@ -48,7 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Backwards/Engine/StackFrame.h"
 #include "Backwards/Engine/Scope.h"
 
-#include "Backwards/Types/DoubleValue.h"
+#include "Backwards/Types/FloatValue.h"
 
 #include "Backwards/Engine/ProgrammingException.h"
 
@@ -125,12 +125,12 @@ static double parseAndEvaluateDouble (Backwards::Input::Lexer& lexer, Backwards:
     {
       throw "Evaluate returned NULL.";
     }
-   if (typeid(Backwards::Types::DoubleValue) != typeid(*res.get()))
+   if (typeid(Backwards::Types::FloatValue) != typeid(*res.get()))
     {
-      throw "Result wasn't a Double.";
+      throw "Result wasn't a Float.";
     }
 
-   return static_cast<double>(std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   return static_cast<double>(std::dynamic_pointer_cast<Backwards::Types::FloatValue>(res)->value);
  }
 
 TEST(ParserTests, testLetsDoMath)
@@ -522,8 +522,8 @@ TEST(ParserTests, testThrowSomeExceptionsExpressions)
    res = parse->evaluate(context);
    EXPECT_EQ(0U, logger.logs.size());
    ASSERT_NE(nullptr, res.get());
-   ASSERT_EQ(typeid(Backwards::Types::DoubleValue), typeid(*res.get()));
-   EXPECT_EQ(SlowFloat::SlowFloat(6.0), std::dynamic_pointer_cast<Backwards::Types::DoubleValue>(res)->value);
+   ASSERT_EQ(typeid(Backwards::Types::FloatValue), typeid(*res.get()));
+   EXPECT_EQ(SlowFloat::SlowFloat(6.0), std::dynamic_pointer_cast<Backwards::Types::FloatValue>(res)->value);
 
 
    Backwards::Input::StringInput string2 ( " 2 * end " );
