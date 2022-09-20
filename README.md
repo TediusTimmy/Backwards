@@ -3,7 +3,7 @@ Backwards
 
 Backwards Scripting Language number 3
 
-WAT? This is, basically, ESL2 in C++. There are some changes, though. I removed types for doing 3D physics problems and changed how functions work (for the better, I feel). And it's called Backwards because I wanted a scripting language for a Backrooms-themed game. Collections still aren't classes, but it shouldn't matter. Also note that the argument separator is ';', from DB14, for the same reasons: while all keywords are English, numbers can mix-and-match the ',' and '.' as the decimal mark.
+WAT? This is, basically, ESL2 in C++. There are some changes, though. I removed types for doing 3D physics problems and changed how functions work (for the better, I feel). And it's called Backwards because I wanted a scripting language for a Backrooms-themed game. Collections still aren't classes, but it shouldn't matter. Also note that the argument separator is ';', from DB14, for the same reasons: while all keywords are English, numbers can mix-and-match the ',' and '.' as the decimal separator. It's the only internationalization I provide. Also note, that, like DB14, Backwards now has a decimal-oriented numeric type. It won't be as fast, but it will be more user-friendly (I feel).
 
 # The Language
 This is the language as implemented. Some of the GoogleTests have good examples, others, not so much.
