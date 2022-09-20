@@ -166,8 +166,7 @@ SlowFloat::SlowFloat (double arg)
     {
       exponent = static_cast<int16_t>(std::floor(std::log(std::fabs(arg)) / std::log(10.0))); // Should never overflow
       significand = static_cast<uint32_t>(std::fabs(arg) / std::pow(10.0, exponent) * MIN_SIGNIFICAND);
-      double temp = (std::fabs(arg) / std::pow(10.0, exponent) - significand / static_cast<double>(MIN_SIGNIFICAND)) * BIAS;
-      if (0.0 != temp) temp = 5.0 - temp;
+      double temp = 5.0 - (std::fabs(arg) / std::pow(10.0, exponent) - significand / static_cast<double>(MIN_SIGNIFICAND)) * BIAS;
       int comp = 0;
       if (temp > 0.0) comp = 1;
       else if (temp < 0.0) comp = -1;

@@ -329,6 +329,11 @@ TEST(SlowFloatTests, testConversions)
    EXPECT_EQ(0,           SlowFloat::SlowFloat(-9.999999989).exponent);
 
 
+   EXPECT_EQ(100000000U, SlowFloat::SlowFloat(1.000000005).significand);
+   EXPECT_EQ(100000001U, SlowFloat::SlowFloat(1.000000015).significand); // Doesn't round to 2 because actually 49999...
+   EXPECT_EQ(100000001U, SlowFloat::SlowFloat(1.000000010).significand);
+
+
    EXPECT_EQ(0.0, static_cast<double>(SlowFloat::SlowFloat(0U, 0)));
    EXPECT_EQ(-0.0, static_cast<double>(SlowFloat::SlowFloat(~0U, 0)));
 
