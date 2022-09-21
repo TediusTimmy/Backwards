@@ -166,7 +166,7 @@ SlowFloat::SlowFloat (double arg)
     {
       exponent = static_cast<int16_t>(std::floor(std::log(std::fabs(arg)) / std::log(10.0))); // Should never overflow
       significand = static_cast<uint32_t>(std::fabs(arg) / std::pow(10.0, exponent) * MIN_SIGNIFICAND);
-      double temp = 5.0 - (std::fabs(arg) / std::pow(10.0, exponent) - significand / static_cast<double>(MIN_SIGNIFICAND)) * BIAS;
+      double temp = 5.0 - (std::fabs(arg) / std::pow(10.0, exponent - CUTOFF + 1) - significand) * 10;
       int comp = 0;
       if (temp > 0.0) comp = 1;
       else if (temp < 0.0) comp = -1;
@@ -518,6 +518,12 @@ SlowFloat operator + (const SlowFloat& lhs, const SlowFloat& rhs)
       else
        {
          temp *= 10;
+         test *= 10;
+         if (lhd >= test) // Did overflow occur? ie 99 + 1
+          {
+            ++resultExponent;
+            temp *= 10;
+          }
        }
       uint64_t rem = lhd % temp;
       lhd /= temp;

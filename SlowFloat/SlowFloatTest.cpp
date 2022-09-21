@@ -331,7 +331,9 @@ TEST(SlowFloatTests, testConversions)
 
    EXPECT_EQ(100000000U, SlowFloat::SlowFloat(1.000000005).significand);
    EXPECT_EQ(100000001U, SlowFloat::SlowFloat(1.000000015).significand); // Doesn't round to 2 because actually 49999...
+   EXPECT_EQ(100000002U, SlowFloat::SlowFloat(1.000000018).significand);
    EXPECT_EQ(100000001U, SlowFloat::SlowFloat(1.000000010).significand);
+   EXPECT_EQ(100000002U, SlowFloat::SlowFloat(100000002.5).significand);
 
 
    EXPECT_EQ(0.0, static_cast<double>(SlowFloat::SlowFloat(0U, 0)));
@@ -1306,6 +1308,16 @@ TEST(SlowFloatTests, testAdds)
    res = SlowFloat::SlowFloat(900000000U, 0) + SlowFloat::SlowFloat(900000000U, 0); // 9 + 9
    EXPECT_EQ(180000000U, res.significand);
    EXPECT_EQ(1, res.exponent);
+
+      // Result needs exponent + 1
+   res = SlowFloat::SlowFloat(990000000U, 1) + SlowFloat::SlowFloat(100000000U, 0); // 99 + 1
+   EXPECT_EQ(100000000U, res.significand);
+   EXPECT_EQ(2, res.exponent);
+
+      // Result needs exponent + 1
+   res = SlowFloat::SlowFloat(999000000U, 1) + SlowFloat::SlowFloat(100000000U, -1); // 99.9 + .1
+   EXPECT_EQ(100000000U, res.significand);
+   EXPECT_EQ(2, res.exponent);
 
       // Catastrophic cancellation
    res = SlowFloat::SlowFloat(200000000U, 1) + SlowFloat::SlowFloat(~190000000U, 1); // 20 - 19
