@@ -407,12 +407,17 @@ SlowFloat fromString (const std::string& arg)
       resultExponent += exponentValue * exponentSign;
     }
 
+   if (0 == resultSignificand)
+    {
+      resultExponent = 0;
+    }
+
    if (resultExponent > MAX_EXPONENT) // Flush to infinity?
     {
       if (resultSign) return -sfInf;
       return sfInf;
     }
-   if (resultExponent < MIN_EXPONENT) // Were we unsuccessful in saving a result from flushing to zero?
+   if (resultExponent < MIN_EXPONENT) // Flush to zero?
     {
       if (resultSign) return -sfZero;
       return sfZero;
@@ -693,7 +698,7 @@ SlowFloat operator / (const SlowFloat& lhs, const SlowFloat& rhs)
       return sfZero;
     }
 
-      // Compute the exponent of the result, and use it to decide if we are even multiplying.
+      // Compute the exponent of the result, and use it to decide if we are even dividing.
    int32_t resultExponent = static_cast<int32_t>(lhs.exponent) - rhs.exponent;
    if (resultExponent > (MAX_EXPONENT + 1))
     {
@@ -706,7 +711,7 @@ SlowFloat operator / (const SlowFloat& lhs, const SlowFloat& rhs)
       return sfZero;
     }
 
-      // Now, we can start the multiply proper!
+      // Now, we can start the divide proper!
    uint64_t lhd = lhs.significand ^ (getSign(lhs) ? 0xFFFFFFFFU : 0U);
    uint64_t rhd = rhs.significand ^ (getSign(rhs) ? 0xFFFFFFFFU : 0U);
 
