@@ -242,6 +242,7 @@ SlowFloat fromString (const std::string& arg)
    int digits = 0;
    bool hasResidue = false;
    bool allZero = true;
+   bool realDigit = false;
    int residue = 0;
 
    if ('-' == *iter)
@@ -254,8 +255,12 @@ SlowFloat fromString (const std::string& arg)
     {
       if (digits < CUTOFF)
        {
-         resultSignificand = resultSignificand * 10 + *iter - '0';
-         ++digits;
+         if (realDigit || ('0' != *iter))
+          {
+            resultSignificand = resultSignificand * 10 + *iter - '0';
+            ++digits;
+            realDigit = true;
+          }
        }
       else
        {
@@ -298,7 +303,8 @@ SlowFloat fromString (const std::string& arg)
              }
           }
        }
-      ++resultExponent;
+      if (realDigit)
+         ++resultExponent;
       ++iter;
     }
    if ('.' == *iter)
@@ -309,8 +315,12 @@ SlowFloat fromString (const std::string& arg)
     {
       if (digits < CUTOFF)
        {
-         resultSignificand = resultSignificand * 10 + *iter - '0';
-         ++digits;
+         if (realDigit || ('0' != *iter))
+          {
+            resultSignificand = resultSignificand * 10 + *iter - '0';
+            ++digits;
+            realDigit = true;
+          }
        }
       else
        {
@@ -353,6 +363,8 @@ SlowFloat fromString (const std::string& arg)
              }
           }
        }
+      if (!realDigit)
+         --resultExponent;
       ++iter;
     }
    while (digits < CUTOFF)

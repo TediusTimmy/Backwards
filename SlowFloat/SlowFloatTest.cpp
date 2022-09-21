@@ -1898,4 +1898,8 @@ TEST(SlowFloatTests, testFromStrings)
    res = SlowFloat::fromString("5e-900000");
    EXPECT_EQ(0U, res.significand);
    EXPECT_EQ(0, res.exponent);
+
+   res = SlowFloat::fromString("0.01");
+   EXPECT_EQ(100000000U, res.significand);
+   EXPECT_EQ(-2, res.exponent);
  }
