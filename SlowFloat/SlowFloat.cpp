@@ -92,16 +92,8 @@ bool getSign (const SlowFloat& arg)
    return true;
  }
 
-uint64_t makeShift(int16_t shift)
- {
-   uint64_t result = 1;
-   while (0 < shift)
-    {
-      result *= 10;
-      --shift;
-    }
-   return result;
- }
+   // Table of powers of ten up to CUTOFF. (Yes, there is an extra entry, for the -1 case that needs to return 1.)
+const uint64_t makeShift [] = { 1U, 1U, 10U, 100U, 1000U, 10000U, 100000U, 1000000U, 10000000U, 100000000U, 1000000000U };
 
 SlowFloat_Round_Mode mode = ROUND_TIES_EVEN;
 
@@ -471,7 +463,7 @@ SlowFloat operator + (const SlowFloat& lhs, const SlowFloat& rhs)
       if ((lhs.exponent - rhs.exponent) <= CUTOFF)
        {
          expDiff = lhs.exponent - rhs.exponent;
-         lhd *= makeShift(expDiff);
+         lhd *= makeShift[expDiff + 1];
        }
       else
        {
@@ -486,7 +478,7 @@ SlowFloat operator + (const SlowFloat& lhs, const SlowFloat& rhs)
       if ((rhs.exponent - lhs.exponent) <= CUTOFF)
        {
          expDiff = rhs.exponent - lhs.exponent;
-         rhd *= makeShift(expDiff);
+         rhd *= makeShift[expDiff + 1];
        }
       else
        {
@@ -526,7 +518,7 @@ SlowFloat operator + (const SlowFloat& lhs, const SlowFloat& rhs)
        {
          ++resultExponent;
        }
-      uint64_t temp = makeShift(expDiff - 1);
+      uint64_t temp = makeShift[expDiff]; // This is why the table has one extra entry: we want the previous entry here.
       uint64_t test = BIAS * temp;
       if (lhd < test) // Did destructive cancellation occur? ie 100 - 1.
        {
