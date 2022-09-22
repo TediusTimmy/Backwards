@@ -1383,6 +1383,11 @@ TEST(SlowFloatTests, testAdds)
    res = SlowFloat::SlowFloat(100000000U, 0) + SlowFloat::SlowFloat(900000000U, -9);
    EXPECT_EQ(100000001U, res.significand);
    EXPECT_EQ(0, res.exponent);
+
+      // Pathological case
+   res = SlowFloat::SlowFloat(999999999U, 9) + SlowFloat::SlowFloat(900000000U, 0);
+   EXPECT_EQ(100000000U, res.significand);
+   EXPECT_EQ(10, res.exponent);
  }
 
 TEST(SlowFloatTests, testSubs)
