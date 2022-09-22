@@ -476,7 +476,7 @@ TEST(SlowFloatTests, testComparisons)
    EXPECT_FALSE(positiveInf == negativeTwo);
    EXPECT_FALSE(positiveInf == positiveTen);
    EXPECT_FALSE(positiveInf == negativeTen);
-   EXPECT_FALSE(positiveInf == positiveInf);
+   EXPECT_TRUE(positiveInf == positiveInf);
    EXPECT_FALSE(positiveInf == negativeInf);
    EXPECT_FALSE(positiveInf == nan);
 
@@ -489,7 +489,7 @@ TEST(SlowFloatTests, testComparisons)
    EXPECT_FALSE(negativeInf == positiveTen);
    EXPECT_FALSE(negativeInf == negativeTen);
    EXPECT_FALSE(negativeInf == positiveInf);
-   EXPECT_FALSE(negativeInf == negativeInf);
+   EXPECT_TRUE(negativeInf == negativeInf);
    EXPECT_FALSE(negativeInf == nan);
 
    EXPECT_FALSE(nan == negativeZero);
@@ -609,7 +609,7 @@ TEST(SlowFloatTests, testComparisons)
    EXPECT_TRUE(positiveInf != negativeTwo);
    EXPECT_TRUE(positiveInf != positiveTen);
    EXPECT_TRUE(positiveInf != negativeTen);
-   EXPECT_TRUE(positiveInf != positiveInf);
+   EXPECT_FALSE(positiveInf != positiveInf);
    EXPECT_TRUE(positiveInf != negativeInf);
    EXPECT_TRUE(positiveInf != nan);
 
@@ -622,7 +622,7 @@ TEST(SlowFloatTests, testComparisons)
    EXPECT_TRUE(negativeInf != positiveTen);
    EXPECT_TRUE(negativeInf != negativeTen);
    EXPECT_TRUE(negativeInf != positiveInf);
-   EXPECT_TRUE(negativeInf != negativeInf);
+   EXPECT_FALSE(negativeInf != negativeInf);
    EXPECT_TRUE(negativeInf != nan);
 
    EXPECT_TRUE(nan != negativeZero);
@@ -1008,7 +1008,7 @@ TEST(SlowFloatTests, testComparisons)
    EXPECT_FALSE(positiveInf <= negativeTwo);
    EXPECT_FALSE(positiveInf <= positiveTen);
    EXPECT_FALSE(positiveInf <= negativeTen);
-   EXPECT_FALSE(positiveInf <= positiveInf);
+   EXPECT_TRUE(positiveInf <= positiveInf);
    EXPECT_FALSE(positiveInf <= negativeInf);
    EXPECT_FALSE(positiveInf <= nan);
 
@@ -1021,7 +1021,7 @@ TEST(SlowFloatTests, testComparisons)
    EXPECT_TRUE(negativeInf <= positiveTen);
    EXPECT_TRUE(negativeInf <= negativeTen);
    EXPECT_TRUE(negativeInf <= positiveInf);
-   EXPECT_FALSE(negativeInf <= negativeInf);
+   EXPECT_TRUE(negativeInf <= negativeInf);
    EXPECT_FALSE(negativeInf <= nan);
 
    EXPECT_FALSE(nan <= negativeZero);
@@ -1141,7 +1141,7 @@ TEST(SlowFloatTests, testComparisons)
    EXPECT_TRUE(positiveInf >= negativeTwo);
    EXPECT_TRUE(positiveInf >= positiveTen);
    EXPECT_TRUE(positiveInf >= negativeTen);
-   EXPECT_FALSE(positiveInf >= positiveInf);
+   EXPECT_TRUE(positiveInf >= positiveInf);
    EXPECT_TRUE(positiveInf >= negativeInf);
    EXPECT_FALSE(positiveInf >= nan);
 
@@ -1154,7 +1154,7 @@ TEST(SlowFloatTests, testComparisons)
    EXPECT_FALSE(negativeInf >= positiveTen);
    EXPECT_FALSE(negativeInf >= negativeTen);
    EXPECT_FALSE(negativeInf >= positiveInf);
-   EXPECT_FALSE(negativeInf >= negativeInf);
+   EXPECT_TRUE(negativeInf >= negativeInf);
    EXPECT_FALSE(negativeInf >= nan);
 
    EXPECT_FALSE(nan >= negativeZero);

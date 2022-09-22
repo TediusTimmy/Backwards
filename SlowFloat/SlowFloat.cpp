@@ -796,7 +796,7 @@ bool operator >= (const SlowFloat& lhs, const SlowFloat& rhs)
     {
       if (isInf(lhs) && isInf(rhs))
        {
-         if (getSign(lhs) == getSign(rhs)) return false;
+         if (getSign(lhs) == getSign(rhs)) return true;
          else if (getSign(lhs)) return false;
          else return true;
        }
@@ -821,7 +821,7 @@ bool operator <= (const SlowFloat& lhs, const SlowFloat& rhs)
     {
       if (isInf(lhs) && isInf(rhs))
        {
-         if (getSign(lhs) == getSign(rhs)) return false;
+         if (getSign(lhs) == getSign(rhs)) return true;
          else if (getSign(lhs)) return true;
          else return false;
        }
@@ -842,7 +842,6 @@ bool operator <= (const SlowFloat& lhs, const SlowFloat& rhs)
 bool operator == (const SlowFloat& lhs, const SlowFloat& rhs)
  {
    if (isNaN(lhs) || isNaN(rhs)) return false;
-   if (isInf(lhs) || isInf(rhs)) return false;
    if (isZero(lhs) || isZero(rhs))
     {
       if (isZero(lhs) && isZero(rhs)) return true;
@@ -854,7 +853,6 @@ bool operator == (const SlowFloat& lhs, const SlowFloat& rhs)
 bool operator != (const SlowFloat& lhs, const SlowFloat& rhs)
  {
    if (isNaN(lhs) || isNaN(rhs)) return true;
-   if (isInf(lhs) || isInf(rhs)) return true;
    if (isZero(lhs) || isZero(rhs))
     {
       if (isZero(lhs) && isZero(rhs)) return false;
