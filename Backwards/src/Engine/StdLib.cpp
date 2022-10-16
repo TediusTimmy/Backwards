@@ -231,7 +231,7 @@ namespace Engine
     }
 
    //////////
-   // The other 48 functions of the Standard Library in no particular order. (Eval and EnterDebugger are not counted here.)
+   // The other 51 functions of the Standard Library in no particular order. (Eval and EnterDebugger are not counted here.)
    //////////
 
    STDLIB_BINARY_DECL(PushFront)
@@ -770,6 +770,33 @@ namespace Engine
          context.debugger->EnterDebugger("", context);
        }
       return ConstantsSingleton::getInstance().FLOAT_ZERO;
+    }
+
+   STDLIB_CONSTANT_DECL(GetRoundMode)
+    {
+      return std::make_shared<Types::FloatValue>(SlowFloat::SlowFloat(static_cast<double>(SlowFloat::mode)));
+    }
+
+   STDLIB_UNARY_DECL(SetRoundMode)
+    {
+      if (typeid(Types::FloatValue) == typeid(*arg))
+       {
+         double val = static_cast<double>(static_cast<const Types::FloatValue&>(*arg).value);
+         if ((val >= static_cast<double>(SlowFloat::ROUND_TIES_EVEN)) &&
+            (val <= static_cast<double>(SlowFloat::ROUND_AWAY)))
+          {
+            SlowFloat::mode = static_cast<SlowFloat::SlowFloat_Round_Mode>(val);
+            return arg;
+          }
+         else
+          {
+            throw Types::TypedOperationException("Float is not a valid rounding mode.");
+          }
+       }
+      else
+       {
+         throw Types::TypedOperationException("Error trying to convert non-Float to rounding mode.");
+       }
     }
 
  } // namespace Engine

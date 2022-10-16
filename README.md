@@ -116,6 +116,7 @@ Old-style Pascal comments really round out the language as being valid even when
 * float FromChar (string)  # return the ASCII code of the only character of the string (the string must have only one character)
 * value GetIndex (array; float)  # retrieve index float from array
 * array GetKeys (dictionary)  # return an array of keys into a dictionary
+* float GetRoundMode () # returns a numeric representation of the current rounding mode
 * value GetValue (dictionary; value)  # retrieve the value with key value from the dictionary, die if value is not present (no forgiveness)
 * float Hypot (float; float)  # hypotenuse function : Sqrt(xx + yy) with (I hope) hardening for underflow
 * string Info (string)  # log an informational string, returns its argument
@@ -144,6 +145,7 @@ Old-style Pascal comments really round out the language as being valid even when
 * dictionary RemoveKey (dictionary; value)  # remove the key value or die
 * float Round (float)  # ties to even
 * array SetIndex (array; float; value)  # return a copy of array where index float is now value
+* float SetRoundMode (float) # sets the current rounding mode by number; returns the new rounding mode
 * float Sin (float)  # sine, argument in degrees
 * float Sinh (float)  # hyperbolic sine
 * float Size (array)  # size of an array

@@ -50,6 +50,7 @@ namespace Engine
    STDLIB_CONSTANT_DECL(Time);
    STDLIB_CONSTANT_DECL(NewArray);
    STDLIB_CONSTANT_DECL(NewDictionary);
+   STDLIB_CONSTANT_DECL(GetRoundMode);
 
 #define STDLIB_CONSTANT_DECL_WITH_CONTEXT(x) \
    std::shared_ptr<Types::ValueType> x (CallingContext& context)
@@ -95,6 +96,7 @@ namespace Engine
    STDLIB_UNARY_DECL(PopFront);
    STDLIB_UNARY_DECL(PopBack);
    STDLIB_UNARY_DECL(GetKeys);
+   STDLIB_UNARY_DECL(SetRoundMode);
 
 #define STDLIB_UNARY_DECL_WITH_CONTEXT(x) \
    std::shared_ptr<Types::ValueType> x (CallingContext& context, const std::shared_ptr<Types::ValueType>& arg)

@@ -356,6 +356,12 @@ TEST(SlowFloatTests, testConversions)
 
    EXPECT_FALSE(SlowFloat::isInf(SlowFloat::SlowFloat(1U, -32768)));
    EXPECT_FALSE(SlowFloat::isZero(SlowFloat::SlowFloat(1U, -32768)));
+
+   SlowFloat::mode = SlowFloat::ROUND_AWAY;
+   EXPECT_EQ(200000000U, SlowFloat::SlowFloat(2.0).significand);
+   SlowFloat::mode = SlowFloat::ROUND_POSITIVE_INFINITY;
+   EXPECT_EQ(200000000U, SlowFloat::SlowFloat(2.0).significand);
+   SlowFloat::mode = SlowFloat::ROUND_TIES_EVEN;
  }
 
 TEST(SlowFloatTests, testComparisons)

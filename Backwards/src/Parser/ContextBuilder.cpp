@@ -44,17 +44,18 @@ namespace Parser
 
    void ContextBuilder::createGlobalScope(Engine::Scope& global)
     {
-    // 5
+    // 6
       addFunction("PI", std::make_shared<Engine::StandardConstantFunction>(Engine::PI), 0U, global);
       addFunction("Date", std::make_shared<Engine::StandardConstantFunction>(Engine::Date), 0U, global);
       addFunction("Time", std::make_shared<Engine::StandardConstantFunction>(Engine::Time), 0U, global);
       addFunction("NewArray", std::make_shared<Engine::StandardConstantFunction>(Engine::NewArray), 0U, global);
       addFunction("NewDictionary", std::make_shared<Engine::StandardConstantFunction>(Engine::NewDictionary), 0U, global);
+      addFunction("GetRoundMode", std::make_shared<Engine::StandardConstantFunction>(Engine::GetRoundMode), 0U, global);
 
     // 1
       addFunction("EnterDebugger", std::make_shared<Engine::StandardConstantFunctionWithContext>(Engine::EnterDebugger), 0U, global);
 
-    // 36
+    // 37
       addFunction("Sin", std::make_shared<Engine::StandardUnaryFunction>(Engine::Sin), 1U, global);
       addFunction("Cos", std::make_shared<Engine::StandardUnaryFunction>(Engine::Cos), 1U, global);
       addFunction("Tan", std::make_shared<Engine::StandardUnaryFunction>(Engine::Tan), 1U, global);
@@ -91,8 +92,9 @@ namespace Parser
       addFunction("PopFront", std::make_shared<Engine::StandardUnaryFunction>(Engine::PopFront), 1U, global);
       addFunction("PopBack", std::make_shared<Engine::StandardUnaryFunction>(Engine::PopBack), 1U, global);
       addFunction("GetKeys", std::make_shared<Engine::StandardUnaryFunction>(Engine::GetKeys), 1U, global);
+      addFunction("SetRoundMode", std::make_shared<Engine::StandardUnaryFunction>(Engine::SetRoundMode), 1U, global);
 
-    // 5
+    // 6
       addFunction("Error", std::make_shared<Engine::StandardUnaryFunctionWithContext>(Engine::Error), 1U, global);
       addFunction("Warn", std::make_shared<Engine::StandardUnaryFunctionWithContext>(Engine::Warn), 1U, global);
       addFunction("Info", std::make_shared<Engine::StandardUnaryFunctionWithContext>(Engine::Info), 1U, global);

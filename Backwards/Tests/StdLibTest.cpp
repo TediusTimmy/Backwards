@@ -302,6 +302,20 @@ TEST(EngineTests, testJustCalls) // Don't bother validating that the output is c
 
    (void) Backwards::Engine::RadToDeg(makeFloatValue(30.0));
    EXPECT_THROW(Backwards::Engine::RadToDeg(std::make_shared<Backwards::Types::StringValue>("hello")), Backwards::Types::TypedOperationException);
+
+   EXPECT_EQ(SlowFloat::ROUND_TIES_EVEN, SlowFloat::mode);
+   (void) Backwards::Engine::SetRoundMode(makeFloatValue(4.0));
+   (void) Backwards::Engine::SetRoundMode(makeFloatValue(7.0));
+   EXPECT_EQ(SlowFloat::ROUND_AWAY, SlowFloat::mode);
+   EXPECT_THROW(Backwards::Engine::SetRoundMode(makeFloatValue(30.0)), Backwards::Types::TypedOperationException);
+   EXPECT_THROW(Backwards::Engine::SetRoundMode(makeFloatValue(-1.0)), Backwards::Types::TypedOperationException);
+   EXPECT_THROW(Backwards::Engine::SetRoundMode(std::make_shared<Backwards::Types::StringValue>("hello")), Backwards::Types::TypedOperationException);
+
+      // Nasty assumption that previous part of test has been run.
+   res = Backwards::Engine::GetRoundMode();
+   ASSERT_TRUE(typeid(Backwards::Types::FloatValue) == typeid(*res.get()));
+   EXPECT_EQ(SlowFloat::SlowFloat(7.0), std::dynamic_pointer_cast<Backwards::Types::FloatValue>(res)->value);
+   SlowFloat::mode = SlowFloat::ROUND_TIES_EVEN;
  }
 
 TEST(EngineTests, testSimpleCalls)

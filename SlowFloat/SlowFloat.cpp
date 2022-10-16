@@ -162,7 +162,7 @@ SlowFloat::SlowFloat (double arg)
       int comp = 0;
       if (temp > 0.0) comp = 1;
       else if (temp < 0.0) comp = -1;
-      if (decideRound(arg < 0.0, 0 == (significand & 1), comp, 0.0 == temp))
+      if (decideRound(arg < 0.0, 0 == (significand & 1), comp, 5.0 == temp))
        {
          ++significand;
          if (significand == BIAS)
@@ -191,7 +191,7 @@ SlowFloat::operator double () const
       return std::copysign(std::asin(2.0), sign);
    if (isInf(*this))
       return std::copysign(std::exp(1000000.0), sign);
-   return sign * (sig / static_cast<double>(MIN_SIGNIFICAND)) * std::pow(10.0, exponent);
+   return sign * static_cast<double>(sig) * std::pow(10.0, exponent - CUTOFF + 1);
  }
 
 
