@@ -200,3 +200,14 @@ SlowFloat
 =========
 
 I don't know about you all, but when I was a child, I don't remember my teachers noting to me that .1 * 10 wouldn't be 1.0 on a calculator. That didn't happen until I started programming computers. It didn't happen when I was programming calculators. The reason for that is that calculators handle numbers in a manner differently from computers: it is slower, but less mysterious to the human user. In order to be more human-friendly, I have replaced the base number type with a decimal-centric type.
+
+## Rounding Mode Decoder Ring
+Directed rounding modes are a part of IEEE-754 for doing algorithm analysis. Basically, it's a simple idea: change the rounding mode and see how the result changes. Note that the rounding mode only applies to addition, subtraction, multiplication, division, and conversions from strings and numbers. A note on terminology: rounding to nearest means that behave as though we did the math to get the next digit, and then if the digit is 6-9, we round away from zero, and if 1-4 we round toward zero. A 5 is a "tie", and the round-to-nearest modes all specify how ties are handled, with "to even" and "to odd" meaning to make the least-significant digit of the result even or odd, respectively.
+* 0 - Round to nearest, ties to even.
+* 1 - Round to nearest, ties away from zero.
+* 2 - Round to positive infinity.
+* 3 - Round to negative infinity.
+* 4 - Round to zero.
+* 5 - Round to nearest, ties to odd.
+* 6 - Round to nearest, ties to zero.
+* 7 - Round away from zero.
