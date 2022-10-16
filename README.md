@@ -145,7 +145,7 @@ Old-style Pascal comments really round out the language as being valid even when
 * dictionary RemoveKey (dictionary; value)  # remove the key value or die
 * float Round (float)  # ties to even
 * array SetIndex (array; float; value)  # return a copy of array where index float is now value
-* float SetRoundMode (float) # sets the current rounding mode by number; returns the new rounding mode
+* float SetRoundMode (float) # sets the current rounding mode by number; returns its argument
 * float Sin (float)  # sine, argument in degrees
 * float Sinh (float)  # hyperbolic sine
 * float Size (array)  # size of an array

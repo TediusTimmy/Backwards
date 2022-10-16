@@ -157,9 +157,14 @@ SlowFloat::SlowFloat (double arg)
    else
     {
       exponent = static_cast<int16_t>(std::floor(std::log(std::fabs(arg)) / std::log(10.0))); // Should never overflow
-      significand = static_cast<uint32_t>(std::fabs(arg) / std::pow(10.0, exponent) * MIN_SIGNIFICAND);
+         // I haven't run into a case where Windows' bad pow bites me ... yet. But preempt.
+      if (exponent >= 0)
+         significand = static_cast<uint32_t>(std::fabs(arg) / std::pow(10.0, exponent) * MIN_SIGNIFICAND);
+      else
+         significand = static_cast<uint32_t>(std::fabs(arg) * std::pow(10.0, -exponent) * MIN_SIGNIFICAND);
       double temp = 5.0;
          // One Windows, 10^-8 is poorly enough calculated that converting 2.0 results in 2.00000001
+         //    when rounding to positive infinity or away from zero.
       int bias = exponent - (CUTOFF - 1);
       if (bias >= 0) temp = temp - (std::fabs(arg) / std::pow(10.0, bias) - significand) * 10;
       else temp = temp - (std::fabs(arg) * std::pow(10.0, -bias) - significand) * 10;
@@ -195,7 +200,12 @@ SlowFloat::operator double () const
       return std::copysign(std::asin(2.0), sign);
    if (isInf(*this))
       return std::copysign(std::exp(1000000.0), sign);
-   return sign * static_cast<double>(sig) * std::pow(10.0, exponent - CUTOFF + 1);
+      // One Windows, 7.00000000 kept being ever so slightly above 7.0
+   int bias = exponent - (CUTOFF - 1);
+   if (bias >= 0)
+      return sign * static_cast<double>(sig) * std::pow(10.0, bias);
+   else
+      return sign * static_cast<double>(sig) / std::pow(10.0, -bias);
  }
 
 

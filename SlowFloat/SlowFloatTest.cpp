@@ -328,6 +328,12 @@ TEST(SlowFloatTests, testConversions)
    EXPECT_EQ(~999999999U, SlowFloat::SlowFloat(-9.999999989).significand);
    EXPECT_EQ(0,           SlowFloat::SlowFloat(-9.999999989).exponent);
 
+   EXPECT_EQ(500000000U, SlowFloat::SlowFloat(0.5).significand);
+   EXPECT_EQ(-1,         SlowFloat::SlowFloat(0.5).exponent);
+
+   EXPECT_EQ(~500000000U, SlowFloat::SlowFloat(-0.5).significand);
+   EXPECT_EQ(-1,          SlowFloat::SlowFloat(-0.5).exponent);
+
 
    EXPECT_EQ(100000000U, SlowFloat::SlowFloat(1.000000005).significand);
    EXPECT_EQ(100000001U, SlowFloat::SlowFloat(1.000000015).significand); // Doesn't round to 2 because actually 49999...
@@ -341,6 +347,12 @@ TEST(SlowFloatTests, testConversions)
 
    EXPECT_EQ(1.0, static_cast<double>(SlowFloat::SlowFloat(100000000U, 0)));
    EXPECT_EQ(-1.0, static_cast<double>(SlowFloat::SlowFloat(~100000000U, 0)));
+
+   EXPECT_EQ(10000000000.0, static_cast<double>(SlowFloat::SlowFloat(100000000U, 10)));
+   EXPECT_EQ(-10000000000.0, static_cast<double>(SlowFloat::SlowFloat(~100000000U, 10)));
+
+   EXPECT_EQ(0.5, static_cast<double>(SlowFloat::SlowFloat(500000000U, -1))); // DERP!
+   EXPECT_EQ(-0.5, static_cast<double>(SlowFloat::SlowFloat(~500000000U, -1)));
 
    EXPECT_TRUE(std::isinf(static_cast<double>(SlowFloat::SlowFloat(0U, -32768))));
    EXPECT_FALSE(std::signbit(static_cast<double>(SlowFloat::SlowFloat(0U, -32768))));
