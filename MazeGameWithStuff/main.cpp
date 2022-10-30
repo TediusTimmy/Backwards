@@ -267,6 +267,7 @@ public:
    bool OnUserUpdate(float fElapsedTime) override
     {
       if (GetKey(olc::Key::ESCAPE).bPressed) { ConsoleShow(olc::Key::ESCAPE); return true; }
+      if (0.0 == fElapsedTime) return true; // If we are showing the console, don't capture button presses.
       const int X_HALF = (SCREEN_WIDTH / TILE + 2) / 2;
       const int Y_HALF = (SCREEN_HEIGHT / TILE + 2) / 2;
       char map [Y_HALF * 2][X_HALF * 2];
