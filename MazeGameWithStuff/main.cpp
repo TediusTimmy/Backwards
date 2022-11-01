@@ -48,9 +48,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Backwards/Types/FunctionValue.h"
 
 #include "Backway/CallingContext.h"
-#include "Backway/ContextBuilder.h"
 #include "Backway/Environment.h"
 #include "Backway/StateMachine.h"
+
+#include "Commands.h"
 
 #include <memory>
 #include <vector>
@@ -76,6 +77,19 @@ public:
    ConsoleLogger(std::stringstream& sink) : sink(sink) { }
    void log (const std::string& message) { sink << message << std::endl; }
    std::string get () { return ""; }
+ };
+
+class NullLogger final : public Backwards::Engine::Logger
+ {
+public:
+   void log (const std::string&) { return; }
+   std::string get () { return ""; }
+ };
+
+class ContextBuilder final
+ {
+public:
+   static void createGlobalScope(Backwards::Engine::Scope&);
  };
 
 void printValue(ConsoleLogger& logger, const std::shared_ptr<Backwards::Types::ValueType>& val)
@@ -183,12 +197,12 @@ const std::string& getCache(unsigned int x, unsigned int y, unsigned int z)
 class View : public olc::PixelGameEngine
  {
 public:
-   View()
+   View() : logger (ConsoleOut())
     {
-      sAppName = "Backroom Quest Alpha";
+      sAppName = "Backroom Quest Alpha v0.0.3";
     }
 
-   private:
+private:
    std::vector<std::unique_ptr<olc::Sprite> > floors;
    std::vector<std::unique_ptr<olc::Sprite> > doors;
    std::unique_ptr<olc::Sprite> players;
@@ -197,6 +211,14 @@ public:
    bool mu, md, ml, mr;
    unsigned int px, py;
    int sc_x, sc_y;
+
+   Backwards::Engine::Scope global;
+   ConsoleLogger logger;
+   NullLogger nullLogger;
+
+   Backway::CallingContext context;
+   Backway::StateMachine machine;
+   Backway::Environment environment;
 
 public:
    bool OnUserCreate() override
@@ -236,6 +258,20 @@ public:
 
       sc_x = 0;
       sc_y = 0;
+
+
+      ContextBuilder::createGlobalScope(global);
+
+      context.globalScope = &global;
+      context.machine = &machine;
+      context.environment = &environment;
+
+      machine.rng = JAVA(std::time(nullptr));
+
+      evaluateString("CreateState('__LEFT__'; 'set Called to 0 set Update to function left (arg) is if Called then call Leave() else call Left() set Called to 1 end return arg end')", nullLogger);
+      evaluateString("CreateState('__RIGHT__'; 'set Called to 0 set Update to function right (arg) is if Called then call Leave() else call Right() set Called to 1 end return arg end')", nullLogger);
+      evaluateString("CreateState('__UP__'; 'set Called to 0 set Update to function up (arg) is if Called then call Leave() else call Up() set Called to 1 end return arg end')", nullLogger);
+      evaluateString("CreateState('__DOWN__'; 'set Called to 0 set Update to function down (arg) is if Called then call Leave() else call Down() set Called to 1 end return arg end')", nullLogger);
 
       return true;
     }
@@ -293,10 +329,21 @@ public:
          unsigned int ppx = player.x;
          unsigned int ppy = player.y;
          char nl = '#';
-         if ((true == mu) && ('#' != map[Y_HALF - 1][X_HALF])) { --player.y; nsc_y = -TILE; moved = true; nl = map[Y_HALF - 1][X_HALF]; }
-         else if ((true == md) && ('#' != map[Y_HALF + 1][X_HALF])) { ++player.y; nsc_y = TILE; moved = true; nl = map[Y_HALF + 1][X_HALF]; }
-         else if ((true == mr) && ('#' != map[Y_HALF][X_HALF + 1])) { ++player.x; nsc_x = TILE; moved = true; nl = map[Y_HALF][X_HALF + 1]; }
-         else if ((true == ml) && ('#' != map[Y_HALF][X_HALF - 1])) { --player.x; nsc_x = -TILE; moved = true; nl = map[Y_HALF][X_HALF - 1]; }
+
+         if (true == mu) evaluateString("Push('__UP__')", nullLogger);
+         else if (true == md) evaluateString("Push('__DOWN__')", nullLogger);
+         else if (true == mr) evaluateString("Push('__RIGHT__')", nullLogger);
+         else if (true == ml) evaluateString("Push('__LEFT__')", nullLogger);
+
+         machine.update(context);
+
+         if (nullptr != machine.output.get())
+          {
+            if ((typeid(*machine.output) == typeid(Command_Up)) && ('#' != map[Y_HALF - 1][X_HALF])) { --player.y; nsc_y = -TILE; moved = true; nl = map[Y_HALF - 1][X_HALF]; }
+            else if ((typeid(*machine.output) == typeid(Command_Down)) && ('#' != map[Y_HALF + 1][X_HALF])) { ++player.y; nsc_y = TILE; moved = true; nl = map[Y_HALF + 1][X_HALF]; }
+            else if ((typeid(*machine.output) == typeid(Command_Right)) && ('#' != map[Y_HALF][X_HALF + 1])) { ++player.x; nsc_x = TILE; moved = true; nl = map[Y_HALF][X_HALF + 1]; }
+            else if ((typeid(*machine.output) == typeid(Command_Left)) && ('#' != map[Y_HALF][X_HALF - 1])) { --player.x; nsc_x = -TILE; moved = true; nl = map[Y_HALF][X_HALF - 1]; }
+          }
          if (true == moved)
           {
             if ((px != player.x) || (py != player.y))
@@ -366,26 +413,21 @@ public:
     {
       ConsoleOut() << "> " << sCommand << std::endl;
 
+      evaluateString(sCommand, logger);
+
+      return true;
+    }
+
+private:
+   void evaluateString(const std::string& sCommand, Backwards::Engine::Logger& logger)
+    {
+      context.logger = &logger;
+
       Backwards::Input::StringInput string (sCommand);
       Backwards::Input::Lexer lexer (string, "Console Command");
 
-      Backwards::Engine::Scope global;
-      Backway::ContextBuilder::createGlobalScope(global); // Create the global scope before the table.
       Backwards::Parser::GetterSetter gs;
       Backwards::Parser::SymbolTable table (gs, global);
-
-      Backway::CallingContext context;
-      Backway::StateMachine machine;
-      Backway::Environment environment;
-
-      context.globalScope = &global;
-      ConsoleLogger logger (ConsoleOut());
-      context.logger = &logger;
-      context.machine = &machine;
-      context.environment = &environment;
-
-      machine.rng = JAVA(std::time(nullptr));
-      (void) machine.rng.getNext(); // To remove the bias from time.
 
       std::shared_ptr<Backwards::Engine::Expression> res = Backwards::Parser::Parser::ParseExpression(lexer, table, logger);
 
@@ -398,8 +440,11 @@ public:
 
             if (nullptr != val.get())
              {
-               printValue(logger, val);
-               ConsoleOut() << std::endl;
+               if (typeid(logger) == typeid(ConsoleLogger))
+                {
+                  printValue(static_cast<ConsoleLogger&>(logger), val);
+                  ConsoleOut() << std::endl;
+                }
              }
             else
              {
@@ -419,8 +464,6 @@ public:
        {
          ConsoleOut() << "Parse returned NULL." << std::endl;
        }
-
-      return true;
     }
  };
 
