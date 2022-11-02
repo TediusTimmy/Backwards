@@ -35,6 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Backwards/Parser/SymbolTable.h"
 #include "Backwards/Parser/Parser.h"
 
+#include "Backwards/Engine/ConstantsSingleton.h"
 #include "Backwards/Engine/Expression.h"
 #include "Backwards/Engine/DebuggerHook.h"
 #include "Backwards/Engine/FunctionContext.h"
@@ -220,6 +221,14 @@ private:
    Backway::StateMachine machine;
    Backway::Environment environment;
 
+   void reset()
+    {
+      context.machine->states.clear();
+      context.machine->last = Backwards::Engine::ConstantsSingleton::getInstance().EMPTY_DICTIONARY;
+      context.machine->input = Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ZERO;
+      context.machine->output = std::shared_ptr<Backway::Command>();
+    }
+
 public:
    bool OnUserCreate() override
     {
@@ -272,6 +281,8 @@ public:
       evaluateString("CreateState('__RIGHT__'; 'set Called to 0 set Update to function right (arg) is if Called then call Leave() else call Right() set Called to 1 end return arg end')", nullLogger);
       evaluateString("CreateState('__UP__'; 'set Called to 0 set Update to function up (arg) is if Called then call Leave() else call Up() set Called to 1 end return arg end')", nullLogger);
       evaluateString("CreateState('__DOWN__'; 'set Called to 0 set Update to function down (arg) is if Called then call Leave() else call Down() set Called to 1 end return arg end')", nullLogger);
+
+      reset();
 
       return true;
     }
@@ -330,7 +341,8 @@ public:
          unsigned int ppy = player.y;
          char nl = '#';
 
-         if (true == mu) evaluateString("Push('__UP__')", nullLogger);
+         if (GetKey(olc::Key::F1).bHeld) reset();
+         else if (true == mu) evaluateString("Push('__UP__')", nullLogger);
          else if (true == md) evaluateString("Push('__DOWN__')", nullLogger);
          else if (true == mr) evaluateString("Push('__RIGHT__')", nullLogger);
          else if (true == ml) evaluateString("Push('__LEFT__')", nullLogger);

@@ -684,7 +684,11 @@ namespace Backway
                       }
                      newState->updateFun = std::make_shared<Backwards::Engine::Variable>(Backwards::Input::Token(), table.getVariableGetter("Update"));
 
-                     text.environment->states.emplace(name, newState);
+                     std::map<std::string, std::shared_ptr<State> >::iterator iter = text.environment->states.find(name);
+                     if (text.environment->states.end() != iter)
+                        iter->second = newState;
+                     else
+                        text.environment->states.emplace(name, newState);
                    }
                   catch (...)
                    {
