@@ -33,6 +33,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Backwards/Engine/ProgrammingException.h"
 #include "Backwards/Parser/ContextBuilder.h"
 
+#include "Backwards/Types/FloatValue.h"
+#include "Backwards/Types/StringValue.h"
+
 #include "Backway/ContextBuilder.h"
 #include "Backway/CallingContext.h"
 #include "Backway/StdLib.h"
@@ -95,6 +98,58 @@ STDLIB_CONSTANT_DECL_WITH_CONTEXT(Down)
     }
  }
 
+STDLIB_BINARY_DECL_WITH_CONTEXT(Look)
+ {
+   try
+    {
+      Backway::CallingContext& text = dynamic_cast<Backway::CallingContext&>(context);
+      if (typeid(Backwards::Types::FloatValue) == typeid(*first))
+       {
+         if (typeid(Backwards::Types::FloatValue) == typeid(*second))
+          {
+               // Input Validation? Is that like Water Fluoridation?
+            int x = static_cast<int>(static_cast<double>(static_cast<const Backwards::Types::FloatValue&>(*first).value));
+            int y = static_cast<int>(static_cast<double>(static_cast<const Backwards::Types::FloatValue&>(*second).value));
+            text.machine->output = std::make_shared<Command_Look>(x, y);
+          }
+         else
+          {
+            throw Backwards::Types::TypedOperationException("Error looking: y-location not Float.");
+          }
+       }
+      else
+       {
+         throw Backwards::Types::TypedOperationException("Error looking: x-location not Float.");
+       }
+      return Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE;
+    }
+   catch (const std::bad_cast&)
+    {
+      throw Backwards::Engine::ProgrammingException("Backwards Context wasn't a Backway Context.");
+    }
+ }
+
+STDLIB_UNARY_DECL_WITH_CONTEXT(Load)
+ {
+   try
+    {
+      Backway::CallingContext& text = dynamic_cast<Backway::CallingContext&>(context);
+      if (typeid(Backwards::Types::StringValue) == typeid(*arg))
+       {
+         const std::string& fileName (static_cast<const Backwards::Types::StringValue&>(*arg).value);
+       }
+      else
+       {
+         throw Backwards::Types::TypedOperationException("Error loading file: name not String.");
+       }
+      return Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE;
+    }
+   catch (const std::bad_cast&)
+    {
+      throw Backwards::Engine::ProgrammingException("Backwards Context wasn't a Backway Context.");
+    }
+ }
+
 class ContextBuilder final
  {
 public:
@@ -109,4 +164,6 @@ void ContextBuilder::createGlobalScope (Backwards::Engine::Scope& global)
    Backwards::Parser::ContextBuilder::addFunction("Right", std::make_shared<Backwards::Engine::StandardConstantFunctionWithContext>(Right), 0U, global);
    Backwards::Parser::ContextBuilder::addFunction("Up", std::make_shared<Backwards::Engine::StandardConstantFunctionWithContext>(Up), 0U, global);
    Backwards::Parser::ContextBuilder::addFunction("Down", std::make_shared<Backwards::Engine::StandardConstantFunctionWithContext>(Down), 0U, global);
+
+   Backwards::Parser::ContextBuilder::addFunction("Look", std::make_shared<Backway::StandardBinaryFunctionWithContext>(Look), 2U, global);
  }

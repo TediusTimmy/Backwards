@@ -46,3 +46,10 @@ class Command_Left : public Backway::Command
 class Command_Right : public Backway::Command
  {
  };
+
+class Command_Look : public Backway::Command
+ {
+public:
+   int x, y;
+   Command_Look(int x, int y) : x(x), y(y) { }
+ };

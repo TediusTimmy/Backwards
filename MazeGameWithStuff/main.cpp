@@ -289,16 +289,16 @@ public:
 
    char getMapTile(const int tx, const int ty, const unsigned int z)
     {
-		if (tx < 0)
+      if (tx < 0)
          return getCache(zone.x - 1, zone.y, z)[ty * WORLD_WIDTH + tx + WORLD_WIDTH];
-		else if (tx >= WORLD_WIDTH)
+      else if (tx >= WORLD_WIDTH)
          return getCache(zone.x + 1, zone.y, z)[ty * WORLD_WIDTH + tx - WORLD_WIDTH];
-		else if (ty < 0)
+      else if (ty < 0)
          return getCache(zone.x, zone.y - 1, z)[(ty + WORLD_HEIGHT) * WORLD_WIDTH + tx];
-		else if (ty >= WORLD_HEIGHT)
+      else if (ty >= WORLD_HEIGHT)
          return getCache(zone.x, zone.y + 1, z)[(ty - WORLD_HEIGHT) * WORLD_WIDTH + tx];
       else
-			return getCache(zone.x, zone.y, z)[ty * WORLD_WIDTH + tx];
+         return getCache(zone.x, zone.y, z)[ty * WORLD_WIDTH + tx];
     }
 
    int getTileNumber(char up, char right, char down, char left)
@@ -355,6 +355,31 @@ public:
             else if ((typeid(*machine.output) == typeid(Command_Down)) && ('#' != map[Y_HALF + 1][X_HALF])) { ++player.y; nsc_y = TILE; moved = true; nl = map[Y_HALF + 1][X_HALF]; }
             else if ((typeid(*machine.output) == typeid(Command_Right)) && ('#' != map[Y_HALF][X_HALF + 1])) { ++player.x; nsc_x = TILE; moved = true; nl = map[Y_HALF][X_HALF + 1]; }
             else if ((typeid(*machine.output) == typeid(Command_Left)) && ('#' != map[Y_HALF][X_HALF - 1])) { --player.x; nsc_x = -TILE; moved = true; nl = map[Y_HALF][X_HALF - 1]; }
+            else if (typeid(*machine.output) == typeid(Command_Look))
+             {
+               Command_Look* temp = dynamic_cast<Command_Look*>(machine.output.get());
+               if ((temp->x <= -X_HALF) || (temp->x >= (X_HALF - 1))) machine.input = std::make_shared<Backwards::Types::StringValue>("?");
+               else if ((temp->y <= -Y_HALF) || (temp->y >= (Y_HALF - 1))) machine.input = std::make_shared<Backwards::Types::StringValue>("?");
+               else
+                {
+                  switch (map[Y_HALF + temp->y][X_HALF + temp->x])
+                   {
+                  case '#':
+                     machine.input = std::make_shared<Backwards::Types::StringValue>("#");
+                     break;
+                  case 'D':
+                  case 'E':
+                  case 'U':
+                  case 'V':
+                  case 'O':
+                     machine.input = std::make_shared<Backwards::Types::StringValue>("D");
+                     break;
+                  default:
+                     machine.input = std::make_shared<Backwards::Types::StringValue>(" ");
+                     break;
+                   }
+                }
+             }
           }
          if (true == moved)
           {
