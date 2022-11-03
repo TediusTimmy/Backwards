@@ -287,18 +287,34 @@ public:
       return true;
     }
 
-   char getMapTile(const int tx, const int ty, const unsigned int z)
+   char getMapTile(int tx, int ty, const unsigned int z)
     {
+      unsigned int x = zone.x;
+      unsigned int y = zone.y;
+
       if (tx < 0)
-         return getCache(zone.x - 1, zone.y, z)[ty * WORLD_WIDTH + tx + WORLD_WIDTH];
+       {
+         x -= 1;
+         tx += WORLD_WIDTH;
+       }
       else if (tx >= WORLD_WIDTH)
-         return getCache(zone.x + 1, zone.y, z)[ty * WORLD_WIDTH + tx - WORLD_WIDTH];
-      else if (ty < 0)
-         return getCache(zone.x, zone.y - 1, z)[(ty + WORLD_HEIGHT) * WORLD_WIDTH + tx];
+       {
+         x += 1;
+         tx -= WORLD_WIDTH;
+       }
+
+      if (ty < 0)
+       {
+         y -= 1;
+         ty += WORLD_HEIGHT;
+       }
       else if (ty >= WORLD_HEIGHT)
-         return getCache(zone.x, zone.y + 1, z)[(ty - WORLD_HEIGHT) * WORLD_WIDTH + tx];
-      else
-         return getCache(zone.x, zone.y, z)[ty * WORLD_WIDTH + tx];
+       {
+         y += 1;
+         ty -= WORLD_HEIGHT;
+       }
+
+      return getCache(x, y, z)[ty * WORLD_WIDTH + tx];
     }
 
    int getTileNumber(char up, char right, char down, char left)
