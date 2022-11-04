@@ -416,6 +416,28 @@ public:
                px = 65536;
                py = 65536;
              }
+
+            if (0 == player.x)
+             {
+               zone.x -= 1;
+               player.x += WORLD_WIDTH;
+             }
+            else if (player.x >= WORLD_WIDTH)
+             {
+               zone.x += 1;
+               player.x -= WORLD_WIDTH;
+             }
+
+            if (0 == player.y)
+             {
+               zone.y -= 1;
+               player.y += WORLD_HEIGHT;
+             }
+            else if (player.y >= WORLD_HEIGHT)
+             {
+               zone.y += 1;
+               player.y -= WORLD_HEIGHT;
+             }
           }
          mu = false;
          md = false;

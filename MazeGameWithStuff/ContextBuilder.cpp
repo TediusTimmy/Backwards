@@ -29,12 +29,21 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+#include "Backwards/Input/Lexer.h"
+#include "Backwards/Input/LineBufferedStreamInput.h"
+
 #include "Backwards/Engine/ConstantsSingleton.h"
+#include "Backwards/Engine/Expression.h"
+#include "Backwards/Engine/FatalException.h"
 #include "Backwards/Engine/ProgrammingException.h"
+
 #include "Backwards/Parser/ContextBuilder.h"
+#include "Backwards/Parser/SymbolTable.h"
+#include "Backwards/Parser/Parser.h"
 
 #include "Backwards/Types/FloatValue.h"
 #include "Backwards/Types/StringValue.h"
+#include "Backwards/Types/DictionaryValue.h"
 
 #include "Backway/ContextBuilder.h"
 #include "Backway/CallingContext.h"
@@ -131,23 +140,65 @@ STDLIB_BINARY_DECL_WITH_CONTEXT(Look)
 
 STDLIB_UNARY_DECL_WITH_CONTEXT(Load)
  {
-   try
+   if (typeid(Backwards::Types::StringValue) == typeid(*arg))
     {
-      Backway::CallingContext& text = dynamic_cast<Backway::CallingContext&>(context);
-      if (typeid(Backwards::Types::StringValue) == typeid(*arg))
+      const std::string& fileName (static_cast<const Backwards::Types::StringValue&>(*arg).value);
+
+      Backwards::Input::FileInput file (fileName);
+      Backwards::Input::Lexer lexer (file, fileName);
+
+      Backwards::Parser::GetterSetter gs;
+      Backwards::Parser::SymbolTable table (gs, *context.globalScope);
+
+      std::shared_ptr<Backwards::Engine::Expression> res = Backwards::Parser::Parser::ParseExpression(lexer, table, *context.logger);
+
+      if (nullptr != res.get())
        {
-         const std::string& fileName (static_cast<const Backwards::Types::StringValue&>(*arg).value);
+
+         try
+          {
+            std::shared_ptr<Backwards::Types::ValueType> val = res->evaluate(context);
+
+            if (nullptr != val.get())
+             {
+               if (typeid(Backwards::Types::DictionaryValue) == typeid(*val))
+                {
+                  for (std::map<std::shared_ptr<Backwards::Types::ValueType>, std::shared_ptr<Backwards::Types::ValueType>, Backwards::Types::ChristHowHorrifying>::const_iterator iter =
+                     static_cast<const Backwards::Types::DictionaryValue&>(*val).value.begin();
+                     static_cast<const Backwards::Types::DictionaryValue&>(*val).value.end() != iter; ++iter)
+                   {
+                     Backway::CreateState(context, iter->first, iter->second);
+                   }
+                }
+               else
+                {
+                  throw Backwards::Types::TypedOperationException("Load failed: loaded value was not a Dictionary.");
+                }
+             }
+            else
+             {
+               throw Backwards::Types::TypedOperationException("Load failed: evaluate failed.");
+             }
+          }
+         catch (const Backwards::Types::TypedOperationException& e)
+          {
+            throw Backwards::Types::TypedOperationException(std::string("Load failed: ") + e.what());
+          }
+         catch (const Backwards::Engine::FatalException& e)
+          {
+            throw Backwards::Types::TypedOperationException(std::string("Load failed: ") + e.what());
+          }
        }
       else
        {
-         throw Backwards::Types::TypedOperationException("Error loading file: name not String.");
+         throw Backwards::Types::TypedOperationException("Load failed: parse failed.");
        }
-      return Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE;
     }
-   catch (const std::bad_cast&)
+   else
     {
-      throw Backwards::Engine::ProgrammingException("Backwards Context wasn't a Backway Context.");
+      throw Backwards::Types::TypedOperationException("Error loading file: name not String.");
     }
+   return Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE;
  }
 
 class ContextBuilder final
@@ -164,6 +215,8 @@ void ContextBuilder::createGlobalScope (Backwards::Engine::Scope& global)
    Backwards::Parser::ContextBuilder::addFunction("Right", std::make_shared<Backwards::Engine::StandardConstantFunctionWithContext>(Right), 0U, global);
    Backwards::Parser::ContextBuilder::addFunction("Up", std::make_shared<Backwards::Engine::StandardConstantFunctionWithContext>(Up), 0U, global);
    Backwards::Parser::ContextBuilder::addFunction("Down", std::make_shared<Backwards::Engine::StandardConstantFunctionWithContext>(Down), 0U, global);
+
+   Backwards::Parser::ContextBuilder::addFunction("Load", std::make_shared<Backwards::Engine::StandardUnaryFunctionWithContext>(Load), 1U, global);
 
    Backwards::Parser::ContextBuilder::addFunction("Look", std::make_shared<Backway::StandardBinaryFunctionWithContext>(Look), 2U, global);
  }

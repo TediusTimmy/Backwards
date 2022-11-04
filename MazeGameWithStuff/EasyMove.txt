@@ -1,0 +1,6 @@
+{
+   "Up"    : " set Update to function up    (arg) is call Push('__UP__')    return arg end " ;
+   "Down"  : " set Update to function down  (arg) is call Push('__DOWN__')  return arg end " ;
+   "Left"  : " set Update to function left  (arg) is call Push('__LEFT__')  return arg end " ;
+   "Right" : " set Update to function right (arg) is call Push('__RIGHT__') return arg end "
+}
