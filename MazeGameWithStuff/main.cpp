@@ -41,6 +41,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Backwards/Engine/FunctionContext.h"
 #include "Backwards/Engine/FatalException.h"
 #include "Backwards/Engine/Logger.h"
+#include "Backwards/Engine/ProgrammingException.h"
+#include "Backwards/Engine/DebuggerHook.h"
+#include "Backwards/Engine/StackFrame.h"
 
 #include "Backwards/Types/FloatValue.h"
 #include "Backwards/Types/StringValue.h"
@@ -56,6 +59,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 #include <vector>
+#include <mutex>
+#include <condition_variable>
 
 #define OLC_KEYBOARD_US
 #define OLC_PGE_APPLICATION
@@ -77,7 +82,30 @@ public:
    std::stringstream& sink;
    ConsoleLogger(std::stringstream& sink) : sink(sink) { }
    void log (const std::string& message) { sink << message << std::endl; }
-   std::string get () { return ""; }
+
+   std::condition_variable reader;
+   std::mutex lock;
+   std::list<std::string> list;
+   std::string get ()
+    {
+      std::unique_lock<std::mutex> scoped(lock);
+      while (true == list.empty())
+       {
+         reader.wait(scoped);
+       }
+      std::string result = list.front();
+      list.pop_front();
+      scoped.unlock();
+      return result;
+    }
+   void put(const std::string& str)
+    {
+       {
+         std::unique_lock<std::mutex> scoped(lock);
+         list.push_back(str);
+       }
+      reader.notify_one();
+    }
  };
 
 class NullLogger final : public Backwards::Engine::Logger
@@ -200,7 +228,7 @@ class View : public olc::PixelGameEngine
 public:
    View() : logger (ConsoleOut())
     {
-      sAppName = "Backroom Quest Alpha v0.0.3";
+      sAppName = "Backroom Quest Alpha v0.0.4";
     }
 
 private:
@@ -216,17 +244,20 @@ private:
    Backwards::Engine::Scope global;
    ConsoleLogger logger;
    NullLogger nullLogger;
+   Backwards::Engine::DefaultDebugger debugger;
 
    Backway::CallingContext context;
+   Backway::CallingContext nullLog;
+   Backway::CallingContext nullDebug;
    Backway::StateMachine machine;
    Backway::Environment environment;
 
    void reset()
     {
-      context.machine->states.clear();
-      context.machine->last = Backwards::Engine::ConstantsSingleton::getInstance().EMPTY_DICTIONARY;
-      context.machine->input = Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ZERO;
-      context.machine->output = std::shared_ptr<Backway::Command>();
+      machine.states.clear();
+      machine.last = Backwards::Engine::ConstantsSingleton::getInstance().EMPTY_DICTIONARY;
+      machine.input = Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ZERO;
+      machine.output = std::shared_ptr<Backway::Command>();
     }
 
 public:
@@ -271,18 +302,33 @@ public:
 
       ContextBuilder::createGlobalScope(global);
 
+      context.logger = &logger;
+      context.debugger = &debugger;
       context.globalScope = &global;
       context.machine = &machine;
       context.environment = &environment;
 
+      nullLog.logger = &nullLogger;
+      nullLog.globalScope = &global;
+      nullLog.machine = &machine;
+      nullLog.environment = &environment;
+
+      nullDebug.logger = &logger;
+      nullDebug.globalScope = &global;
+      nullDebug.machine = &machine;
+      nullDebug.environment = &environment;
+
       machine.rng = JAVA(std::time(nullptr));
 
-      evaluateString("CreateState('__LEFT__'; 'set Called to 0 set Update to function left (arg) is if Called then call Leave() else call Left() set Called to 1 end return arg end')", nullLogger);
-      evaluateString("CreateState('__RIGHT__'; 'set Called to 0 set Update to function right (arg) is if Called then call Leave() else call Right() set Called to 1 end return arg end')", nullLogger);
-      evaluateString("CreateState('__UP__'; 'set Called to 0 set Update to function up (arg) is if Called then call Leave() else call Up() set Called to 1 end return arg end')", nullLogger);
-      evaluateString("CreateState('__DOWN__'; 'set Called to 0 set Update to function down (arg) is if Called then call Leave() else call Down() set Called to 1 end return arg end')", nullLogger);
+      evaluateString("CreateState('__LEFT__'; 'set Called to 0 set Update to function left (arg) is if Called then call Leave() else call Left() set Called to 1 end return arg end')", nullLog);
+      evaluateString("CreateState('__RIGHT__'; 'set Called to 0 set Update to function right (arg) is if Called then call Leave() else call Right() set Called to 1 end return arg end')", nullLog);
+      evaluateString("CreateState('__UP__'; 'set Called to 0 set Update to function up (arg) is if Called then call Leave() else call Up() set Called to 1 end return arg end')", nullLog);
+      evaluateString("CreateState('__DOWN__'; 'set Called to 0 set Update to function down (arg) is if Called then call Leave() else call Down() set Called to 1 end return arg end')", nullLog);
 
       reset();
+
+      std::thread bob ( [this] { this->CommandThread(); });
+      bob.detach();
 
       return true;
     }
@@ -358,12 +404,27 @@ public:
          char nl = '#';
 
          if (GetKey(olc::Key::F1).bHeld) reset();
-         else if (true == mu) evaluateString("Push('__UP__')", nullLogger);
-         else if (true == md) evaluateString("Push('__DOWN__')", nullLogger);
-         else if (true == mr) evaluateString("Push('__RIGHT__')", nullLogger);
-         else if (true == ml) evaluateString("Push('__LEFT__')", nullLogger);
+         else if (true == mu) evaluateString("Push('__UP__')", nullLog);
+         else if (true == md) evaluateString("Push('__DOWN__')", nullLog);
+         else if (true == mr) evaluateString("Push('__RIGHT__')", nullLog);
+         else if (true == ml) evaluateString("Push('__LEFT__')", nullLog);
 
-         machine.update(context);
+         try
+          {
+            machine.update(nullDebug);
+          }
+         catch (const Backwards::Types::TypedOperationException& e)
+          {
+            ConsoleOut() << "Caught runtime exception: " << e.what() << std::endl;
+          }
+         catch (const Backwards::Engine::FatalException& e)
+          {
+            ConsoleOut() << "Caught Fatal Error: " << e.what() << std::endl;
+          }
+         catch (const Backwards::Engine::ProgrammingException& e)
+          {
+            ConsoleOut() << "This is a BUG, please report it: " << e.what() << std::endl;
+          }
 
          if (nullptr != machine.output.get())
           {
@@ -484,40 +545,52 @@ public:
       return true;
     }
 
+   void CommandThread()
+    {
+      for (;;)
+       {
+         std::string sCommand = logger.get();
+         evaluateString(sCommand, context);
+       }
+    }
+
 	bool OnConsoleCommand(const std::string& sCommand)
     {
       ConsoleOut() << "> " << sCommand << std::endl;
 
-      evaluateString(sCommand, logger);
+      logger.put(sCommand);
 
       return true;
     }
 
 private:
-   void evaluateString(const std::string& sCommand, Backwards::Engine::Logger& logger)
+   void evaluateString(const std::string& sCommand, Backway::CallingContext& text)
     {
-      context.logger = &logger;
-
       Backwards::Input::StringInput string (sCommand);
       Backwards::Input::Lexer lexer (string, "Console Command");
 
       Backwards::Parser::GetterSetter gs;
       Backwards::Parser::SymbolTable table (gs, global);
 
-      std::shared_ptr<Backwards::Engine::Expression> res = Backwards::Parser::Parser::ParseExpression(lexer, table, logger);
+      std::shared_ptr<Backwards::Engine::Expression> res = Backwards::Parser::Parser::ParseExpression(lexer, table, *text.logger);
 
       if (nullptr != res.get())
        {
 
+         Backwards::Input::Token token;
+         std::shared_ptr<Backwards::Engine::FunctionContext> function = std::make_shared<Backwards::Engine::FunctionContext>();
+         function->name = "User Input";
+         Backwards::Engine::StackFrame frame (function, token, text.currentFrame);
+         text.pushContext(&frame);
          try
           {
-            std::shared_ptr<Backwards::Types::ValueType> val = res->evaluate(context);
+            std::shared_ptr<Backwards::Types::ValueType> val = res->evaluate(text);
 
             if (nullptr != val.get())
              {
-               if (typeid(logger) == typeid(ConsoleLogger))
+               if (typeid(*text.logger) == typeid(ConsoleLogger))
                 {
-                  printValue(static_cast<ConsoleLogger&>(logger), val);
+                  printValue(static_cast<ConsoleLogger&>(*text.logger), val);
                   ConsoleOut() << std::endl;
                 }
              }
@@ -534,6 +607,16 @@ private:
           {
             ConsoleOut() << "Caught Fatal Error: " << e.what() << std::endl;
           }
+         catch (const Backwards::Engine::ProgrammingException& e)
+          {
+            ConsoleOut() << "This is a BUG, please report it: " << e.what() << std::endl;
+          }
+         catch (...)
+          {
+            text.popContext();
+            throw;
+          }
+         text.popContext();
        }
       else
        {
