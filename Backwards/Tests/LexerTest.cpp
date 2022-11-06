@@ -201,4 +201,10 @@ TEST(LexerTests, testEverythingAndTheKitchenSink)
       Backwards::Input::BufferedGenericInput bgi (input);
       EXPECT_EQ('h', bgi.consume());
     }
+
+    {
+      Backwards::Input::FileInput input ("../Tests/NoSuchFile.txt");
+      Backwards::Input::Lexer lexer (input, "TestFile");
+      EXPECT_EQ(Backwards::Input::END_OF_FILE, lexer.getNextToken().lexeme);
+    }
  }

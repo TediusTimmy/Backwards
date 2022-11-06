@@ -74,6 +74,8 @@ namespace Input
    public:
       FileInput(const std::string& fileName);
 
+      int getNextCharacter();
+
     };
 
  } // namespace Input

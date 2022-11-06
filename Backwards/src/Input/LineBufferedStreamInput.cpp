@@ -78,6 +78,15 @@ namespace Input
     {
     }
 
+   int FileInput::getNextCharacter()
+    {
+      if (false == source.is_open())
+       {
+         return ENDOFFILE;
+       }
+      return LineBufferedStreamInput::getNextCharacter();
+    }
+
  } // namespace Input
 
  } // namespace Backwards
