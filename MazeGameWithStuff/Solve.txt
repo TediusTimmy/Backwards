@@ -1,0 +1,150 @@
+ {
+   "Walk" :
+ "
+   set Update to function (arg) is
+      call Info('In Walk')
+         (*
+            direction is the direction to travel:
+            0 - up
+            1 - right
+            2 - down
+            3 - left
+
+            a right turn is +1 mod 4, and a left turn is -1 mod 4
+         *)
+      if ! ContainsKey(arg; 'direction') then
+         set arg.direction to 0
+      elseif arg.direction > 4 | arg.direction < 0 then
+         set arg.direction to 0
+      end
+      call Enqueue({'Walk_One'; 'Walk_Two'; 'Walk_Three'})
+      call Leave()
+      return arg
+   end
+ ";
+
+   "Walk_One" :
+ "
+   set Look_Right to function (dir) is
+      select dir from
+      case 0 is
+         call Info('Going Up, Looking Right')
+         call Look(1; 0)
+      case 1 is
+         call Info('Going Right, Looking Down')
+         call Look(0; 1)
+      case 2 is
+         call Info('Going Down, Looking Left')
+         call Look(-1; 0)
+      case 3 is
+         call Info('Going Left, Looking Up')
+         call Look(0; -1)
+      end
+      return 0
+   end
+
+   set Called to 0
+
+   set Update to function (arg) is
+      call Info('In Walk_One')
+      if ! Called then
+         call Look_Right(arg.direction)
+         set Called to 1
+      else
+         call Leave()
+      end
+      return arg
+   end
+ ";
+
+   "Walk_Two" :
+ "
+   set Look_Forward to function (dir) is
+      select dir from
+      case 0 is
+         call Info('Going Up, Looking Up')
+         call Look(0; -1)
+      case 1 is
+         call Info('Going Right, Looking Right')
+         call Look(1; 0)
+      case 2 is
+         call Info('Going Down, Looking Down')
+         call Look(0; 1)
+      case 3 is
+         call Info('Going Left, Looking Left')
+         call Look(-1; 0)
+      end
+      return 0
+   end
+
+   set Called to 0
+
+   set Update to function (arg) is
+      call Info('In Walk_Two')
+      if ! Called then
+         if ' ' = GetInput() then
+            call Info('Left Wall ' + GetInput())
+            (* Turn Right *)
+            set arg.direction to arg.direction + 1
+            if arg.direction = 4 then
+               set arg.direction to 0
+            end
+            call Info('Now moving in direction ' + ToString(arg.direction))
+            call Leave()
+         else
+            call Info('On Wall ' + GetInput())
+            call Look_Forward(arg.direction)
+            set Called to 1
+         end
+      else
+         call Leave()
+      end
+      return arg
+   end
+ ";
+
+   "Walk_Three" :
+ "
+   set Move_Forward to function (dir) is
+      select dir from
+      case 0 is
+         call Up()
+      case 1 is
+         call Right()
+      case 2 is
+         call Down()
+      case 3 is
+         call Left()
+      end
+      return 0
+   end
+
+   set Called to 0
+
+   set Update to function (arg) is
+      call Info('In Walk_Three')
+      if ! Called then
+         if ' ' <> GetInput() then
+            call Info('Saw Obstacle ' + GetInput())
+            (* Turn Left *)
+            set arg.direction to arg.direction - 1
+            if arg.direction = -1 then
+               set arg.direction to 3
+            end
+            call Info('Now moving in direction ' + ToString(arg.direction))
+            call Enqueue('Walk')
+            call Leave()
+         else
+            call Info('Saw Path ' + GetInput())
+            call Move_Forward(arg.direction)
+
+            set Called to 1
+         end
+      else
+         call Enqueue('Walk')
+         call Leave()
+      end
+      return arg
+   end
+ "
+ }
