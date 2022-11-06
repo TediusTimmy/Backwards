@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Backwards/Engine/Expression.h"
 #include "Backwards/Engine/FatalException.h"
 #include "Backwards/Engine/ProgrammingException.h"
+#include "Backwards/Engine/Logger.h"
 
 #include "Backwards/Parser/ContextBuilder.h"
 #include "Backwards/Parser/SymbolTable.h"
@@ -44,12 +45,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Backwards/Types/FloatValue.h"
 #include "Backwards/Types/StringValue.h"
 #include "Backwards/Types/DictionaryValue.h"
+#include "Backwards/Types/ArrayValue.h"
 
 #include "Backway/ContextBuilder.h"
 #include "Backway/CallingContext.h"
 #include "Backway/StdLib.h"
 
 #include "Commands.h"
+
+#include <sstream>
 
 STDLIB_CONSTANT_DECL_WITH_CONTEXT(Left)
  {
@@ -201,6 +205,99 @@ STDLIB_UNARY_DECL_WITH_CONTEXT(Load)
    return Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE;
  }
 
+STDLIB_UNARY_DECL_WITH_CONTEXT(SetInput)
+ {
+   try
+    {
+      Backway::CallingContext& text = dynamic_cast<Backway::CallingContext&>(context);
+      text.machine->input = arg;
+      return Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE;
+    }
+   catch (const std::bad_cast&)
+    {
+      throw Backwards::Engine::ProgrammingException("Backwards Context wasn't a Backway Context.");
+    }
+ }
+
+STDLIB_CONSTANT_DECL_WITH_CONTEXT(DumpMachine)
+ {
+   try
+    {
+      Backway::CallingContext& text = dynamic_cast<Backway::CallingContext&>(context);
+      std::shared_ptr<Backwards::Types::ArrayValue> result = std::make_shared<Backwards::Types::ArrayValue>();
+      std::list<std::string> stateLists;
+      for (const auto& iter : text.machine->states)
+       {
+         std::shared_ptr<Backwards::Types::ArrayValue> temp = std::make_shared<Backwards::Types::ArrayValue>();
+         std::ostringstream layer;
+         layer << "-";
+         for (const auto& state : iter)
+          {
+            temp->value.push_back(std::make_shared<Backwards::Types::StringValue>(state->scope.name));
+            layer << " " << state->scope.name;
+          }
+         stateLists.push_front(layer.str());
+         result->value.push_back(temp);
+       }
+      for (const auto& list : stateLists)
+       {
+         text.logger->log(list);
+       }
+      return result;
+    }
+   catch (const std::bad_cast&)
+    {
+      throw Backwards::Engine::ProgrammingException("Backwards Context wasn't a Backway Context.");
+    }
+ }
+
+   // This is copy-pasted from main.cpp. This is bad practice.
+class DebuggerLogger final : public Backwards::Engine::Logger
+ {
+public:
+   std::stringstream& sink;
+   std::vector<std::string> commands;
+   size_t command;
+   DebuggerLogger(std::stringstream& sink) : sink(sink) { }
+   void log (const std::string& message) { sink << message << std::endl; }
+   std::string get () { if (command >= commands.size()) return "quit"; return commands[command++]; }
+ };
+extern DebuggerLogger* nastyHack;
+
+   // This is STDLIB_UNARY_DECL expanded, because it was never intended to be used outside of Backwards.
+std::shared_ptr<Backwards::Types::ValueType> SetDebugScript (const std::shared_ptr<Backwards::Types::ValueType>& arg)
+ {
+   if (typeid(Backwards::Types::ArrayValue) == typeid(*arg))
+    {
+      std::vector<std::string> commands;
+      for (const auto& ptr : static_cast<const Backwards::Types::ArrayValue&>(*arg).value)
+       {
+         if (typeid(Backwards::Types::StringValue) == typeid(*ptr))
+          {
+            commands.push_back(static_cast<const Backwards::Types::StringValue&>(*ptr).value);
+          }
+         else
+          {
+            throw Backwards::Types::TypedOperationException("Error setting script: not an Array of String.");
+          }
+       }
+      if (nullptr != nastyHack)
+       {
+         nastyHack->commands = commands;
+         nastyHack->command = 0U;
+       }
+      else
+       {
+         throw Backwards::Engine::ProgrammingException("Where's the logger?");
+       }
+    }
+   else
+    {
+      throw Backwards::Types::TypedOperationException("Error setting script: not Array.");
+    }
+   return Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ONE;
+ }
+
 class ContextBuilder final
  {
 public:
@@ -215,8 +312,11 @@ void ContextBuilder::createGlobalScope (Backwards::Engine::Scope& global)
    Backwards::Parser::ContextBuilder::addFunction("Right", std::make_shared<Backwards::Engine::StandardConstantFunctionWithContext>(Right), 0U, global);
    Backwards::Parser::ContextBuilder::addFunction("Up", std::make_shared<Backwards::Engine::StandardConstantFunctionWithContext>(Up), 0U, global);
    Backwards::Parser::ContextBuilder::addFunction("Down", std::make_shared<Backwards::Engine::StandardConstantFunctionWithContext>(Down), 0U, global);
+   Backwards::Parser::ContextBuilder::addFunction("DumpMachine", std::make_shared<Backwards::Engine::StandardConstantFunctionWithContext>(DumpMachine), 0U, global);
 
    Backwards::Parser::ContextBuilder::addFunction("Load", std::make_shared<Backwards::Engine::StandardUnaryFunctionWithContext>(Load), 1U, global);
+   Backwards::Parser::ContextBuilder::addFunction("SetInput", std::make_shared<Backwards::Engine::StandardUnaryFunctionWithContext>(SetInput), 1U, global);
+   Backwards::Parser::ContextBuilder::addFunction("SetDebugScript", std::make_shared<Backwards::Engine::StandardUnaryFunction>(SetDebugScript), 1U, global);
 
    Backwards::Parser::ContextBuilder::addFunction("Look", std::make_shared<Backway::StandardBinaryFunctionWithContext>(Look), 2U, global);
  }

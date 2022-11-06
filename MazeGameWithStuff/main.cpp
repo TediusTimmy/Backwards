@@ -115,6 +115,18 @@ public:
    std::string get () { return ""; }
  };
 
+class DebuggerLogger final : public Backwards::Engine::Logger
+ {
+public:
+   std::stringstream& sink;
+   std::vector<std::string> commands;
+   size_t command;
+   DebuggerLogger(std::stringstream& sink) : sink(sink) { }
+   void log (const std::string& message) { sink << message << std::endl; }
+   std::string get () { if (command >= commands.size()) return "quit"; return commands[command++]; }
+ };
+DebuggerLogger* nastyHack;
+
 class ContextBuilder final
  {
 public:
@@ -226,7 +238,7 @@ const std::string& getCache(unsigned int x, unsigned int y, unsigned int z)
 class View : public olc::PixelGameEngine
  {
 public:
-   View() : logger (ConsoleOut())
+   View() : logger (ConsoleOut()), debugLogger(ConsoleOut())
     {
       sAppName = "Backroom Quest Alpha v0.0.4";
     }
@@ -244,6 +256,7 @@ private:
    Backwards::Engine::Scope global;
    ConsoleLogger logger;
    NullLogger nullLogger;
+   DebuggerLogger debugLogger;
    Backwards::Engine::DefaultDebugger debugger;
 
    Backway::CallingContext context;
@@ -313,7 +326,9 @@ public:
       nullLog.machine = &machine;
       nullLog.environment = &environment;
 
-      nullDebug.logger = &logger;
+      nullDebug.logger = &debugLogger;
+      nastyHack = &debugLogger;
+      nullDebug.debugger = &debugger;
       nullDebug.globalScope = &global;
       nullDebug.machine = &machine;
       nullDebug.environment = &environment;
