@@ -7,6 +7,7 @@ the argument loop and queues up the three states.
 2) The first thing that happens is that we look to ensure that the wall is
 still to our right. It is a wall-following algorithm utilizing a right-hand
 rule. So, we look to the right, allow the action to happen, and proceed to the
+next state.
 
 3) We have the feedback from the Look. If there isn't a wall to our right,
 turn right and proceed to the next state. If there is a wall, we now look
