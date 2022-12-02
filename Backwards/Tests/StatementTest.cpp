@@ -91,7 +91,7 @@ TEST(EngineTests, testBasic)
    fun->nlocals = 0;
    fun->function = std::make_shared<Backwards::Engine::StandardUnaryFunctionWithContext>(Backwards::Engine::Info);
 
-   std::shared_ptr<Backwards::Types::FunctionValue> info = std::make_shared<Backwards::Types::FunctionValue>(fun);
+   std::shared_ptr<Backwards::Types::FunctionValue> info = std::make_shared<Backwards::Types::FunctionValue>(fun, std::vector<std::shared_ptr<Backwards::Types::ValueType> >());
    std::shared_ptr<Backwards::Engine::Constant> infos = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), info);
    std::shared_ptr<Backwards::Types::StringValue> message = std::make_shared<Backwards::Types::StringValue>("hello");
    std::shared_ptr<Backwards::Engine::Constant> messages = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), message);

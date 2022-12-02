@@ -352,6 +352,7 @@ namespace Engine
          throw FatalException(str.str());
        }
       StackFrame frame (function, token, context.currentFrame);
+      frame.captures = std::dynamic_pointer_cast<Types::FunctionValue>(LOC)->captures;
       for (size_t i = 0U; i < args.size(); ++i)
        {
          frame.args[i] = args[i]->evaluate(context);
@@ -395,6 +396,23 @@ namespace Engine
          context.popContext();
          throw;
        }
+    }
+
+
+   BuildFunction::BuildFunction(const Input::Token& token, const std::shared_ptr<FunctionContext>& prototype, const std::vector<std::shared_ptr<Expression> >& captures) :
+      Expression(token), prototype(prototype), captures(captures)
+    {
+    }
+
+   std::shared_ptr<Types::ValueType> BuildFunction::evaluate (CallingContext& context) const
+    {
+       /* This doesn't perform an operation that can fail. */
+      std::vector<std::shared_ptr<Types::ValueType> > captured;
+      for (std::vector<std::shared_ptr<Expression> >::const_iterator iter = captures.begin(); captures.end() != iter; ++iter)
+       {
+         captured.emplace_back((*iter)->evaluate(context));
+       }
+      return std::make_shared<Types::FunctionValue>(prototype, captured);
     }
 
 

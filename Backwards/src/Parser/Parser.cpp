@@ -425,7 +425,37 @@ namespace Parser
           {
             Input::Token buildToken = src.getNextToken();
 
-            ret = std::make_shared<Engine::Constant>(buildToken, table.activeFunctions[buildToken.text]);
+            std::vector<std::shared_ptr<Engine::Expression> > captures;
+            if (0U != table.activeFunctions[buildToken.text]->ncaptures)
+             {
+               expect(src, Input::OPEN_BRACKET, "[");
+               if (Input::CLOSE_BRACKET != src.peekNextToken().lexeme)
+                {
+                  captures.emplace_back(expression(src, table, logger));
+                  while (Input::SEMICOLON == src.peekNextToken().lexeme)
+                   {
+                     src.getNextToken();
+                     captures.emplace_back(expression(src, table, logger));
+                   }
+                }
+               if (captures.size() != table.activeFunctions[buildToken.text]->ncaptures)
+                {
+                  std::stringstream str;
+                  str << "Function >" << buildToken.text << "< called with " << captures.size() << " of " << table.activeFunctions[buildToken.text]->ncaptures << " captured values provided." << std::endl
+                      << "\tFrom " << src.peekNextToken().lineLocation << " on line " << src.peekNextToken().lineNumber << " in file " << src.peekNextToken().sourceFile;
+                  throw ParserException(str.str());
+                }
+               expect(src, Input::CLOSE_BRACKET, "]");
+             }
+
+            if (true == captures.empty())
+             {
+               ret = std::make_shared<Engine::Constant>(buildToken, std::make_shared<Types::FunctionValue>(table.activeFunctions[buildToken.text], std::vector<std::shared_ptr<Types::ValueType> >()));
+             }
+            else
+             {
+               ret = std::make_shared<Engine::BuildFunction>(buildToken, table.activeFunctions[buildToken.text], captures);
+             }
           }
             break;
          case SymbolTable::UNDEFINED:
@@ -443,6 +473,22 @@ namespace Parser
          Input::Token buildToken = src.getNextToken();
          bool badWrong = false;
 
+         std::vector<std::shared_ptr<Engine::Expression> > captures;
+         if (Input::OPEN_BRACKET == src.peekNextToken().lexeme)
+          {
+            src.getNextToken();
+            if (Input::CLOSE_BRACKET != src.peekNextToken().lexeme)
+             {
+               captures.emplace_back(expression(src, table, logger));
+               while (Input::SEMICOLON == src.peekNextToken().lexeme)
+                {
+                  src.getNextToken();
+                  captures.emplace_back(expression(src, table, logger));
+                }
+             }
+            expect(src, Input::CLOSE_BRACKET, "]");
+          }
+
          table.pushContext();
          try
           {
@@ -454,7 +500,8 @@ namespace Parser
              }
 
             expect(src, Input::OPEN_PARENS, "(");
-            table.activeFunctions.emplace(table.getContext()->name, std::make_shared<Types::FunctionValue>(table.getContext()));
+            table.activeFunctions.emplace(table.getContext()->name, table.getContext());
+            table.getContext()->ncaptures = captures.size();
 
             if (Input::CLOSE_PARENS != src.peekNextToken().lexeme)
              {
@@ -479,6 +526,37 @@ namespace Parser
             try
              {
                expect(src, Input::CLOSE_PARENS, ")");
+
+               if (false == captures.empty())
+                {
+                  expect(src, Input::OPEN_BRACKET, "[");
+
+                  Input::Token captureName = src.peekNextToken();
+                  expect(src, Input::IDENTIFIER, "Capture Identifier");
+                  badWrong |= enforceUnique(captureName, table, "function capture", logger);
+                  table.addCapture(captureName.text);
+
+                  while (Input::SEMICOLON == src.peekNextToken().lexeme)
+                   {
+                     src.getNextToken();
+
+                     Input::Token captureNext = src.peekNextToken();
+                     expect(src, Input::IDENTIFIER, "Capture Identifier");
+                     badWrong |= enforceUnique(captureNext, table, "function capture", logger);
+                     table.addCapture(captureNext.text);
+                   }
+
+                  if (captures.size() != table.getContext()->captures.size())
+                   {
+                     std::stringstream str;
+                     str << "Function parameterized with " << captures.size() << " values but given " << table.getContext()->captures.size() << " value names." << std::endl
+                         << "\tFrom " << src.peekNextToken().lineLocation << " on line " << src.peekNextToken().lineNumber << " in file " << src.peekNextToken().sourceFile;
+                     throw ParserException(str.str());
+                   }
+
+                  expect(src, Input::CLOSE_BRACKET, "]");
+                }
+
                expect(src, Input::IS, "is");
              }
             catch (const ParserException& e)
@@ -498,7 +576,14 @@ namespace Parser
                table.getContext()->nlocals = table.getContext()->locals.size();
                 // Nota bene : we are being very loosey-goosey with the functions.
                table.activeFunctions.erase(table.getContext()->name);
-               ret = std::make_shared<Engine::Constant>(buildToken, std::make_shared<Types::FunctionValue>(table.getContext()));
+               if (true == captures.empty())
+                {
+                  ret = std::make_shared<Engine::Constant>(buildToken, std::make_shared<Types::FunctionValue>(table.getContext(), std::vector<std::shared_ptr<Types::ValueType> >()));
+                }
+               else
+                {
+                  ret = std::make_shared<Engine::BuildFunction>(buildToken, table.getContext(), captures);
+                }
              }
             else
              {

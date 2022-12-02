@@ -134,7 +134,7 @@ namespace Parser
 
       global.names.emplace_back(name);
       global.var.emplace(std::make_pair(name, global.vars.size()));
-      global.vars.emplace_back(std::make_shared<Types::FunctionValue>(fun));
+      global.vars.emplace_back(std::make_shared<Types::FunctionValue>(fun, std::vector<std::shared_ptr<Types::ValueType> >()));
 
       for (size_t arg = 0U; arg < nargs; ++arg)
        {

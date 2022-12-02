@@ -41,6 +41,8 @@ namespace Backwards
 namespace Engine
  {
 
+   class FunctionContext;
+
    class Expression
     {
    public:
@@ -123,6 +125,19 @@ namespace Engine
       std::vector<std::shared_ptr<Expression> > args;
 
       FunctionCall(const Input::Token&, const std::shared_ptr<Expression>&, const std::vector<std::shared_ptr<Expression> >&);
+
+      std::shared_ptr<Types::ValueType> evaluate (CallingContext&) const;
+    };
+
+
+
+   class BuildFunction final : public Expression
+    {
+   public:
+      std::shared_ptr<FunctionContext> prototype;
+      std::vector<std::shared_ptr<Expression> > captures;
+
+      BuildFunction(const Input::Token&, const std::shared_ptr<FunctionContext>&, const std::vector<std::shared_ptr<Expression> >&);
 
       std::shared_ptr<Types::ValueType> evaluate (CallingContext&) const;
     };

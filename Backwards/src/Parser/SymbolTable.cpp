@@ -92,6 +92,11 @@ namespace Parser
          gs.localsSetters.emplace_back(std::make_shared<Engine::LocalSetter>(gs.localsSetters.size()));
          gs.localsGetters.emplace_back(std::make_shared<Engine::LocalGetter>(gs.localsGetters.size()));
        }
+      while (frames.back()->captures.size() > gs.capturesGetters.size())
+       {
+         gs.capturesSetters.emplace_back(std::make_shared<Engine::CaptureSetter>(gs.capturesSetters.size()));
+         gs.capturesGetters.emplace_back(std::make_shared<Engine::CaptureGetter>(gs.capturesGetters.size()));
+       }
     }
 
    std::shared_ptr<Engine::FunctionContext> SymbolTable::getContext()
@@ -166,6 +171,19 @@ namespace Parser
        }
     }
 
+   void SymbolTable::addCapture(const std::string& name)
+    {
+      frames.back()->captures.emplace(std::make_pair(name, frames.back()->captures.size()));
+      frames.back()->captureNames.emplace_back(name);
+
+      // Assume that these two arrays are in sync.
+      if (frames.back()->captures.size() > gs.capturesGetters.size())
+       {
+         gs.capturesSetters.emplace_back(std::make_shared<Engine::CaptureSetter>(gs.capturesSetters.size()));
+         gs.capturesGetters.emplace_back(std::make_shared<Engine::CaptureGetter>(gs.capturesGetters.size()));
+       }
+    }
+
 
    std::shared_ptr<Engine::Getter> SymbolTable::getVariableGetter(const std::string& name) const
     {
@@ -182,6 +200,12 @@ namespace Parser
          if (frames.back()->locals.end() != test)
           {
             return gs.localsGetters[test->second];
+          }
+
+         test = frames.back()->captures.find(name);
+         if (frames.back()->captures.end() != test)
+          {
+            return gs.capturesGetters[test->second];
           }
        }
 
@@ -219,6 +243,13 @@ namespace Parser
           {
             return gs.localsSetters[test->second];
           }
+
+          /* I do not feel bad that this does not do what people think it does. */
+         test = frames.back()->captures.find(name);
+         if (frames.back()->captures.end() != test)
+          {
+            return gs.capturesSetters[test->second];
+          }
        }
 
       if (false == scopes.empty())
@@ -245,6 +276,7 @@ namespace Parser
        {
          if (frames.back()->args.end() != frames.back()->args.find(name)) return LOCAL_VARIABLE;
          if (frames.back()->locals.end() != frames.back()->locals.find(name)) return LOCAL_VARIABLE;
+         if (frames.back()->captures.end() != frames.back()->captures.find(name)) return LOCAL_VARIABLE;
        }
       if (activeFunctions.end() != activeFunctions.find(name)) return FUNCTION;
       if ((false == scopes.empty()) && (scopes.back()->var.end() != scopes.back()->var.find(name))) return SCOPE_VARIABLE;

@@ -246,7 +246,7 @@ TEST(EngineTests, testBase)
    fun->nlocals = 0;
    fun->function = std::make_shared<Backwards::Engine::StandardUnaryFunctionWithContext>(Backwards::Engine::Info);
 
-   std::shared_ptr<Backwards::Types::FunctionValue> info = std::make_shared<Backwards::Types::FunctionValue>(fun);
+   std::shared_ptr<Backwards::Types::FunctionValue> info = std::make_shared<Backwards::Types::FunctionValue>(fun, std::vector<std::shared_ptr<Backwards::Types::ValueType> >());
    std::shared_ptr<Backwards::Engine::Constant> infos = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), info);
    std::shared_ptr<Backwards::Types::StringValue> message = std::make_shared<Backwards::Types::StringValue>("hello");
    std::shared_ptr<Backwards::Engine::Constant> messages = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), message);
@@ -303,7 +303,7 @@ TEST(EngineTests, testExceptionBonanza)
    fun->nlocals = 0;
    fun->function = std::make_shared<Backwards::Engine::StandardUnaryFunctionWithContext>(Backwards::Engine::Info);
 
-   std::shared_ptr<Backwards::Types::FunctionValue> infos = std::make_shared<Backwards::Types::FunctionValue>(fun);
+   std::shared_ptr<Backwards::Types::FunctionValue> infos = std::make_shared<Backwards::Types::FunctionValue>(fun, std::vector<std::shared_ptr<Backwards::Types::ValueType> >());
    std::shared_ptr<Backwards::Engine::Constant> info = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), infos);
 
    Backwards::Engine::CallingContext context;
@@ -423,7 +423,7 @@ TEST(EngineTests, testExceptionBonanza)
    funThrow->nlocals = 0;
    funThrow->function = std::make_shared<Backwards::Engine::Expr>(Backwards::Input::Token(), std::make_shared<Backwards::Engine::Plus>(Backwards::Input::Token(), one, info));
 
-   std::shared_ptr<Backwards::Types::FunctionValue> funThrows = std::make_shared<Backwards::Types::FunctionValue>(funThrow);
+   std::shared_ptr<Backwards::Types::FunctionValue> funThrows = std::make_shared<Backwards::Types::FunctionValue>(funThrow, std::vector<std::shared_ptr<Backwards::Types::ValueType> >());
    std::shared_ptr<Backwards::Engine::Constant> funThrowsC = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), funThrows);
 
    debugger.entered = false;
@@ -436,7 +436,7 @@ TEST(EngineTests, testExceptionBonanza)
    funNoRet->nlocals = 0;
    funNoRet->function = std::make_shared<Backwards::Engine::Expr>(Backwards::Input::Token(), std::make_shared<Backwards::Engine::Plus>(Backwards::Input::Token(), one, one));
 
-   std::shared_ptr<Backwards::Types::FunctionValue> funNR = std::make_shared<Backwards::Types::FunctionValue>(funNoRet);
+   std::shared_ptr<Backwards::Types::FunctionValue> funNR = std::make_shared<Backwards::Types::FunctionValue>(funNoRet, std::vector<std::shared_ptr<Backwards::Types::ValueType> >());
    std::shared_ptr<Backwards::Engine::Constant> funNRC = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), funNR);
 
    debugger.entered = false;
@@ -449,7 +449,7 @@ TEST(EngineTests, testExceptionBonanza)
    funBreaks->nlocals = 0;
    funBreaks->function = std::make_shared<Backwards::Engine::FlowControlStatement>(Backwards::Input::Token(), Backwards::Engine::FlowControl::BREAK, 0U, std::shared_ptr<Backwards::Engine::Expression>());
 
-   std::shared_ptr<Backwards::Types::FunctionValue> funBreak = std::make_shared<Backwards::Types::FunctionValue>(funBreaks);
+   std::shared_ptr<Backwards::Types::FunctionValue> funBreak = std::make_shared<Backwards::Types::FunctionValue>(funBreaks, std::vector<std::shared_ptr<Backwards::Types::ValueType> >());
    std::shared_ptr<Backwards::Engine::Constant> funBeak = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), funBreak);
 
    debugger.entered = false;
@@ -479,7 +479,7 @@ TEST(EngineTests, testCaCall)
    funRetNine->nlocals = 0;
    funRetNine->function = std::make_shared<Backwards::Engine::FlowControlStatement>(Backwards::Input::Token(), Backwards::Engine::FlowControl::RETURN, 0U, one);
 
-   std::shared_ptr<Backwards::Types::FunctionValue> funRetNineF = std::make_shared<Backwards::Types::FunctionValue>(funRetNine);
+   std::shared_ptr<Backwards::Types::FunctionValue> funRetNineF = std::make_shared<Backwards::Types::FunctionValue>(funRetNine, std::vector<std::shared_ptr<Backwards::Types::ValueType> >());
    std::shared_ptr<Backwards::Engine::Constant> funR9 = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), funRetNineF);
 
    std::shared_ptr<Backwards::Engine::FunctionContext> funRetRet = std::make_shared<Backwards::Engine::FunctionContext>();
@@ -488,7 +488,7 @@ TEST(EngineTests, testCaCall)
    funRetRet->function = std::make_shared<Backwards::Engine::FlowControlStatement>(Backwards::Input::Token(), Backwards::Engine::FlowControl::RETURN, 0U,
       std::make_shared<Backwards::Engine::FunctionCall>(Backwards::Input::Token(), funR9, args));
 
-   std::shared_ptr<Backwards::Types::FunctionValue> funRetRetF = std::make_shared<Backwards::Types::FunctionValue>(funRetRet);
+   std::shared_ptr<Backwards::Types::FunctionValue> funRetRetF = std::make_shared<Backwards::Types::FunctionValue>(funRetRet, std::vector<std::shared_ptr<Backwards::Types::ValueType> >());
    std::shared_ptr<Backwards::Engine::Constant> funRR = std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), funRetRetF);
 
    Backwards::Engine::FunctionCall call (Backwards::Input::Token(), funRR, args);
@@ -536,9 +536,11 @@ TEST(EngineTests, testGetterSetter)
    std::shared_ptr<Backwards::Engine::FunctionContext> fun = std::make_shared<Backwards::Engine::FunctionContext>();
    fun->nargs = 1;
    fun->nlocals = 1;
+   fun->ncaptures = 1;
 
    Backwards::Engine::StackFrame frame (fun, Backwards::Input::Token(), nullptr);
    context.pushContext(&frame);
+   frame.captures.resize(1U);
 
    Backwards::Engine::LocalGetter getterL1 (0U);
    Backwards::Engine::LocalSetter setterL1 (0U);
@@ -557,6 +559,15 @@ TEST(EngineTests, testGetterSetter)
    res = getterA1.get(context);
    ASSERT_TRUE(typeid(Backwards::Types::StringValue) == typeid(*res.get()));
    EXPECT_EQ("B", std::dynamic_pointer_cast<Backwards::Types::StringValue>(res)->value);
+
+   Backwards::Engine::CaptureGetter getterC1 (0U);
+   Backwards::Engine::CaptureSetter setterC1 (0U);
+
+   // Linguistically, it ought to be impossible for a capture to be uninitialized.
+   setterC1.set(context, std::make_shared<Backwards::Types::StringValue>("C"));
+   res = getterC1.get(context);
+   ASSERT_TRUE(typeid(Backwards::Types::StringValue) == typeid(*res.get()));
+   EXPECT_EQ("C", std::dynamic_pointer_cast<Backwards::Types::StringValue>(res)->value);
 
 
    Backwards::Engine::ScopeGetter getterS1 (0U);
@@ -578,4 +589,33 @@ TEST(EngineTests, testGetterSetter)
 
    EXPECT_THROW(getterS2.get(context), Backwards::Engine::FatalException);
    EXPECT_THROW(setterS2.set(context, std::make_shared<Backwards::Types::StringValue>("A")), Backwards::Engine::FatalException);
+ }
+
+TEST(EngineTests, testBuildFunction)
+ {
+   Backwards::Engine::CallingContext context;
+
+   std::shared_ptr<Backwards::Engine::FunctionContext> funDummy = std::make_shared<Backwards::Engine::FunctionContext>();
+
+   Backwards::Engine::BuildFunction dummy1 (Backwards::Input::Token(), funDummy, std::vector<std::shared_ptr<Backwards::Engine::Expression> >());
+
+   std::shared_ptr<Backwards::Types::ValueType> res = dummy1.evaluate(context);
+
+   ASSERT_TRUE(typeid(Backwards::Types::FunctionValue) == typeid(*res.get()));
+   EXPECT_EQ(funDummy.get(), std::dynamic_pointer_cast<Backwards::Types::FunctionValue>(res)->value.get());
+   EXPECT_EQ(0U, std::dynamic_pointer_cast<Backwards::Types::FunctionValue>(res)->captures.size());
+
+   std::vector<std::shared_ptr<Backwards::Engine::Expression> > captures;
+   captures.emplace_back(std::make_shared<Backwards::Engine::Constant>(Backwards::Input::Token(), makeFloatValue(9.0)));
+
+   Backwards::Engine::BuildFunction dummy2 (Backwards::Input::Token(), funDummy, captures);
+
+   res = dummy2.evaluate(context);
+
+   ASSERT_TRUE(typeid(Backwards::Types::FunctionValue) == typeid(*res.get()));
+   EXPECT_EQ(funDummy.get(), std::dynamic_pointer_cast<Backwards::Types::FunctionValue>(res)->value.get());
+   EXPECT_EQ(1U, std::dynamic_pointer_cast<Backwards::Types::FunctionValue>(res)->captures.size());
+   ASSERT_NE(nullptr, std::dynamic_pointer_cast<Backwards::Types::FunctionValue>(res)->captures[0].get());
+   ASSERT_TRUE(typeid(Backwards::Types::FloatValue) == typeid(*std::dynamic_pointer_cast<Backwards::Types::FunctionValue>(res)->captures[0].get()));
+   EXPECT_EQ(SlowFloat::SlowFloat(9.0), std::dynamic_pointer_cast<Backwards::Types::FloatValue>(std::dynamic_pointer_cast<Backwards::Types::FunctionValue>(res)->captures[0])->value);
  }

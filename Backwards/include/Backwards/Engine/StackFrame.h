@@ -53,6 +53,7 @@ namespace Engine
 
       std::vector<std::shared_ptr<Types::ValueType> > args;
       std::vector<std::shared_ptr<Types::ValueType> > locals;
+      std::vector<std::shared_ptr<Types::ValueType> > captures;
 
       StackFrame* prev;
       StackFrame* next;
@@ -96,6 +97,24 @@ namespace Engine
       size_t location;
    public:
       ArgSetter(size_t location);
+      void set(CallingContext&, const std::shared_ptr<Types::ValueType>&) const;
+    };
+
+   class CaptureGetter final : public Getter
+    {
+   private:
+      size_t location;
+   public:
+      CaptureGetter(size_t location);
+      std::shared_ptr<Types::ValueType> get(CallingContext&) const;
+    };
+
+   class CaptureSetter final : public Setter
+    {
+   private:
+      size_t location;
+   public:
+      CaptureSetter(size_t location);
       void set(CallingContext&, const std::shared_ptr<Types::ValueType>&) const;
     };
 

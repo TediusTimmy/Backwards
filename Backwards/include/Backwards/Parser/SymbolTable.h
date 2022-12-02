@@ -58,10 +58,12 @@ namespace Parser
       std::vector<std::shared_ptr<Engine::Getter> > scopeGetters;
       std::vector<std::shared_ptr<Engine::Getter> > localsGetters;
       std::vector<std::shared_ptr<Engine::Getter> > argsGetters;
+      std::vector<std::shared_ptr<Engine::Getter> > capturesGetters;
       std::vector<std::shared_ptr<Engine::Setter> > globalSetters;
       std::vector<std::shared_ptr<Engine::Setter> > scopeSetters;
       std::vector<std::shared_ptr<Engine::Setter> > localsSetters;
       std::vector<std::shared_ptr<Engine::Setter> > argsSetters;
+      std::vector<std::shared_ptr<Engine::Setter> > capturesSetters;
     };
 
    class SymbolTable final
@@ -88,6 +90,7 @@ namespace Parser
       void addVariable(const std::string&);
       void addArgument(const std::string&);
       void addLocal(const std::string&);
+      void addCapture(const std::string&);
 
       std::shared_ptr<Engine::Getter> getVariableGetter(const std::string&) const;
       std::shared_ptr<Engine::Setter> getVariableSetter(const std::string&) const;
@@ -108,7 +111,7 @@ namespace Parser
          FUNCTION
        };
 
-      std::map<std::string, std::shared_ptr<Types::FunctionValue> > activeFunctions;
+      std::map<std::string, std::shared_ptr<Engine::FunctionContext> > activeFunctions;
       IdentifierType lookup (const std::string&) const;
 
       size_t newLoop();

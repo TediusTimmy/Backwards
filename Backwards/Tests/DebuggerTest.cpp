@@ -180,7 +180,7 @@ TEST(ParserTests, testMoreDebugger)
 
    frame2.args[0] = std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(5.0));
    frame2.args[1] = std::make_shared<Backwards::Types::StringValue>("Hello");
-   frame2.args[2] = std::make_shared<Backwards::Types::FunctionValue>(fun1);
+   frame2.args[2] = std::make_shared<Backwards::Types::FunctionValue>(fun1, std::vector<std::shared_ptr<Backwards::Types::ValueType> >());
 
    frame2.locals[0] = Backwards::Engine::Insert(
       Backwards::Engine::Insert(Backwards::Engine::NewDictionary(), std::make_shared<Backwards::Types::StringValue>("Hello"), std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(5.0))),
@@ -218,8 +218,8 @@ TEST(ParserTests, testMoreDebugger)
    EXPECT_EQ("5.00000000e+0", logger.logs[4]);
    EXPECT_EQ("\"Hello\"", logger.logs[5]);
    EXPECT_EQ("Function : EnterDebugger", logger.logs[6]);
-   EXPECT_EQ("{ \"Hello\":5.00000000e+0, \"World\":6.00000000e+0 }", logger.logs[7]);
-   EXPECT_EQ("{ \"Hello\", \"World\" }", logger.logs[8]);
+   EXPECT_EQ("{ \"Hello\":5.00000000e+0; \"World\":6.00000000e+0 }", logger.logs[7]);
+   EXPECT_EQ("{ \"Hello\"; \"World\" }", logger.logs[8]);
    EXPECT_EQ("Error: Read of value before set.", logger.logs[9]);
    EXPECT_EQ("In function #3: >EnterDebugger< from line 1 in test", logger.logs[10]);
    // Skip

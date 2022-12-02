@@ -80,7 +80,7 @@ namespace Engine
              {
                if (array.begin() != iter)
                 {
-                  stream << ", ";
+                  stream << "; ";
                 }
                printValue(stream, *iter);
              }
@@ -96,7 +96,7 @@ namespace Engine
              {
                if (dict.begin() != iter)
                 {
-                  stream << ", ";
+                  stream << "; ";
                 }
                printValue(stream, iter->first);
                stream << ":";
@@ -107,6 +107,21 @@ namespace Engine
          else if (typeid(Types::FunctionValue) == typeid(*val))
           {
             stream << "Function : " << std::dynamic_pointer_cast<const FunctionContext>(std::dynamic_pointer_cast<const Types::FunctionValue>(val)->value)->name;
+            const std::vector<std::shared_ptr<Types::ValueType> >& array = std::dynamic_pointer_cast<const Types::FunctionValue>(val)->captures;
+            if (false == array.empty())
+             {
+               stream << " [ ";
+               for (std::vector<std::shared_ptr<Types::ValueType> >::const_iterator iter = array.begin();
+                  array.end() != iter; ++iter)
+                {
+                  if (array.begin() != iter)
+                   {
+                     stream << "; ";
+                   }
+                  printValue(stream, *iter);
+                }
+               stream << " ]";
+             }
           }
          else
           {
@@ -211,6 +226,16 @@ namespace Engine
                frame->function->localNames.end() != iter; ++iter)
              {
                if ((frame->function->localNames.begin() != iter) || (true == printComma))
+                {
+                  str << ", ";
+                }
+               str << *iter;
+               printComma = true;
+             }
+            for (std::vector<std::string>::const_iterator iter = frame->function->captureNames.begin();
+               frame->function->captureNames.end() != iter; ++iter)
+             {
+               if ((frame->function->captureNames.begin() != iter) || (true == printComma))
                 {
                   str << ", ";
                 }

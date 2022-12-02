@@ -245,9 +245,9 @@ TEST(TypesTests, testFunctions)
    std::shared_ptr<DummyFOH> l = std::make_shared<DummyFOH>();
    std::shared_ptr<DummyFOH> m = std::make_shared<DummyFOH>();
    std::shared_ptr<DummyFOH> h = std::make_shared<DummyFOH>();
-   Backwards::Types::FunctionValue low (l);
-   Backwards::Types::FunctionValue med (m);
-   Backwards::Types::FunctionValue high (h);
+   Backwards::Types::FunctionValue low (l, std::vector<std::shared_ptr<Backwards::Types::ValueType> >());
+   Backwards::Types::FunctionValue med (m, std::vector<std::shared_ptr<Backwards::Types::ValueType> >());
+   Backwards::Types::FunctionValue high (h, std::vector<std::shared_ptr<Backwards::Types::ValueType> >());
 
    EXPECT_EQ("Function", defaulted.getTypeName());
 
@@ -294,6 +294,22 @@ TEST(TypesTests, testFunctions)
    EXPECT_THROW(high.leq(dynamic_cast<Backwards::Types::ValueType&>(med)), Backwards::Types::TypedOperationException);
 
    EXPECT_NE(0U, low.hash());
+
+   std::vector<std::shared_ptr<Backwards::Types::ValueType> > capture1;
+   capture1.emplace_back(std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(1.0)));
+   std::vector<std::shared_ptr<Backwards::Types::ValueType> > capture2;
+   capture2.emplace_back(std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(2.0)));
+   Backwards::Types::FunctionValue low1 (l, capture1);
+   Backwards::Types::FunctionValue low2 (l, capture2);
+
+   EXPECT_FALSE(low1.sort(low2)); // Flipped
+   EXPECT_TRUE(low2.sort(low1)); // Flipped
+   EXPECT_TRUE(low1.equal(dynamic_cast<Backwards::Types::ValueType&>(low1)));
+   EXPECT_FALSE(low1.equal(dynamic_cast<Backwards::Types::ValueType&>(low2)));
+   EXPECT_TRUE(low1.notEqual(dynamic_cast<Backwards::Types::ValueType&>(low2)));
+   EXPECT_FALSE(low1.notEqual(dynamic_cast<Backwards::Types::ValueType&>(low1)));
+
+   EXPECT_NE(low1.hash(), low2.hash());
  }
 
 TEST(TypesTests, testArrays)

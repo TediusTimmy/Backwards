@@ -53,13 +53,16 @@ namespace Engine
 
       size_t nargs;
       size_t nlocals;
+      size_t ncaptures;
       std::shared_ptr<Statement> function;
 
       std::map<std::string, size_t> args;
       std::map<std::string, size_t> locals;
+      std::map<std::string, size_t> captures;
 
       std::vector<std::string> argNames;
       std::vector<std::string> localNames;
+      std::vector<std::string> captureNames;
     };
 
  } // namespace Engine

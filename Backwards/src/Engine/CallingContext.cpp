@@ -108,6 +108,15 @@ namespace Engine
       return context.currentFrame->args[location];
     }
 
+   CaptureGetter::CaptureGetter(size_t location) : location(location)
+    {
+    }
+
+   std::shared_ptr<Types::ValueType> CaptureGetter::get(CallingContext& context) const
+    {
+      return context.currentFrame->captures[location];
+    }
+
    LocalSetter::LocalSetter(size_t location) : location(location)
     {
     }
@@ -124,6 +133,15 @@ namespace Engine
    void ArgSetter::set(CallingContext& context, const std::shared_ptr<Types::ValueType>& value) const
     {
       context.currentFrame->args[location] = value;
+    }
+
+   CaptureSetter::CaptureSetter(size_t location) : location(location)
+    {
+    }
+
+   void CaptureSetter::set(CallingContext& context, const std::shared_ptr<Types::ValueType>& value) const
+    {
+      context.currentFrame->captures[location] = value;
     }
 
    GlobalGetter::GlobalGetter(size_t location) : location(location)
