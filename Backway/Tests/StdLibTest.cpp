@@ -449,3 +449,31 @@ TEST(BackwayTests, testGoldenPath)
    EXPECT_THROW(machine.update(context), Backwards::Types::TypedOperationException);
    EXPECT_TRUE(debugger.entered);
  }
+
+TEST(BackwayTests, testDuplicate)
+ {
+   Backway::CallingContext context;
+   Backway::StateMachine machine;
+   context.machine = &machine;
+   Backway::Environment environment;
+   context.environment = &environment;
+   Backwards::Engine::Scope global;
+   context.globalScope = &global;
+   ConsoleLogger logger;
+   context.logger = &logger;
+   DummyDebugger debugger;
+   context.debugger = &debugger;
+
+   Backway::ContextBuilder::createGlobalScope(global);
+
+   std::shared_ptr<Backwards::Engine::CallingContext> result = context.duplicate();
+   std::shared_ptr<Backway::CallingContext> res = std::dynamic_pointer_cast<Backway::CallingContext>(result);
+
+   ASSERT_NE(nullptr, res.get());
+   EXPECT_EQ(&logger, res->logger);
+   EXPECT_EQ(&global, res->globalScope);
+   EXPECT_EQ(nullptr, res->topScope());
+   EXPECT_EQ(nullptr, res->debugger);
+   EXPECT_EQ(&machine, res->machine);
+   EXPECT_EQ(&environment, res->environment);
+ }

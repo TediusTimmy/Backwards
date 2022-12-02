@@ -73,8 +73,13 @@ namespace Engine
       void pushScope(Scope* scope);
       void popScope();
 
+      virtual std::shared_ptr<CallingContext> duplicate(); // This function exists for the debugger.
+
    private:
       std::vector<Scope*> scopes;
+
+   protected:
+      virtual void duplicate(std::shared_ptr<CallingContext>);
    };
 
    class GlobalGetter final : public Getter

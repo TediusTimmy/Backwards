@@ -86,6 +86,21 @@ namespace Engine
       scopes.pop_back();
     }
 
+   std::shared_ptr<CallingContext> CallingContext::duplicate()
+    {
+      std::shared_ptr<CallingContext> result = std::make_shared<CallingContext>();
+      duplicate(result);
+      return result;
+    }
+
+   void CallingContext::duplicate(std::shared_ptr<CallingContext> result)
+    {
+      result->logger = logger;
+      result->debugger = nullptr; // Prevent Debugger-ception
+      result->globalScope = globalScope;
+      result->pushScope(topScope());
+    }
+
    LocalGetter::LocalGetter(size_t location) : location(location)
     {
     }

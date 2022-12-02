@@ -45,6 +45,10 @@ namespace Backway
    public:
       StateMachine* machine;
       Environment* environment;
+
+      virtual std::shared_ptr<Backwards::Engine::CallingContext> duplicate() override; // This function exists for the debugger.
+   protected:
+      virtual void duplicate(std::shared_ptr<CallingContext>); // This ... doesn't actually override its base.
    };
 
  } // namespace Backway

@@ -137,8 +137,6 @@ int main (void)
    Backwards::Engine::DefaultDebugger debugger;
    context.debugger = &debugger;
 
-   std::cout << std::setprecision(16) << std::scientific;
-
    while (lexer.peekNextToken().lexeme != Backwards::Input::END_OF_FILE)
     {
       std::shared_ptr<Backwards::Engine::Expression> res = Backwards::Parser::Parser::ParseExpression(lexer, table, logger);

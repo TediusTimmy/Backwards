@@ -31,11 +31,26 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include "Backwards/Parser/ContextBuilder.h"
 #include "Backwards/Engine/Statement.h"
+#include "Backway/CallingContext.h"
 #include "Backway/ContextBuilder.h"
 #include "Backway/StdLib.h"
 
 namespace Backway
  {
+
+   std::shared_ptr<Backwards::Engine::CallingContext> CallingContext::duplicate()
+    {
+      std::shared_ptr<CallingContext> result = std::make_shared<CallingContext>();
+      duplicate(result);
+      return result;
+    }
+
+   void CallingContext::duplicate(std::shared_ptr<CallingContext> result)
+    {
+      Backwards::Engine::CallingContext::duplicate(result);
+      result->machine = machine;
+      result->environment = environment;
+    }
 
    void ContextBuilder::createGlobalScope (Backwards::Engine::Scope& global)
     {

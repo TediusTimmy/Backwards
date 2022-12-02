@@ -286,17 +286,12 @@ namespace Engine
              {
                try
                 {
-                  CallingContext newContext;
+                  std::shared_ptr<CallingContext> newContext = context.duplicate();
 
-                  newContext.logger = context.logger;
-                  newContext.debugger = nullptr; // Prevent Debugger-ception
-                  newContext.currentFrame = frame;
-                  newContext.globalScope = context.globalScope;
-                  newContext.pushScope(context.topScope());
+                  newContext->currentFrame = frame;
 
                   std::stringstream str;
-                  str << std::scientific << std::setprecision(16);
-                  printValue(str, res->evaluate(newContext));
+                  printValue(str, res->evaluate(*newContext));
                   context.logger->log(str.str());
                 }
                catch (Types::TypedOperationException& e)
