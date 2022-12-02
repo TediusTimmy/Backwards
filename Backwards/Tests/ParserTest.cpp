@@ -496,6 +496,39 @@ TEST(ParserTests, testLetsDoMath)
     {
       FAIL() << failure;
     }
+
+   try
+    {
+      Backwards::Input::StringInput string ( " function [2; 3] dumb () [x; y] is return x end () " );
+      Backwards::Input::Lexer lexer (string, "InputString");
+      EXPECT_EQ(2.0, parseAndEvaluateDouble(lexer, table, logger, context));
+    }
+   catch (const char * failure)
+    {
+      FAIL() << failure;
+    }
+
+   try
+    {
+      Backwards::Input::StringInput string ( " function [2; 3] dumb () [x; y] is return y end () " );
+      Backwards::Input::Lexer lexer (string, "InputString");
+      EXPECT_EQ(3.0, parseAndEvaluateDouble(lexer, table, logger, context));
+    }
+   catch (const char * failure)
+    {
+      FAIL() << failure;
+    }
+
+   try
+    {
+      Backwards::Input::StringInput string ( " function [3] fib (x) [z] is if x > 1 then return fib[z](x - 1) * x else return 1 end end (5) " );
+      Backwards::Input::Lexer lexer (string, "InputString");
+      EXPECT_EQ(120.0, parseAndEvaluateDouble(lexer, table, logger, context));
+    }
+   catch (const char * failure)
+    {
+      FAIL() << failure;
+    }
  }
 
 TEST(ParserTests, testThrowSomeExceptionsExpressions)
@@ -661,11 +694,13 @@ TEST(ParserTests, testVariousSymbolTable)
    fun->locals.emplace(std::make_pair("Ask", 1U));
    fun->locals.emplace(std::make_pair("Who", 2U));
    fun->locals.emplace(std::make_pair("Know", 3U));
+   fun->captures.emplace(std::make_pair("Cow", 1U));
 
    table.injectContext(fun);
 
    EXPECT_EQ(3U, gs.localsGetters.size());
    EXPECT_EQ(2U, gs.argsGetters.size());
+   EXPECT_EQ(1U, gs.capturesGetters.size());
  }
 
 TEST(ParserTests, testStatementExceptions)
@@ -777,6 +812,41 @@ TEST(ParserTests, testStatementExceptions)
    Backwards::Input::Lexer lexer16 (string16, "InputString");
    parse = Backwards::Parser::Parser::Parse(lexer16, table, logger);
    ASSERT_EQ(nullptr, parse.get());
+
+   Backwards::Input::StringInput string17 ("set x to function [] bob () is return 0 end");
+   Backwards::Input::Lexer lexer17 (string17, "InputString");
+   parse = Backwards::Parser::Parser::Parse(lexer17, table, logger);
+   ASSERT_EQ(nullptr, parse.get());
+
+   Backwards::Input::StringInput string18 ("set x to function bob () [] is return 0 end");
+   Backwards::Input::Lexer lexer18 (string18, "InputString");
+   parse = Backwards::Parser::Parser::Parse(lexer18, table, logger);
+   ASSERT_EQ(nullptr, parse.get());
+
+   Backwards::Input::StringInput string19 ("set x to function [2] bob () is return 0 end");
+   Backwards::Input::Lexer lexer19 (string19, "InputString");
+   parse = Backwards::Parser::Parser::Parse(lexer19, table, logger);
+   ASSERT_EQ(nullptr, parse.get());
+
+   Backwards::Input::StringInput string20 ("set x to function [2] bob () [x; y] is return 0 end");
+   Backwards::Input::Lexer lexer20 (string20, "InputString");
+   parse = Backwards::Parser::Parser::Parse(lexer20, table, logger);
+   ASSERT_EQ(nullptr, parse.get());
+
+   Backwards::Input::StringInput string21 ("set x to function [2; 3] bob () [x] is return 0 end");
+   Backwards::Input::Lexer lexer21 (string21, "InputString");
+   parse = Backwards::Parser::Parser::Parse(lexer21, table, logger);
+   ASSERT_EQ(nullptr, parse.get());
+
+   Backwards::Input::StringInput string22 ("set x to function [3] fib () [x] is return fib[2; 3](5) end");
+   Backwards::Input::Lexer lexer22 (string22, "InputString");
+   parse = Backwards::Parser::Parser::Parse(lexer22, table, logger);
+   ASSERT_EQ(nullptr, parse.get());
+
+   Backwards::Input::StringInput string23 ("set x to function [3] fib () [x] is return fib(5) end");
+   Backwards::Input::Lexer lexer23 (string23, "InputString");
+   parse = Backwards::Parser::Parser::Parse(lexer23, table, logger);
+   ASSERT_EQ(nullptr, parse.get());
  }
 
 TEST(ParserTests, testStatementParses)
@@ -839,6 +909,11 @@ TEST(ParserTests, testStatementParses)
    Backwards::Input::StringInput string8 ("for x from 10 downto 1 do end");
    Backwards::Input::Lexer lexer8 (string8, "InputString");
    parse = Backwards::Parser::Parser::Parse(lexer8, table, logger);
+   EXPECT_NE(nullptr, parse.get());
+
+   Backwards::Input::StringInput string9 ("set Info to function [Info] (a) [b] is set b to 0 return a end");
+   Backwards::Input::Lexer lexer9 (string9, "InputString");
+   parse = Backwards::Parser::Parser::ParseStatement(lexer9, table, logger);
    EXPECT_NE(nullptr, parse.get());
  }
 

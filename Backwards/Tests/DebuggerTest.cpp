@@ -147,6 +147,7 @@ TEST(ParserTests, testMoreDebugger)
    fun2->name = "BuyMeAPony";
    fun2->nargs = 3U;
    fun2->nlocals = 3U;
+   fun2->ncaptures = 2U;
    fun2->args.emplace("x", 0U);
    fun2->args.emplace("y", 1U);
    fun2->args.emplace("z", 2U);
@@ -159,6 +160,10 @@ TEST(ParserTests, testMoreDebugger)
    fun2->localNames.emplace_back("a");
    fun2->localNames.emplace_back("b");
    fun2->localNames.emplace_back("c");
+   fun2->captures.emplace("i", 0U);
+   fun2->captures.emplace("j", 1U);
+   fun2->captureNames.emplace_back("i");
+   fun2->captureNames.emplace_back("j");
 
    std::shared_ptr<Backwards::Engine::FunctionContext> fun3 = std::make_shared<Backwards::Engine::FunctionContext>();
    fun3->name = "IWantTheWorld";
@@ -182,6 +187,13 @@ TEST(ParserTests, testMoreDebugger)
    frame2.args[1] = std::make_shared<Backwards::Types::StringValue>("Hello");
    frame2.args[2] = std::make_shared<Backwards::Types::FunctionValue>(fun1, std::vector<std::shared_ptr<Backwards::Types::ValueType> >());
 
+   frame2.captures.resize(2);
+   frame2.captures[0] = std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(3.0));
+   std::vector<std::shared_ptr<Backwards::Types::ValueType> > caps;
+   caps.emplace_back(std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(-2.0)));
+   caps.emplace_back(std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(-3.0)));
+   frame2.captures[1] = std::make_shared<Backwards::Types::FunctionValue>(fun2, caps);
+
    frame2.locals[0] = Backwards::Engine::Insert(
       Backwards::Engine::Insert(Backwards::Engine::NewDictionary(), std::make_shared<Backwards::Types::StringValue>("Hello"), std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(5.0))),
       std::make_shared<Backwards::Types::StringValue>("World"), std::make_shared<Backwards::Types::FloatValue>(SlowFloat::SlowFloat(6.0)));
@@ -201,6 +213,8 @@ TEST(ParserTests, testMoreDebugger)
    logger.commands.emplace_back("print a");
    logger.commands.emplace_back("print b");
    logger.commands.emplace_back("print c");
+   logger.commands.emplace_back("print i");
+   logger.commands.emplace_back("print j");
    logger.commands.emplace_back("up");
    logger.commands.emplace_back("print 2 + 3 blah");
    logger.commands.emplace_back("print 2 + 'hello'");
@@ -210,19 +224,21 @@ TEST(ParserTests, testMoreDebugger)
 
    context.debugger->EnterDebugger("", context);
 
-   ASSERT_EQ(14U, logger.logs.size());
+   ASSERT_EQ(16U, logger.logs.size());
    EXPECT_EQ("In function #3: >EnterDebugger< from line 1 in test", logger.logs[0]);
    EXPECT_EQ("#3: >EnterDebugger< from line 1 in test\n#2: >BuyMeAPony< from line 1 in test\n#1: >IWantTheWorld< from line 1 in test", logger.logs[1]);
    EXPECT_EQ("In function #2: >BuyMeAPony< from line 1 in test", logger.logs[2]);
-   EXPECT_EQ("These variables are in the current stack frame: x, y, z, a, b, c\nThese variables are in the current scope: l, L\nThese variables are in the global scope: g, G", logger.logs[3]);
+   EXPECT_EQ("These variables are in the current stack frame: x, y, z, a, b, c, i, j\nThese variables are in the current scope: l, L\nThese variables are in the global scope: g, G", logger.logs[3]);
    EXPECT_EQ("5.00000000e+0", logger.logs[4]);
    EXPECT_EQ("\"Hello\"", logger.logs[5]);
    EXPECT_EQ("Function : EnterDebugger", logger.logs[6]);
    EXPECT_EQ("{ \"Hello\":5.00000000e+0; \"World\":6.00000000e+0 }", logger.logs[7]);
    EXPECT_EQ("{ \"Hello\"; \"World\" }", logger.logs[8]);
    EXPECT_EQ("Error: Read of value before set.", logger.logs[9]);
-   EXPECT_EQ("In function #3: >EnterDebugger< from line 1 in test", logger.logs[10]);
+   EXPECT_EQ("3.00000000e+0", logger.logs[10]);
+   EXPECT_EQ("Function : BuyMeAPony [ -2.00000000e+0; -3.00000000e+0 ]", logger.logs[11]);
+   EXPECT_EQ("In function #3: >EnterDebugger< from line 1 in test", logger.logs[12]);
    // Skip
-   EXPECT_EQ("Didn't understand that.", logger.logs[12]);
-   EXPECT_EQ("Error: Error adding Float to String\n\tFrom file Print Argument on line 1 at 4", logger.logs[13]);
+   EXPECT_EQ("Didn't understand that.", logger.logs[14]);
+   EXPECT_EQ("Error: Error adding Float to String\n\tFrom file Print Argument on line 1 at 4", logger.logs[15]);
  }

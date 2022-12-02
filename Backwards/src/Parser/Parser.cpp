@@ -428,15 +428,12 @@ namespace Parser
             std::vector<std::shared_ptr<Engine::Expression> > captures;
             if (0U != table.activeFunctions[buildToken.text]->ncaptures)
              {
-               expect(src, Input::OPEN_BRACKET, "[");
-               if (Input::CLOSE_BRACKET != src.peekNextToken().lexeme)
+               expect(src, Input::OPEN_BRACKET, "[ function parameters");
+               captures.emplace_back(expression(src, table, logger));
+               while (Input::SEMICOLON == src.peekNextToken().lexeme)
                 {
+                  src.getNextToken();
                   captures.emplace_back(expression(src, table, logger));
-                  while (Input::SEMICOLON == src.peekNextToken().lexeme)
-                   {
-                     src.getNextToken();
-                     captures.emplace_back(expression(src, table, logger));
-                   }
                 }
                if (captures.size() != table.activeFunctions[buildToken.text]->ncaptures)
                 {
@@ -477,14 +474,11 @@ namespace Parser
          if (Input::OPEN_BRACKET == src.peekNextToken().lexeme)
           {
             src.getNextToken();
-            if (Input::CLOSE_BRACKET != src.peekNextToken().lexeme)
+            captures.emplace_back(expression(src, table, logger));
+            while (Input::SEMICOLON == src.peekNextToken().lexeme)
              {
+               src.getNextToken();
                captures.emplace_back(expression(src, table, logger));
-               while (Input::SEMICOLON == src.peekNextToken().lexeme)
-                {
-                  src.getNextToken();
-                  captures.emplace_back(expression(src, table, logger));
-                }
              }
             expect(src, Input::CLOSE_BRACKET, "]");
           }
@@ -529,7 +523,7 @@ namespace Parser
 
                if (false == captures.empty())
                 {
-                  expect(src, Input::OPEN_BRACKET, "[");
+                  expect(src, Input::OPEN_BRACKET, "[ function parameter names");
 
                   Input::Token captureName = src.peekNextToken();
                   expect(src, Input::IDENTIFIER, "Capture Identifier");
