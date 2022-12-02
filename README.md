@@ -87,7 +87,13 @@ New addition : the function name must now be unique with respect to: all functio
 Previous way:  
 `set fib to function (x) is if x > 1 then return fib(x - 1) * x else return 1 end end`  
 New way:  
-`set x to function fib (y) is if y > 1 then return fib(y - 1) * y else return 1 end end`
+`set x to function fib (y) is if y > 1 then return fib(y - 1) * y else return 1 end end`  
+Newer addition : closure / runtime parameterized functions  
+Before the function name, add a list of expressions to capture in brackets. After the argument list, add a bracketed list of names for those values to have in the function. This list will be evaluated when the function pointer is used, and becomes part of the type of the function. These values parameterize the function.  
+To create an Info function which decorates the original Info function:  
+`set Info to function [Info] decorated_info (x) [y] is return y("Decorated: " + x) end`  
+Parameters are also required when calling a function recursively:  
+`set x to function [3] fib (y) [z] is if y > 1 then return fib[z](y - 1) * y else return 1 end end`
 
 ## Comments
 `"(*" Comment "*)"`  
