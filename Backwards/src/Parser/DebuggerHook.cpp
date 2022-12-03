@@ -32,7 +32,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Backwards/Engine/DebuggerHook.h"
 
 #include <sstream>
-#include <iomanip>
 
 #include "Backwards/Input/Lexer.h"
 #include "Backwards/Input/StringInput.h"
@@ -59,7 +58,7 @@ namespace Backwards
 namespace Engine
  {
 
-   static void printValue(std::ostream& stream, const std::shared_ptr<Types::ValueType>& val)
+   void DefaultDebugger::printValue(std::ostream& stream, const std::shared_ptr<Types::ValueType>& val)
     {
       if (nullptr != val.get())
        {

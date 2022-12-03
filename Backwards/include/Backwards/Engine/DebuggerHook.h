@@ -49,6 +49,7 @@ namespace Engine
    class DefaultDebugger final : public DebuggerHook
     {
    public:
+      static void printValue(std::ostream&, const std::shared_ptr<Types::ValueType>&);
       virtual void EnterDebugger(const std::string& exceptionMessage, CallingContext& context);
     };
 

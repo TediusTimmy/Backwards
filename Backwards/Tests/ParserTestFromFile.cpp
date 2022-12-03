@@ -61,62 +61,8 @@ public:
 
 std::shared_ptr<Backwards::Types::ValueType> printValue(const std::shared_ptr<Backwards::Types::ValueType>& val)
  {
-   if (nullptr != val.get())
-    {
-      if (typeid(Backwards::Types::FloatValue) == typeid(*val))
-       {
-         std::cout << SlowFloat::toString(std::dynamic_pointer_cast<const Backwards::Types::FloatValue>(val)->value);
-       }
-      else if (typeid(Backwards::Types::StringValue) == typeid(*val))
-       {
-         std::cout << "\"" << std::dynamic_pointer_cast<const Backwards::Types::StringValue>(val)->value << "\"";
-       }
-      else if (typeid(Backwards::Types::ArrayValue) == typeid(*val))
-       {
-         const std::vector<std::shared_ptr<Backwards::Types::ValueType> >& array = std::dynamic_pointer_cast<const Backwards::Types::ArrayValue>(val)->value;
-         std::cout << "{ ";
-         for (std::vector<std::shared_ptr<Backwards::Types::ValueType> >::const_iterator iter = array.begin();
-            array.end() != iter; ++iter)
-          {
-            if (array.begin() != iter)
-             {
-               std::cout << ", ";
-             }
-            printValue(*iter);
-          }
-         std::cout << " }";
-       }
-      else if (typeid(Backwards::Types::DictionaryValue) == typeid(*val))
-       {
-         const std::map<std::shared_ptr<Backwards::Types::ValueType>, std::shared_ptr<Backwards::Types::ValueType>, Backwards::Types::ChristHowHorrifying>& dict =
-            std::dynamic_pointer_cast<const Backwards::Types::DictionaryValue>(val)->value;
-         std::cout << "{ ";
-         for (std::map<std::shared_ptr<Backwards::Types::ValueType>, std::shared_ptr<Backwards::Types::ValueType>, Backwards::Types::ChristHowHorrifying>::const_iterator
-            iter = dict.begin(); dict.end() != iter; ++iter)
-          {
-            if (dict.begin() != iter)
-             {
-               std::cout << ", ";
-             }
-            printValue(iter->first);
-            std::cout << ":";
-            printValue(iter->second);
-          }
-         std::cout << " }";
-       }
-      else if (typeid(Backwards::Types::FunctionValue) == typeid(*val))
-       {
-         std::cout << "Function : " << std::dynamic_pointer_cast<const Backwards::Engine::FunctionContext>(std::dynamic_pointer_cast<const Backwards::Types::FunctionValue>(val)->value)->name;
-       }
-      else
-       {
-         std::cout << "Type not understood.";
-       }
-    }
-   else
-    {
-      std::cout << "A collection contains a NULL.";
-    }
+   Backwards::Engine::DefaultDebugger::printValue(std::cout, val);
+   std::cout << std::endl;
    return Backwards::Engine::ConstantsSingleton::getInstance().FLOAT_ZERO;
  }
 

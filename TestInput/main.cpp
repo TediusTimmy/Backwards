@@ -62,66 +62,6 @@ public:
    std::string get () { return ""; }
  };
 
-void printValue(ConsoleLogger& logger, const std::shared_ptr<Backwards::Types::ValueType>& val)
- {
-   if (nullptr != val.get())
-    {
-      if (typeid(Backwards::Types::FloatValue) == typeid(*val))
-       {
-         logger.sink << SlowFloat::toString(std::dynamic_pointer_cast<const Backwards::Types::FloatValue>(val)->value);
-       }
-      else if (typeid(Backwards::Types::StringValue) == typeid(*val))
-       {
-         logger.sink << "\"" << std::dynamic_pointer_cast<const Backwards::Types::StringValue>(val)->value << "\"";
-       }
-      else if (typeid(Backwards::Types::ArrayValue) == typeid(*val))
-       {
-         const std::vector<std::shared_ptr<Backwards::Types::ValueType> >& array = std::dynamic_pointer_cast<const Backwards::Types::ArrayValue>(val)->value;
-         logger.sink << "{ ";
-         for (std::vector<std::shared_ptr<Backwards::Types::ValueType> >::const_iterator iter = array.begin();
-            array.end() != iter; ++iter)
-          {
-            if (array.begin() != iter)
-             {
-               logger.sink << ", ";
-             }
-            printValue(logger, *iter);
-          }
-         logger.sink << " }";
-       }
-      else if (typeid(Backwards::Types::DictionaryValue) == typeid(*val))
-       {
-         const std::map<std::shared_ptr<Backwards::Types::ValueType>, std::shared_ptr<Backwards::Types::ValueType>, Backwards::Types::ChristHowHorrifying>& dict =
-            std::dynamic_pointer_cast<const Backwards::Types::DictionaryValue>(val)->value;
-         logger.sink << "{ ";
-         for (std::map<std::shared_ptr<Backwards::Types::ValueType>, std::shared_ptr<Backwards::Types::ValueType>, Backwards::Types::ChristHowHorrifying>::const_iterator
-            iter = dict.begin(); dict.end() != iter; ++iter)
-          {
-            if (dict.begin() != iter)
-             {
-               logger.sink << ", ";
-             }
-            printValue(logger, iter->first);
-            logger.sink << ":";
-            printValue(logger, iter->second);
-          }
-         logger.sink << " }";
-       }
-      else if (typeid(Backwards::Types::FunctionValue) == typeid(*val))
-       {
-         logger.sink << "Function : " << std::dynamic_pointer_cast<const Backwards::Engine::FunctionContext>(std::dynamic_pointer_cast<const Backwards::Types::FunctionValue>(val)->value)->name;
-       }
-      else
-       {
-         logger.sink << "Type not understood.";
-       }
-    }
-   else
-    {
-      logger.sink << "A collection contains a NULL.";
-    }
- }
-
 class Demo : public olc::PixelGameEngine
  {
 public:
@@ -160,7 +100,6 @@ public:
 
       context.globalScope = &global;
       ConsoleLogger logger (ConsoleOut());
-      ConsoleOut() << std::scientific << std::setprecision(16);
       context.logger = &logger;
 
       std::shared_ptr<Backwards::Engine::Expression> res = Backwards::Parser::Parser::ParseExpression(lexer, table, logger);
@@ -174,7 +113,7 @@ public:
 
             if (nullptr != val.get())
              {
-               printValue(logger, val);
+               Backwards::Engine::DefaultDebugger::printValue(logger.sink, val);
                ConsoleOut() << std::endl;
              }
             else
