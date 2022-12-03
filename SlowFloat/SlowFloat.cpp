@@ -98,10 +98,11 @@ const uint64_t makeShift [] = { 1U, 1U, 10U, 100U, 1000U, 10000U, 100000U, 10000
 SlowFloat_Round_Mode mode = ROUND_TIES_EVEN;
 
    // This code is suspiciously familiar....
-// sign - sign of result
+// sign - sign of result (true is negative)
 // even - whether the current significand is even
 // comp - divisor - 2 * remainder : this will be positive if we should round down, negative if we should round up, and zero if we are exactly in the middle
-// zero - whether the remainder is zero : true if the division was exact
+// zero - whether the remainder is zero : true if the division was exact (if true, comp must be positive)
+// returns whether the unsigned significand should be incremented away from zero
 bool decideRound (bool sign, bool even, int64_t comp, bool zero)
  {
    switch (mode)
