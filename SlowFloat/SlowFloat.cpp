@@ -157,7 +157,7 @@ SlowFloat::SlowFloat (double arg)
     }
    else
     {
-      exponent = static_cast<int16_t>(std::floor(std::log(std::fabs(arg)) / std::log(10.0))); // Should never overflow
+      exponent = static_cast<int16_t>(std::floor(std::log10(std::fabs(arg)))); // Should never overflow
          // I haven't run into a case where Windows' bad pow bites me ... yet. But preempt.
       if (exponent >= 0)
          significand = static_cast<uint32_t>(std::fabs(arg) / std::pow(10.0, exponent) * MIN_SIGNIFICAND);
