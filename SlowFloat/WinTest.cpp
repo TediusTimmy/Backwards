@@ -73,11 +73,58 @@ int main (void)
    return 0;
  }
 */
-
+/*
 int main (void)
  {
    SlowFloat::SlowFloat bob (7.0);
    std::cout << bob.significand << " " << bob.exponent << std::endl;
    std::cout << std::scientific << std::setprecision(19) << static_cast<double>(bob) << std::endl;
+   return 0;
+ }
+*/
+
+int main (void)
+ {
+   if (-20 != SlowFloat::SlowFloat(1e-20).exponent) std::cout << "Bad.";
+   if (-19 != SlowFloat::SlowFloat(1e-19).exponent) std::cout << "Bad.";
+   if (-18 != SlowFloat::SlowFloat(1e-18).exponent) std::cout << "Bad.";
+   if (-17 != SlowFloat::SlowFloat(1e-17).exponent) std::cout << "Bad.";
+   if (-16 != SlowFloat::SlowFloat(1e-16).exponent) std::cout << "Bad.";
+   if (-15 != SlowFloat::SlowFloat(1e-15).exponent) std::cout << "Bad.";
+   if (-14 != SlowFloat::SlowFloat(1e-14).exponent) std::cout << "Bad.";
+   if (-13 != SlowFloat::SlowFloat(1e-13).exponent) std::cout << "Bad.";
+   if (-12 != SlowFloat::SlowFloat(1e-12).exponent) std::cout << "Bad.";
+   if (-11 != SlowFloat::SlowFloat(1e-11).exponent) std::cout << "Bad.";
+   if (-10 != SlowFloat::SlowFloat(1e-10).exponent) std::cout << "Bad.";
+   if ( -9 != SlowFloat::SlowFloat( 1e-9).exponent) std::cout << "Bad.";
+   if ( -8 != SlowFloat::SlowFloat( 1e-8).exponent) std::cout << "Bad.";
+   if ( -7 != SlowFloat::SlowFloat( 1e-7).exponent) std::cout << "Bad.";
+   if ( -6 != SlowFloat::SlowFloat( 1e-6).exponent) std::cout << "Bad.";
+   if ( -5 != SlowFloat::SlowFloat( 1e-5).exponent) std::cout << "Bad.";
+   if ( -4 != SlowFloat::SlowFloat( 1e-4).exponent) std::cout << "Bad.";
+   if ( -3 != SlowFloat::SlowFloat( 1e-3).exponent) std::cout << "Bad.";
+   if ( -2 != SlowFloat::SlowFloat( 1e-2).exponent) std::cout << "Bad.";
+   if ( -1 != SlowFloat::SlowFloat( 1e-1).exponent) std::cout << "Bad.";
+   if (  0 != SlowFloat::SlowFloat(  1e0).exponent) std::cout << "Bad.";
+   if (  1 != SlowFloat::SlowFloat(  1e1).exponent) std::cout << "Bad.";
+   if (  2 != SlowFloat::SlowFloat(  1e2).exponent) std::cout << "Bad.";
+   if (  3 != SlowFloat::SlowFloat(  1e3).exponent) std::cout << "Bad.";
+   if (  4 != SlowFloat::SlowFloat(  1e4).exponent) std::cout << "Bad.";
+   if (  5 != SlowFloat::SlowFloat(  1e5).exponent) std::cout << "Bad.";
+   if (  6 != SlowFloat::SlowFloat(  1e6).exponent) std::cout << "Bad.";
+   if (  7 != SlowFloat::SlowFloat(  1e7).exponent) std::cout << "Bad.";
+   if (  8 != SlowFloat::SlowFloat(  1e8).exponent) std::cout << "Bad.";
+   if (  9 != SlowFloat::SlowFloat(  1e9).exponent) std::cout << "Bad.";
+   if ( 10 != SlowFloat::SlowFloat( 1e10).exponent) std::cout << "Bad.";
+   if ( 11 != SlowFloat::SlowFloat( 1e11).exponent) std::cout << "Bad.";
+   if ( 12 != SlowFloat::SlowFloat( 1e12).exponent) std::cout << "Bad.";
+   if ( 13 != SlowFloat::SlowFloat( 1e13).exponent) std::cout << "Bad.";
+   if ( 14 != SlowFloat::SlowFloat( 1e14).exponent) std::cout << "Bad.";
+   if ( 15 != SlowFloat::SlowFloat( 1e15).exponent) std::cout << "Bad.";
+   if ( 16 != SlowFloat::SlowFloat( 1e16).exponent) std::cout << "Bad.";
+   if ( 17 != SlowFloat::SlowFloat( 1e17).exponent) std::cout << "Bad.";
+   if ( 18 != SlowFloat::SlowFloat( 1e18).exponent) std::cout << "Bad.";
+   if ( 19 != SlowFloat::SlowFloat( 1e19).exponent) std::cout << "Bad.";
+   if ( 20 != SlowFloat::SlowFloat( 1e20).exponent) std::cout << "Bad.";
    return 0;
  }

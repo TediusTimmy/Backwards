@@ -374,6 +374,48 @@ TEST(SlowFloatTests, testConversions)
    SlowFloat::mode = SlowFloat::ROUND_POSITIVE_INFINITY;
    EXPECT_EQ(200000000U, SlowFloat::SlowFloat(2.0).significand);
    SlowFloat::mode = SlowFloat::ROUND_TIES_EVEN;
+
+   EXPECT_EQ(-20, SlowFloat::SlowFloat(1e-20).exponent);
+   EXPECT_EQ(-19, SlowFloat::SlowFloat(1e-19).exponent);
+   EXPECT_EQ(-18, SlowFloat::SlowFloat(1e-18).exponent);
+   EXPECT_EQ(-17, SlowFloat::SlowFloat(1e-17).exponent);
+   EXPECT_EQ(-16, SlowFloat::SlowFloat(1e-16).exponent);
+   EXPECT_EQ(-15, SlowFloat::SlowFloat(1e-15).exponent);
+   EXPECT_EQ(-14, SlowFloat::SlowFloat(1e-14).exponent);
+   EXPECT_EQ(-13, SlowFloat::SlowFloat(1e-13).exponent);
+   EXPECT_EQ(-12, SlowFloat::SlowFloat(1e-12).exponent);
+   EXPECT_EQ(-11, SlowFloat::SlowFloat(1e-11).exponent);
+   EXPECT_EQ(-10, SlowFloat::SlowFloat(1e-10).exponent);
+   EXPECT_EQ( -9, SlowFloat::SlowFloat( 1e-9).exponent);
+   EXPECT_EQ( -8, SlowFloat::SlowFloat( 1e-8).exponent);
+   EXPECT_EQ( -7, SlowFloat::SlowFloat( 1e-7).exponent);
+   EXPECT_EQ( -6, SlowFloat::SlowFloat( 1e-6).exponent);
+   EXPECT_EQ( -5, SlowFloat::SlowFloat( 1e-5).exponent);
+   EXPECT_EQ( -4, SlowFloat::SlowFloat( 1e-4).exponent);
+   EXPECT_EQ( -3, SlowFloat::SlowFloat( 1e-3).exponent);
+   EXPECT_EQ( -2, SlowFloat::SlowFloat( 1e-2).exponent);
+   EXPECT_EQ( -1, SlowFloat::SlowFloat( 1e-1).exponent);
+   EXPECT_EQ(  0, SlowFloat::SlowFloat(  1e0).exponent);
+   EXPECT_EQ(  1, SlowFloat::SlowFloat(  1e1).exponent);
+   EXPECT_EQ(  2, SlowFloat::SlowFloat(  1e2).exponent);
+   EXPECT_EQ(  3, SlowFloat::SlowFloat(  1e3).exponent);
+   EXPECT_EQ(  4, SlowFloat::SlowFloat(  1e4).exponent);
+   EXPECT_EQ(  5, SlowFloat::SlowFloat(  1e5).exponent);
+   EXPECT_EQ(  6, SlowFloat::SlowFloat(  1e6).exponent);
+   EXPECT_EQ(  7, SlowFloat::SlowFloat(  1e7).exponent);
+   EXPECT_EQ(  8, SlowFloat::SlowFloat(  1e8).exponent);
+   EXPECT_EQ(  9, SlowFloat::SlowFloat(  1e9).exponent);
+   EXPECT_EQ( 10, SlowFloat::SlowFloat( 1e10).exponent);
+   EXPECT_EQ( 11, SlowFloat::SlowFloat( 1e11).exponent);
+   EXPECT_EQ( 12, SlowFloat::SlowFloat( 1e12).exponent);
+   EXPECT_EQ( 13, SlowFloat::SlowFloat( 1e13).exponent);
+   EXPECT_EQ( 14, SlowFloat::SlowFloat( 1e14).exponent);
+   EXPECT_EQ( 15, SlowFloat::SlowFloat( 1e15).exponent);
+   EXPECT_EQ( 16, SlowFloat::SlowFloat( 1e16).exponent);
+   EXPECT_EQ( 17, SlowFloat::SlowFloat( 1e17).exponent);
+   EXPECT_EQ( 18, SlowFloat::SlowFloat( 1e18).exponent);
+   EXPECT_EQ( 19, SlowFloat::SlowFloat( 1e19).exponent);
+   EXPECT_EQ( 20, SlowFloat::SlowFloat( 1e20).exponent);
  }
 
 TEST(SlowFloatTests, testComparisons)
