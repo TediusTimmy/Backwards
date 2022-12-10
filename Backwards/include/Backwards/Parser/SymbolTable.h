@@ -111,7 +111,7 @@ namespace Parser
          FUNCTION
        };
 
-      std::map<std::string, std::shared_ptr<Engine::FunctionContext> > activeFunctions;
+      std::map<std::string, std::weak_ptr<Engine::FunctionContext> > activeFunctions;
       IdentifierType lookup (const std::string&) const;
 
       size_t newLoop();

@@ -57,10 +57,12 @@ namespace Types
 
    public:
       std::shared_ptr<FunctionObjectHolder> value;
+      std::weak_ptr<FunctionObjectHolder> valueToo;
       std::vector<std::shared_ptr<ValueType> > captures;
 
       FunctionValue();
       FunctionValue(const std::shared_ptr<FunctionObjectHolder>& value, const std::vector<std::shared_ptr<ValueType> >& captures);
+      FunctionValue(const std::vector<std::shared_ptr<ValueType> >& captures, const std::weak_ptr<FunctionObjectHolder>& value);
       FunctionValue(const FunctionValue&) = delete;
 
       FunctionValue& operator=(const FunctionValue&) = delete;

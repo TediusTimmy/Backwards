@@ -339,7 +339,11 @@ namespace Engine
           }
          throw FatalException(str.str());
        }
-      std::shared_ptr<FunctionContext> function = std::dynamic_pointer_cast<FunctionContext>(std::dynamic_pointer_cast<Types::FunctionValue>(LOC)->value);
+      std::shared_ptr<FunctionContext> function = std::dynamic_pointer_cast<FunctionContext>((std::dynamic_pointer_cast<Types::FunctionValue>(LOC)->valueToo).lock());
+      if (nullptr == function.get())
+       {
+         function = std::dynamic_pointer_cast<FunctionContext>(std::dynamic_pointer_cast<Types::FunctionValue>(LOC)->value);
+       }
       if (args.size() != function->nargs)
        {
          std::stringstream str;
@@ -404,6 +408,11 @@ namespace Engine
     {
     }
 
+   BuildFunction::BuildFunction(const Input::Token& token, const std::vector<std::shared_ptr<Expression> >& captures, const std::weak_ptr<FunctionContext>& prototype) :
+      Expression(token), prototypeToo(prototype), captures(captures)
+    {
+    }
+
    std::shared_ptr<Types::ValueType> BuildFunction::evaluate (CallingContext& context) const
     {
        /* This doesn't perform an operation that can fail. */
@@ -412,7 +421,11 @@ namespace Engine
        {
          captured.emplace_back((*iter)->evaluate(context));
        }
-      return std::make_shared<Types::FunctionValue>(prototype, captured);
+      if (true == prototypeToo.expired())
+       {
+         return std::make_shared<Types::FunctionValue>(prototype, captured);
+       }
+      return std::make_shared<Types::FunctionValue>(captured, prototypeToo);
     }
 
 

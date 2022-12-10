@@ -426,7 +426,7 @@ namespace Parser
             Input::Token buildToken = src.getNextToken();
 
             std::vector<std::shared_ptr<Engine::Expression> > captures;
-            if (0U != table.activeFunctions[buildToken.text]->ncaptures)
+            if (0U != table.activeFunctions[buildToken.text].lock()->ncaptures)
              {
                expect(src, Input::OPEN_BRACKET, "[ function parameters");
                captures.emplace_back(expression(src, table, logger));
@@ -435,10 +435,10 @@ namespace Parser
                   src.getNextToken();
                   captures.emplace_back(expression(src, table, logger));
                 }
-               if (captures.size() != table.activeFunctions[buildToken.text]->ncaptures)
+               if (captures.size() != table.activeFunctions[buildToken.text].lock()->ncaptures)
                 {
                   std::stringstream str;
-                  str << "Function >" << buildToken.text << "< called with " << captures.size() << " of " << table.activeFunctions[buildToken.text]->ncaptures << " captured values provided." << std::endl
+                  str << "Function >" << buildToken.text << "< called with " << captures.size() << " of " << table.activeFunctions[buildToken.text].lock()->ncaptures << " captured values provided." << std::endl
                       << "\tFrom " << src.peekNextToken().lineLocation << " on line " << src.peekNextToken().lineNumber << " in file " << src.peekNextToken().sourceFile;
                   throw ParserException(str.str());
                 }
@@ -447,11 +447,11 @@ namespace Parser
 
             if (true == captures.empty())
              {
-               ret = std::make_shared<Engine::Constant>(buildToken, std::make_shared<Types::FunctionValue>(table.activeFunctions[buildToken.text], std::vector<std::shared_ptr<Types::ValueType> >()));
+               ret = std::make_shared<Engine::Constant>(buildToken, std::make_shared<Types::FunctionValue>(std::vector<std::shared_ptr<Types::ValueType> >(), table.activeFunctions[buildToken.text]));
              }
             else
              {
-               ret = std::make_shared<Engine::BuildFunction>(buildToken, table.activeFunctions[buildToken.text], captures);
+               ret = std::make_shared<Engine::BuildFunction>(buildToken, captures, table.activeFunctions[buildToken.text]);
              }
           }
             break;

@@ -53,6 +53,10 @@ namespace Types
     {
     }
 
+   FunctionValue::FunctionValue(const std::vector<std::shared_ptr<ValueType> >& captures, const std::weak_ptr<FunctionObjectHolder>& value) : valueToo(value), captures(captures)
+    {
+    }
+
    const std::string& FunctionValue::getTypeName() const
     {
       static const std::string name ("Function");

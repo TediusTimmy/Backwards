@@ -135,9 +135,11 @@ namespace Engine
     {
    public:
       std::shared_ptr<FunctionContext> prototype;
+      std::weak_ptr<FunctionContext> prototypeToo;
       std::vector<std::shared_ptr<Expression> > captures;
 
       BuildFunction(const Input::Token&, const std::shared_ptr<FunctionContext>&, const std::vector<std::shared_ptr<Expression> >&);
+      BuildFunction(const Input::Token&, const std::vector<std::shared_ptr<Expression> >&, const std::weak_ptr<FunctionContext>&);
 
       std::shared_ptr<Types::ValueType> evaluate (CallingContext&) const;
     };
