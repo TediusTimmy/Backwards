@@ -304,11 +304,22 @@ TEST(SlowFloatTests, testConversions)
    EXPECT_EQ(0xFFFFFFFFU, SlowFloat::SlowFloat(-std::pow(10.0, 10000.0)).significand);
    EXPECT_EQ(-32768,      SlowFloat::SlowFloat(-std::pow(10.0, 10000.0)).exponent);
 
-   EXPECT_EQ(255U,   SlowFloat::SlowFloat(std::asin(2.0)).significand);
-   EXPECT_EQ(-32768, SlowFloat::SlowFloat(std::asin(2.0)).exponent);
+   if (std::signbit(std::asin(2.0)))
+    {
+      EXPECT_EQ(~255U,   SlowFloat::SlowFloat(std::asin(2.0)).significand);
+      EXPECT_EQ(-32768, SlowFloat::SlowFloat(std::asin(2.0)).exponent);
 
-   EXPECT_EQ(~255U,  SlowFloat::SlowFloat(-std::asin(2.0)).significand);
-   EXPECT_EQ(-32768, SlowFloat::SlowFloat(-std::asin(2.0)).exponent);
+      EXPECT_EQ(255U,  SlowFloat::SlowFloat(-std::asin(2.0)).significand);
+      EXPECT_EQ(-32768, SlowFloat::SlowFloat(-std::asin(2.0)).exponent);
+    }
+   else
+    {
+      EXPECT_EQ(255U,   SlowFloat::SlowFloat(std::asin(2.0)).significand);
+      EXPECT_EQ(-32768, SlowFloat::SlowFloat(std::asin(2.0)).exponent);
+
+      EXPECT_EQ(~255U,  SlowFloat::SlowFloat(-std::asin(2.0)).significand);
+      EXPECT_EQ(-32768, SlowFloat::SlowFloat(-std::asin(2.0)).exponent);
+    }
 
    EXPECT_EQ(100000000U, SlowFloat::SlowFloat(9.999999999).significand);
    EXPECT_EQ(1,          SlowFloat::SlowFloat(9.999999999).exponent);
