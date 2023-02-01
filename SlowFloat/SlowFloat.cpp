@@ -475,9 +475,17 @@ SlowFloat operator + (const SlowFloat& lhs, const SlowFloat& rhs)
    int16_t expDiff = 0;
    if (lhs.exponent > rhs.exponent)
     {
-      if ((lhs.exponent - rhs.exponent) <= CUTOFF)
+      if ((lhs.exponent - rhs.exponent) <= (CUTOFF + 1))
        {
          expDiff = lhs.exponent - rhs.exponent;
+         if (expDiff > 2) // 2 : guard digit, rounding digit / sticky digit
+          {
+            uint64_t removed;
+            removed = rhd % makeShift[(expDiff - 2) + 1];
+            rhd /= makeShift[(expDiff - 2) + 1];
+            if ((0U != removed) && ((0U == (rhd % 10U)) || (5U == (rhd % 10U)))) ++rhd;
+            expDiff = 2;
+          }
          lhd *= makeShift[expDiff + 1];
        }
       else
@@ -490,9 +498,17 @@ SlowFloat operator + (const SlowFloat& lhs, const SlowFloat& rhs)
    else if (lhs.exponent < rhs.exponent)
     {
       resultExponent = rhs.exponent;
-      if ((rhs.exponent - lhs.exponent) <= CUTOFF)
+      if ((rhs.exponent - lhs.exponent) <= (CUTOFF + 1))
        {
          expDiff = rhs.exponent - lhs.exponent;
+         if (expDiff > 2)
+          {
+            uint64_t removed;
+            removed = lhd % makeShift[(expDiff - 2) + 1];
+            lhd /= makeShift[(expDiff - 2) + 1];
+            if ((0U != removed) && ((0U == (lhd % 10U)) || (5U == (lhd % 10U)))) ++lhd;
+            expDiff = 2;
+          }
          rhd *= makeShift[expDiff + 1];
        }
       else
