@@ -1486,6 +1486,132 @@ TEST(SlowFloatTests, testSubs)
    EXPECT_EQ(0, res.exponent);
  }
 
+TEST(SlowFloatTests, testRounds)
+ {
+   SlowFloat::SlowFloat positiveOne  (100000000U, 0);
+
+   EXPECT_EQ(900000000U, (positiveOne - SlowFloat::SlowFloat(100000000U,  -1)).significand);
+   EXPECT_EQ(990000000U, (positiveOne - SlowFloat::SlowFloat(100000000U,  -2)).significand);
+   EXPECT_EQ(999000000U, (positiveOne - SlowFloat::SlowFloat(100000000U,  -3)).significand);
+   EXPECT_EQ(999900000U, (positiveOne - SlowFloat::SlowFloat(100000000U,  -4)).significand);
+   EXPECT_EQ(999990000U, (positiveOne - SlowFloat::SlowFloat(100000000U,  -5)).significand);
+   EXPECT_EQ(999999000U, (positiveOne - SlowFloat::SlowFloat(100000000U,  -6)).significand);
+   EXPECT_EQ(999999900U, (positiveOne - SlowFloat::SlowFloat(100000000U,  -7)).significand);
+   EXPECT_EQ(999999990U, (positiveOne - SlowFloat::SlowFloat(100000000U,  -8)).significand);
+   EXPECT_EQ(999999999U, (positiveOne - SlowFloat::SlowFloat(100000000U,  -9)).significand);
+   EXPECT_EQ(100000000U, (positiveOne - SlowFloat::SlowFloat(100000000U, -10)).significand);
+   EXPECT_EQ(100000000U, (positiveOne - SlowFloat::SlowFloat(100000000U, -11)).significand);
+
+   EXPECT_EQ(500000001U, (positiveOne - SlowFloat::SlowFloat(499999999U,  -1)).significand);
+   EXPECT_EQ(950000000U, (positiveOne - SlowFloat::SlowFloat(499999999U,  -2)).significand);
+   EXPECT_EQ(995000000U, (positiveOne - SlowFloat::SlowFloat(499999999U,  -3)).significand);
+   EXPECT_EQ(999500000U, (positiveOne - SlowFloat::SlowFloat(499999999U,  -4)).significand);
+   EXPECT_EQ(999950000U, (positiveOne - SlowFloat::SlowFloat(499999999U,  -5)).significand);
+   EXPECT_EQ(999995000U, (positiveOne - SlowFloat::SlowFloat(499999999U,  -6)).significand);
+   EXPECT_EQ(999999500U, (positiveOne - SlowFloat::SlowFloat(499999999U,  -7)).significand);
+   EXPECT_EQ(999999950U, (positiveOne - SlowFloat::SlowFloat(499999999U,  -8)).significand);
+   EXPECT_EQ(999999995U, (positiveOne - SlowFloat::SlowFloat(499999999U,  -9)).significand);
+   EXPECT_EQ(100000000U, (positiveOne - SlowFloat::SlowFloat(499999999U, -10)).significand);
+   EXPECT_EQ(100000000U, (positiveOne - SlowFloat::SlowFloat(499999999U, -11)).significand);
+
+   EXPECT_EQ(500000000U, (positiveOne - SlowFloat::SlowFloat(500000000U,  -1)).significand);
+   EXPECT_EQ(950000000U, (positiveOne - SlowFloat::SlowFloat(500000000U,  -2)).significand);
+   EXPECT_EQ(995000000U, (positiveOne - SlowFloat::SlowFloat(500000000U,  -3)).significand);
+   EXPECT_EQ(999500000U, (positiveOne - SlowFloat::SlowFloat(500000000U,  -4)).significand);
+   EXPECT_EQ(999950000U, (positiveOne - SlowFloat::SlowFloat(500000000U,  -5)).significand);
+   EXPECT_EQ(999995000U, (positiveOne - SlowFloat::SlowFloat(500000000U,  -6)).significand);
+   EXPECT_EQ(999999500U, (positiveOne - SlowFloat::SlowFloat(500000000U,  -7)).significand);
+   EXPECT_EQ(999999950U, (positiveOne - SlowFloat::SlowFloat(500000000U,  -8)).significand);
+   EXPECT_EQ(999999995U, (positiveOne - SlowFloat::SlowFloat(500000000U,  -9)).significand);
+   EXPECT_EQ(100000000U, (positiveOne - SlowFloat::SlowFloat(500000000U, -10)).significand);
+   EXPECT_EQ(100000000U, (positiveOne - SlowFloat::SlowFloat(500000000U, -11)).significand);
+
+   EXPECT_EQ(499999999U, (positiveOne - SlowFloat::SlowFloat(500000001U,  -1)).significand);
+   EXPECT_EQ(950000000U, (positiveOne - SlowFloat::SlowFloat(500000001U,  -2)).significand);
+   EXPECT_EQ(995000000U, (positiveOne - SlowFloat::SlowFloat(500000001U,  -3)).significand);
+   EXPECT_EQ(999500000U, (positiveOne - SlowFloat::SlowFloat(500000001U,  -4)).significand);
+   EXPECT_EQ(999950000U, (positiveOne - SlowFloat::SlowFloat(500000001U,  -5)).significand);
+   EXPECT_EQ(999995000U, (positiveOne - SlowFloat::SlowFloat(500000001U,  -6)).significand);
+   EXPECT_EQ(999999500U, (positiveOne - SlowFloat::SlowFloat(500000001U,  -7)).significand);
+   EXPECT_EQ(999999950U, (positiveOne - SlowFloat::SlowFloat(500000001U,  -8)).significand);
+   EXPECT_EQ(999999995U, (positiveOne - SlowFloat::SlowFloat(500000001U,  -9)).significand);
+   EXPECT_EQ(999999999U, (positiveOne - SlowFloat::SlowFloat(500000001U, -10)).significand);
+   EXPECT_EQ(100000000U, (positiveOne - SlowFloat::SlowFloat(500000001U, -11)).significand);
+
+   EXPECT_EQ(100000000U, (positiveOne - SlowFloat::SlowFloat(900000000U,  -1)).significand);
+   EXPECT_EQ(910000000U, (positiveOne - SlowFloat::SlowFloat(900000000U,  -2)).significand);
+   EXPECT_EQ(991000000U, (positiveOne - SlowFloat::SlowFloat(900000000U,  -3)).significand);
+   EXPECT_EQ(999100000U, (positiveOne - SlowFloat::SlowFloat(900000000U,  -4)).significand);
+   EXPECT_EQ(999910000U, (positiveOne - SlowFloat::SlowFloat(900000000U,  -5)).significand);
+   EXPECT_EQ(999991000U, (positiveOne - SlowFloat::SlowFloat(900000000U,  -6)).significand);
+   EXPECT_EQ(999999100U, (positiveOne - SlowFloat::SlowFloat(900000000U,  -7)).significand);
+   EXPECT_EQ(999999910U, (positiveOne - SlowFloat::SlowFloat(900000000U,  -8)).significand);
+   EXPECT_EQ(999999991U, (positiveOne - SlowFloat::SlowFloat(900000000U,  -9)).significand);
+   EXPECT_EQ(999999999U, (positiveOne - SlowFloat::SlowFloat(900000000U, -10)).significand);
+   EXPECT_EQ(100000000U, (positiveOne - SlowFloat::SlowFloat(900000000U, -11)).significand);
+
+
+   EXPECT_EQ(900000000U, (-SlowFloat::SlowFloat(100000000U,  -1) + positiveOne).significand);
+   EXPECT_EQ(990000000U, (-SlowFloat::SlowFloat(100000000U,  -2) + positiveOne).significand);
+   EXPECT_EQ(999000000U, (-SlowFloat::SlowFloat(100000000U,  -3) + positiveOne).significand);
+   EXPECT_EQ(999900000U, (-SlowFloat::SlowFloat(100000000U,  -4) + positiveOne).significand);
+   EXPECT_EQ(999990000U, (-SlowFloat::SlowFloat(100000000U,  -5) + positiveOne).significand);
+   EXPECT_EQ(999999000U, (-SlowFloat::SlowFloat(100000000U,  -6) + positiveOne).significand);
+   EXPECT_EQ(999999900U, (-SlowFloat::SlowFloat(100000000U,  -7) + positiveOne).significand);
+   EXPECT_EQ(999999990U, (-SlowFloat::SlowFloat(100000000U,  -8) + positiveOne).significand);
+   EXPECT_EQ(999999999U, (-SlowFloat::SlowFloat(100000000U,  -9) + positiveOne).significand);
+   EXPECT_EQ(100000000U, (-SlowFloat::SlowFloat(100000000U, -10) + positiveOne).significand);
+   EXPECT_EQ(100000000U, (-SlowFloat::SlowFloat(100000000U, -11) + positiveOne).significand);
+
+   EXPECT_EQ(500000001U, (-SlowFloat::SlowFloat(499999999U,  -1) + positiveOne).significand);
+   EXPECT_EQ(950000000U, (-SlowFloat::SlowFloat(499999999U,  -2) + positiveOne).significand);
+   EXPECT_EQ(995000000U, (-SlowFloat::SlowFloat(499999999U,  -3) + positiveOne).significand);
+   EXPECT_EQ(999500000U, (-SlowFloat::SlowFloat(499999999U,  -4) + positiveOne).significand);
+   EXPECT_EQ(999950000U, (-SlowFloat::SlowFloat(499999999U,  -5) + positiveOne).significand);
+   EXPECT_EQ(999995000U, (-SlowFloat::SlowFloat(499999999U,  -6) + positiveOne).significand);
+   EXPECT_EQ(999999500U, (-SlowFloat::SlowFloat(499999999U,  -7) + positiveOne).significand);
+   EXPECT_EQ(999999950U, (-SlowFloat::SlowFloat(499999999U,  -8) + positiveOne).significand);
+   EXPECT_EQ(999999995U, (-SlowFloat::SlowFloat(499999999U,  -9) + positiveOne).significand);
+   EXPECT_EQ(100000000U, (-SlowFloat::SlowFloat(499999999U, -10) + positiveOne).significand);
+   EXPECT_EQ(100000000U, (-SlowFloat::SlowFloat(499999999U, -11) + positiveOne).significand);
+
+   EXPECT_EQ(500000000U, (-SlowFloat::SlowFloat(500000000U,  -1) + positiveOne).significand);
+   EXPECT_EQ(950000000U, (-SlowFloat::SlowFloat(500000000U,  -2) + positiveOne).significand);
+   EXPECT_EQ(995000000U, (-SlowFloat::SlowFloat(500000000U,  -3) + positiveOne).significand);
+   EXPECT_EQ(999500000U, (-SlowFloat::SlowFloat(500000000U,  -4) + positiveOne).significand);
+   EXPECT_EQ(999950000U, (-SlowFloat::SlowFloat(500000000U,  -5) + positiveOne).significand);
+   EXPECT_EQ(999995000U, (-SlowFloat::SlowFloat(500000000U,  -6) + positiveOne).significand);
+   EXPECT_EQ(999999500U, (-SlowFloat::SlowFloat(500000000U,  -7) + positiveOne).significand);
+   EXPECT_EQ(999999950U, (-SlowFloat::SlowFloat(500000000U,  -8) + positiveOne).significand);
+   EXPECT_EQ(999999995U, (-SlowFloat::SlowFloat(500000000U,  -9) + positiveOne).significand);
+   EXPECT_EQ(100000000U, (-SlowFloat::SlowFloat(500000000U, -10) + positiveOne).significand);
+   EXPECT_EQ(100000000U, (-SlowFloat::SlowFloat(500000000U, -11) + positiveOne).significand);
+
+   EXPECT_EQ(499999999U, (-SlowFloat::SlowFloat(500000001U,  -1) + positiveOne).significand);
+   EXPECT_EQ(950000000U, (-SlowFloat::SlowFloat(500000001U,  -2) + positiveOne).significand);
+   EXPECT_EQ(995000000U, (-SlowFloat::SlowFloat(500000001U,  -3) + positiveOne).significand);
+   EXPECT_EQ(999500000U, (-SlowFloat::SlowFloat(500000001U,  -4) + positiveOne).significand);
+   EXPECT_EQ(999950000U, (-SlowFloat::SlowFloat(500000001U,  -5) + positiveOne).significand);
+   EXPECT_EQ(999995000U, (-SlowFloat::SlowFloat(500000001U,  -6) + positiveOne).significand);
+   EXPECT_EQ(999999500U, (-SlowFloat::SlowFloat(500000001U,  -7) + positiveOne).significand);
+   EXPECT_EQ(999999950U, (-SlowFloat::SlowFloat(500000001U,  -8) + positiveOne).significand);
+   EXPECT_EQ(999999995U, (-SlowFloat::SlowFloat(500000001U,  -9) + positiveOne).significand);
+   EXPECT_EQ(999999999U, (-SlowFloat::SlowFloat(500000001U, -10) + positiveOne).significand);
+   EXPECT_EQ(100000000U, (-SlowFloat::SlowFloat(500000001U, -11) + positiveOne).significand);
+
+   EXPECT_EQ(100000000U, (-SlowFloat::SlowFloat(900000000U,  -1) + positiveOne).significand);
+   EXPECT_EQ(910000000U, (-SlowFloat::SlowFloat(900000000U,  -2) + positiveOne).significand);
+   EXPECT_EQ(991000000U, (-SlowFloat::SlowFloat(900000000U,  -3) + positiveOne).significand);
+   EXPECT_EQ(999100000U, (-SlowFloat::SlowFloat(900000000U,  -4) + positiveOne).significand);
+   EXPECT_EQ(999910000U, (-SlowFloat::SlowFloat(900000000U,  -5) + positiveOne).significand);
+   EXPECT_EQ(999991000U, (-SlowFloat::SlowFloat(900000000U,  -6) + positiveOne).significand);
+   EXPECT_EQ(999999100U, (-SlowFloat::SlowFloat(900000000U,  -7) + positiveOne).significand);
+   EXPECT_EQ(999999910U, (-SlowFloat::SlowFloat(900000000U,  -8) + positiveOne).significand);
+   EXPECT_EQ(999999991U, (-SlowFloat::SlowFloat(900000000U,  -9) + positiveOne).significand);
+   EXPECT_EQ(999999999U, (-SlowFloat::SlowFloat(900000000U, -10) + positiveOne).significand);
+   EXPECT_EQ(100000000U, (-SlowFloat::SlowFloat(900000000U, -11) + positiveOne).significand);
+ }
+
 TEST(SlowFloatTests, testMuls)
  {
    SlowFloat::SlowFloat positiveZero (0U, 0);
