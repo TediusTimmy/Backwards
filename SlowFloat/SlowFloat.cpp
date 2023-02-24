@@ -582,8 +582,12 @@ SlowFloat operator + (const SlowFloat& lhs, const SlowFloat& rhs)
          resultExponent = SPECIAL_EXPONENT;
        }
     }
-   else if (lhd < MIN_SIGNIFICAND)
+   else
     {
+      if (expDiff == 1) // If we have gotten here, and an operation like 10 - 1 occurred, then fix the exponent.
+       {
+         --resultExponent;
+       }
       while (lhd < MIN_SIGNIFICAND)
        {
          lhd *= 10;
@@ -594,14 +598,6 @@ SlowFloat operator + (const SlowFloat& lhs, const SlowFloat& rhs)
          lhd = 0;
          resultExponent = 0;
        }
-    }
-   else
-    {
-      if (expDiff == 1) // If we have gotten here, and an operation like 10 - 1 occurred, then fix the exponent.
-       {
-         --resultExponent;
-       }
-      // Flush to zero can't happen: that would imply that the lower magnitude number had an exponent less then MIN_EXPONENT
     }
 
    return SlowFloat(lhd ^ (resultSign ? 0xFFFFFFFFU : 0U), resultExponent);
