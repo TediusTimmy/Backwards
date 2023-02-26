@@ -180,7 +180,7 @@ class View : public olc::PixelGameEngine
 public:
    View() : logger (ConsoleOut()), debugLogger(ConsoleOut())
     {
-      sAppName = "Backroom Quest Alpha v0.0.4";
+      sAppName = "Backroom Quest Alpha v0.1.1";
     }
 
 private:
